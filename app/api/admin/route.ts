@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const onlineUsers = presenceManager.getOnlineUsers();
     const allUsers = db.getUsers().map(toSafeUser);
     const visits = db.getVisits(100);
-    const activities = db.getRecentActivities();
+    const activities = db.getLiveFeed(30);
     const matches = db.getMatches(50);
     const violations = db.getViolations();
     const announcements = db.getAnnouncements();

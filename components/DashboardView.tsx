@@ -60,7 +60,7 @@ export function DashboardView({
   const [campusRank, setCampusRank] = useState<number>(1);
   const [totalContestants, setTotalContestants] = useState<number>(1);
   const [activities, setActivities] = useState<
-    { id: string; user1Name: string; user2Name?: string; problemTitle?: string; eloChange?: number; timeAgo: string }[]
+    { id: string; type?: string; user1Name: string; user2Name?: string; problemTitle?: string; eloChange?: number; timeAgo: string }[]
   >([]);
 
   useEffect(() => {
@@ -344,6 +344,11 @@ export function DashboardView({
                     <span className="text-zinc-400">defeated</span>
                     <span className="font-medium text-zinc-900 dark:text-white">{act.user2Name}</span>
                     <span className="text-emerald-600 font-bold">(+{act.eloChange || 28} ELO)</span>
+                  </>
+                ) : act.type === 'login' ? (
+                  <>
+                    <span className="text-zinc-400">logged in</span>
+                    <span className="text-emerald-600 font-bold">●</span>
                   </>
                 ) : (
                   <>

@@ -599,6 +599,52 @@ class DatabaseEngine {
     return this.data.activities;
   }
 
+  /**
+   * Real feed computed from actual recorded events (visits + matches).
+   * timeAgo is computed at read time so it stays accurate.
+   */
+  public getLiveFeed(limit = 30): ActivityEvent[] {
+    const events: ActivityEvent[] = [];
+
+    // Real matches: winner defeated loser
+    for (const match of this.data.matches || []) {
+      const winner =
+        match.winnerId === match.player2?.id ? match.player2 : match.player1;
+      const loser =
+        match.winnerId === match.player2?.id ? match.player1 : match.player2;
+      if (!winner) continue;
+      events.push({
+        id: `feed-match-${match.id}`,
+        type: 'match_win',
+        user1Name: winner.name,
+        user2Name: loser && loser.id !== winner.id ? loser.name : undefined,
+        eloChange: 28,
+        timestamp: match.timestamp,
+        timeAgo: formatTimeAgo(match.timestamp),
+      });
+    }
+
+    // Real logins/visits: latest visit per named user only
+    const seenUsers = new Set<string>();
+    for (const visit of this.data.visits || []) {
+      const name = visit.userName?.trim();
+      if (!name) continue; // skip anonymous visits
+      const key = name.toLowerCase();
+      if (seenUsers.has(key)) continue; // visits are newest-first
+      seenUsers.add(key);
+      events.push({
+        id: `feed-visit-${visit.id}`,
+        type: 'login',
+        user1Name: name,
+        timestamp: visit.timestamp,
+        timeAgo: formatTimeAgo(visit.timestamp),
+      });
+    }
+
+    events.sort((a, b) => b.timestamp - a.timestamp);
+    return events.slice(0, limit);
+  }
+
   public incrementSubmissions(lines: number) {
     this.data.stats.totalSubmissions += 1;
     this.data.stats.totalCodeLinesCompiled += lines;
