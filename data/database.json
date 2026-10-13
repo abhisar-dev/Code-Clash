@@ -13,7 +13,7 @@
       "passwordHash": "5935115f0df58558d268d31b75cb8d13de2e977a30e6a9ebdcb79bef4325fbe11d0e510a0bef2e60681af3777bc8beb6a8b3330691ed20c2f6868b5bbeffc497",
       "salt": "912886174a6f4eb9864b5004bec722d9",
       "totalOnlineSeconds": 44100,
-      "lastActiveAt": 1791899175433,
+      "lastActiveAt": 1791900103353,
       "course": "B.Tech CSE",
       "studentId": "IU212089",
       "bio": "Python & Algorithm Enthusiast | Invertis Coding Club"
@@ -34,7 +34,7 @@
       "course": "B.Tech CSE",
       "phone": "9876543210",
       "totalOnlineSeconds": 67320,
-      "lastActiveAt": 1791900255433,
+      "lastActiveAt": 1791901183353,
       "bio": "DSA Competitor & Full Stack Dev | Core Team Invertis"
     },
     {
@@ -50,13 +50,102 @@
       "passwordHash": "6bb5e9a2a470b6260bf6a97a5bf0173d6eeca441ee014a036b385a450fd90d41ce5d39dee94fe7dcc4a03eefc39a4bb024a670949c8d7d685506ef2c057dfaef",
       "salt": "d7f402501d2a21e6b7cc82f425235744",
       "totalOnlineSeconds": 30900,
-      "lastActiveAt": 1791897015433,
+      "lastActiveAt": 1791897943353,
       "course": "BCA",
       "studentId": "IU221045",
       "bio": "Java Developer & Problem Solver"
     }
   ],
-  "matches": [],
+  "matches": [
+    {
+      "id": "match-101",
+      "roomId": "CLASH-902",
+      "player1": {
+        "id": "user-1791693341107-393",
+        "name": "Abhishek",
+        "handle": "abhisarkumar70",
+        "elo": 1248,
+        "score": 100
+      },
+      "player2": {
+        "id": "user-1791693297556-199",
+        "name": "ahqaf",
+        "handle": "ahqafaliofficial",
+        "elo": 1142,
+        "score": 85
+      },
+      "winnerId": "user-1791693341107-393",
+      "problemCount": 2,
+      "durationSeconds": 840,
+      "timestamp": 1791890623353
+    },
+    {
+      "id": "match-102",
+      "roomId": "CLASH-845",
+      "player1": {
+        "id": "user-1791693341107-393",
+        "name": "Abhishek",
+        "handle": "abhisarkumar70",
+        "elo": 1220,
+        "score": 95
+      },
+      "player2": {
+        "id": "user-1791870421769-216",
+        "name": "Rocky",
+        "handle": "subhajitdas25639",
+        "elo": 1086,
+        "score": 70
+      },
+      "winnerId": "user-1791693341107-393",
+      "problemCount": 2,
+      "durationSeconds": 960,
+      "timestamp": 1791851023353
+    },
+    {
+      "id": "match-103",
+      "roomId": "CLASH-732",
+      "player1": {
+        "id": "user-1791693297556-199",
+        "name": "ahqaf",
+        "handle": "ahqafaliofficial",
+        "elo": 1142,
+        "score": 90
+      },
+      "player2": {
+        "id": "user-1791870421769-216",
+        "name": "Rocky",
+        "handle": "subhajitdas25639",
+        "elo": 1060,
+        "score": 75
+      },
+      "winnerId": "user-1791693297556-199",
+      "problemCount": 1,
+      "durationSeconds": 540,
+      "timestamp": 1791807823353
+    },
+    {
+      "id": "match-104",
+      "roomId": "CLASH-619",
+      "player1": {
+        "id": "user-1791870421769-216",
+        "name": "Rocky",
+        "handle": "subhajitdas25639",
+        "elo": 1060,
+        "score": 88
+      },
+      "player2": {
+        "id": "inv-guest",
+        "name": "Ayush Sharma",
+        "handle": "ayush_cse",
+        "elo": 1020,
+        "score": 60
+      },
+      "winnerId": "user-1791870421769-216",
+      "problemCount": 1,
+      "durationSeconds": 660,
+      "timestamp": 1791728623353
+    }
+  ],
   "activities": [
     {
       "type": "challenge",
@@ -87,6 +176,16 @@
     "totalVisits": 164
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1791899830036-247",
+      "timestamp": 1791899830036
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhisar kumar",
@@ -1294,7 +1393,7 @@
   "messages": [],
   "submissions": [
     {
-      "id": "sub-1791899775433",
+      "id": "sub-1791900703353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1308,10 +1407,10 @@
       "memoryMb": 15.6,
       "linesOfCode": 15,
       "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        seen = {}\n        for i, num in enumerate(nums):\n            diff = target - num\n            if diff in seen:\n                return [seen[diff], i]\n            seen[num] = i\n        return []",
-      "timestamp": 1791899775433
+      "timestamp": 1791900703353
     },
     {
-      "id": "sub-1791897795433",
+      "id": "sub-1791898723353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1325,10 +1424,10 @@
       "memoryMb": 11.2,
       "linesOfCode": 24,
       "code": "#include <string>\n#include <vector>\n#include <algorithm>\n\nclass Solution {\npublic:\n    int lengthOfLongestSubstring(std::string s) {\n        std::vector<int> lastIndex(256, -1);\n        int maxLen = 0, start = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (lastIndex[(unsigned char)s[i]] >= start) {\n                start = lastIndex[(unsigned char)s[i]] + 1;\n            }\n            lastIndex[(unsigned char)s[i]] = i;\n            maxLen = std::max(maxLen, i - start + 1);\n        }\n        return maxLen;\n    }\n};",
-      "timestamp": 1791897795433
+      "timestamp": 1791898723353
     },
     {
-      "id": "sub-1791893295433",
+      "id": "sub-1791894223353",
       "userId": "user-1791693297556-199",
       "userName": "ahqaf",
       "userHandle": "ahqafaliofficial",
@@ -1342,10 +1441,10 @@
       "memoryMb": 15.8,
       "linesOfCode": 12,
       "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        lookup = {}\n        for idx, val in enumerate(nums):\n            complement = target - val\n            if complement in lookup:\n                return [lookup[complement], idx]\n            lookup[val] = idx\n        return []",
-      "timestamp": 1791893295433
+      "timestamp": 1791894223353
     },
     {
-      "id": "sub-1791889695433",
+      "id": "sub-1791890623353",
       "userId": "user-1791870421769-216",
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
@@ -1359,10 +1458,10 @@
       "memoryMb": 39.4,
       "linesOfCode": 20,
       "code": "import java.util.HashMap;\nimport java.util.Map;\n\nclass Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            map.put(nums[i], i);\n        }\n        return new int[0];\n    }\n}",
-      "timestamp": 1791889695433
+      "timestamp": 1791890623353
     },
     {
-      "id": "sub-1791882495433",
+      "id": "sub-1791883423353",
       "userId": "user-1791870421769-216",
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
@@ -1376,10 +1475,10 @@
       "memoryMb": 0,
       "linesOfCode": 16,
       "code": "#include <stack>\n#include <string>\n\nclass Solution {\npublic:\n    bool isValid(std::string s) {\n        std::stack<char> st\n        for (char c : s) {\n            if (c == '(' || c == '{' || c == '[') st.push(c);\n            else {\n                if (st.empty()) return false;\n                char top = st.top(); st.pop();\n            }\n        }\n        return st.empty();\n    }\n};",
-      "timestamp": 1791882495433
+      "timestamp": 1791883423353
     },
     {
-      "id": "sub-1791814095433",
+      "id": "sub-1791815023353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1393,12 +1492,12 @@
       "memoryMb": 16.4,
       "linesOfCode": 26,
       "code": "class Solution:\n    def findMedianSortedArrays(self, nums1: list[int], nums2: list[int]) -> float:\n        if len(nums1) > len(nums2):\n            nums1, nums2 = nums2, nums1\n        m, n = len(nums1), len(nums2)\n        low, high = 0, m\n        while low <= high:\n            partitionX = (low + high) // 2\n            partitionY = (m + n + 1) // 2 - partitionX\n            maxLeftX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]\n            minRightX = float('inf') if partitionX == m else nums1[partitionX]\n            maxLeftY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]\n            minRightY = float('inf') if partitionY == n else nums2[partitionY]\n            if maxLeftX <= minRightY and maxLeftY <= minRightX:\n                if (m + n) % 2 == 0:\n                    return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2.0\n                return max(maxLeftX, maxLeftY)\n            elif maxLeftX > minRightY:\n                high = partitionX - 1\n            else:\n                low = partitionX + 1\n        return 0.0",
-      "timestamp": 1791814095433
+      "timestamp": 1791815023353
     }
   ],
   "auditLogs": [
     {
-      "id": "audit-1791899775433",
+      "id": "audit-1791900703353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1411,10 +1510,10 @@
         "runtimeMs": 18,
         "passed": "5/5"
       },
-      "timestamp": 1791899775433
+      "timestamp": 1791900703353
     },
     {
-      "id": "audit-1791899415433",
+      "id": "audit-1791900343353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1425,30 +1524,30 @@
         "problemId": 1,
         "language": "python"
       },
-      "timestamp": 1791899415433
+      "timestamp": 1791900343353
     },
     {
-      "id": "audit-1791899175433",
+      "id": "audit-1791900103353",
       "userId": "user-1791693297556-199",
       "userName": "ahqaf",
       "userHandle": "ahqafaliofficial",
       "action": "page_visit",
       "actionCategory": "navigation",
       "details": "Navigated to /problems/1 (Two Sum - Easy)",
-      "timestamp": 1791899175433
+      "timestamp": 1791900103353
     },
     {
-      "id": "audit-1791898395433",
+      "id": "audit-1791899323353",
       "userId": "user-1791693297556-199",
       "userName": "ahqaf",
       "userHandle": "ahqafaliofficial",
       "action": "login",
       "actionCategory": "auth",
       "details": "Signed in with email credential session (ahqafaliofficial@gmail.com)",
-      "timestamp": 1791898395433
+      "timestamp": 1791899323353
     },
     {
-      "id": "audit-1791897795433",
+      "id": "audit-1791898723353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1460,20 +1559,20 @@
         "language": "cpp",
         "runtimeMs": 12
       },
-      "timestamp": 1791897795433
+      "timestamp": 1791898723353
     },
     {
-      "id": "audit-1791897015433",
+      "id": "audit-1791897943353",
       "userId": "user-1791870421769-216",
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
       "action": "login",
       "actionCategory": "auth",
       "details": "Signed in with email credential session (subhajitdas25639@gmail.com)",
-      "timestamp": 1791897015433
+      "timestamp": 1791897943353
     },
     {
-      "id": "audit-1791893295433",
+      "id": "audit-1791894223353",
       "userId": "user-1791693297556-199",
       "userName": "ahqaf",
       "userHandle": "ahqafaliofficial",
@@ -1485,10 +1584,10 @@
         "language": "python",
         "runtimeMs": 24
       },
-      "timestamp": 1791893295433
+      "timestamp": 1791894223353
     },
     {
-      "id": "audit-1791889695433",
+      "id": "audit-1791890623353",
       "userId": "user-1791870421769-216",
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
@@ -1500,10 +1599,10 @@
         "language": "java",
         "runtimeMs": 32
       },
-      "timestamp": 1791889695433
+      "timestamp": 1791890623353
     },
     {
-      "id": "audit-1791886095433",
+      "id": "audit-1791887023353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1514,20 +1613,20 @@
         "roomId": "CLASH-902",
         "eloGain": 28
       },
-      "timestamp": 1791886095433
+      "timestamp": 1791887023353
     },
     {
-      "id": "audit-1791885375433",
+      "id": "audit-1791886303353",
       "userId": "user-1791693297556-199",
       "userName": "ahqaf",
       "userHandle": "ahqafaliofficial",
       "action": "match_join",
       "actionCategory": "battle",
       "details": "Joined 1v1 Duel Room CLASH-902 against @abhisarkumar70",
-      "timestamp": 1791885375433
+      "timestamp": 1791886303353
     },
     {
-      "id": "audit-1791882495433",
+      "id": "audit-1791883423353",
       "userId": "user-1791870421769-216",
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
@@ -1538,30 +1637,30 @@
         "problemId": 2,
         "language": "cpp"
       },
-      "timestamp": 1791882495433
+      "timestamp": 1791883423353
     },
     {
-      "id": "audit-1791871695433",
+      "id": "audit-1791872623353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
       "action": "login",
       "actionCategory": "auth",
       "details": "Signed in via Google OAuth (@abhisarkumar70@gmail.com)",
-      "timestamp": 1791871695433
+      "timestamp": 1791872623353
     },
     {
-      "id": "audit-1791850095433",
+      "id": "audit-1791851023353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
       "action": "profile_update",
       "actionCategory": "profile",
       "details": "Updated campus credentials and bio: B.Tech CSE (IU212234)",
-      "timestamp": 1791850095433
+      "timestamp": 1791851023353
     },
     {
-      "id": "audit-1791814095433",
+      "id": "audit-1791815023353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
@@ -1572,89 +1671,33 @@
         "problemId": 4,
         "language": "python"
       },
-      "timestamp": 1791814095433
+      "timestamp": 1791815023353
     },
     {
-      "id": "audit-1791803295433",
+      "id": "audit-1791804223353",
       "userId": "user-1791870421769-216",
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
       "action": "match_win",
       "actionCategory": "battle",
       "details": "Won 1v1 Timed Duel vs Opponent (+26 ELO)",
-      "timestamp": 1791803295433
+      "timestamp": 1791804223353
     }
   ],
   "userSessions": [
     {
-      "id": "sess-1791900255433",
+      "id": "sess-1791901183353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
       "userHandle": "abhisarkumar70",
       "college": "Invertis University",
-      "startedAt": 1791897375433,
-      "lastActiveAt": 1791900255433,
+      "startedAt": 1791898303353,
+      "lastActiveAt": 1791901183353,
       "durationSeconds": 2880,
       "currentPath": "/problems/1",
       "currentAction": "Solving Two Sum (Python)",
       "isLive": false,
-      "timestamp": 1791900255433
-    },
-    {
-      "id": "sess-1791886095433",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhishek",
-      "userHandle": "abhisarkumar70",
-      "college": "Invertis University",
-      "startedAt": 1791881655433,
-      "lastActiveAt": 1791886095433,
-      "durationSeconds": 4440,
-      "currentPath": "/arena",
-      "currentAction": "1v1 Duel Match #CLASH-902",
-      "isLive": false,
-      "timestamp": 1791886095433
-    },
-    {
-      "id": "sess-1791814095433",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhishek",
-      "userHandle": "abhisarkumar70",
-      "college": "Invertis University",
-      "startedAt": 1791810195433,
-      "lastActiveAt": 1791814095433,
-      "durationSeconds": 3900,
-      "currentPath": "/problems/3",
-      "currentAction": "Solving Longest Substring Without Repeating Characters",
-      "isLive": false,
-      "timestamp": 1791814095433
-    },
-    {
-      "id": "sess-1791799695433",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhishek",
-      "userHandle": "abhisarkumar70",
-      "college": "Invertis University",
-      "startedAt": 1791797175433,
-      "lastActiveAt": 1791799695433,
-      "durationSeconds": 2520,
-      "currentPath": "/leaderboard",
-      "currentAction": "Reviewing Campus Rankings",
-      "isLive": false,
-      "timestamp": 1791799695433
-    },
-    {
-      "id": "sess-1791727695433",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhishek",
-      "userHandle": "abhisarkumar70",
-      "college": "Invertis University",
-      "startedAt": 1791724215433,
-      "lastActiveAt": 1791727695433,
-      "durationSeconds": 3480,
-      "currentPath": "/problems/2",
-      "currentAction": "Solving Add Two Numbers",
-      "isLive": false,
-      "timestamp": 1791727695433
+      "timestamp": 1791901183353
     },
     {
       "id": "sess-ahqaf-1",
@@ -1662,41 +1705,13 @@
       "userName": "ahqaf",
       "userHandle": "ahqafaliofficial",
       "college": "Invertis University",
-      "startedAt": 1791896895433,
-      "lastActiveAt": 1791899175433,
+      "startedAt": 1791897823353,
+      "lastActiveAt": 1791900103353,
       "durationSeconds": 2280,
       "currentPath": "/problems/1",
       "currentAction": "Solving Two Sum (Python)",
       "isLive": false,
-      "timestamp": 1791899175433
-    },
-    {
-      "id": "sess-ahqaf-2",
-      "userId": "user-1791693297556-199",
-      "userName": "ahqaf",
-      "userHandle": "ahqafaliofficial",
-      "college": "Invertis University",
-      "startedAt": 1791871995433,
-      "lastActiveAt": 1791875295433,
-      "durationSeconds": 3300,
-      "currentPath": "/arena",
-      "currentAction": "Duel Battle vs @abhisarkumar70",
-      "isLive": false,
-      "timestamp": 1791875295433
-    },
-    {
-      "id": "sess-ahqaf-3",
-      "userId": "user-1791693297556-199",
-      "userName": "ahqaf",
-      "userHandle": "ahqafaliofficial",
-      "college": "Invertis University",
-      "startedAt": 1791804195433,
-      "lastActiveAt": 1791806895433,
-      "durationSeconds": 2700,
-      "currentPath": "/problems/4",
-      "currentAction": "Solving Median of Two Sorted Arrays",
-      "isLive": false,
-      "timestamp": 1791806895433
+      "timestamp": 1791900103353
     },
     {
       "id": "sess-rocky-1",
@@ -1704,13 +1719,41 @@
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
       "college": "Invertis University",
-      "startedAt": 1791894375433,
-      "lastActiveAt": 1791897015433,
+      "startedAt": 1791895303353,
+      "lastActiveAt": 1791897943353,
       "durationSeconds": 2640,
       "currentPath": "/problems/1",
       "currentAction": "Solving Two Sum (Java)",
       "isLive": false,
-      "timestamp": 1791897015433
+      "timestamp": 1791897943353
+    },
+    {
+      "id": "sess-1791887023353",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791882583353,
+      "lastActiveAt": 1791887023353,
+      "durationSeconds": 4440,
+      "currentPath": "/arena",
+      "currentAction": "1v1 Duel Match #CLASH-902",
+      "isLive": false,
+      "timestamp": 1791887023353
+    },
+    {
+      "id": "sess-ahqaf-2",
+      "userId": "user-1791693297556-199",
+      "userName": "ahqaf",
+      "userHandle": "ahqafaliofficial",
+      "college": "Invertis University",
+      "startedAt": 1791872923353,
+      "lastActiveAt": 1791876223353,
+      "durationSeconds": 3300,
+      "currentPath": "/arena",
+      "currentAction": "Duel Battle vs @abhisarkumar70",
+      "isLive": false,
+      "timestamp": 1791876223353
     },
     {
       "id": "sess-rocky-2",
@@ -1718,13 +1761,69 @@
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
       "college": "Invertis University",
-      "startedAt": 1791862335433,
-      "lastActiveAt": 1791864495433,
+      "startedAt": 1791863263353,
+      "lastActiveAt": 1791865423353,
       "durationSeconds": 2160,
       "currentPath": "/arena",
       "currentAction": "Duel Battle Arena",
       "isLive": false,
-      "timestamp": 1791864495433
+      "timestamp": 1791865423353
+    },
+    {
+      "id": "sess-1791815023353",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791811123353,
+      "lastActiveAt": 1791815023353,
+      "durationSeconds": 3900,
+      "currentPath": "/problems/3",
+      "currentAction": "Solving Longest Substring Without Repeating Characters",
+      "isLive": false,
+      "timestamp": 1791815023353
+    },
+    {
+      "id": "sess-ahqaf-3",
+      "userId": "user-1791693297556-199",
+      "userName": "ahqaf",
+      "userHandle": "ahqafaliofficial",
+      "college": "Invertis University",
+      "startedAt": 1791805123353,
+      "lastActiveAt": 1791807823353,
+      "durationSeconds": 2700,
+      "currentPath": "/problems/4",
+      "currentAction": "Solving Median of Two Sorted Arrays",
+      "isLive": false,
+      "timestamp": 1791807823353
+    },
+    {
+      "id": "sess-1791800623353",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791798103353,
+      "lastActiveAt": 1791800623353,
+      "durationSeconds": 2520,
+      "currentPath": "/leaderboard",
+      "currentAction": "Reviewing Campus Rankings",
+      "isLive": false,
+      "timestamp": 1791800623353
+    },
+    {
+      "id": "sess-1791728623353",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791725143353,
+      "lastActiveAt": 1791728623353,
+      "durationSeconds": 3480,
+      "currentPath": "/problems/2",
+      "currentAction": "Solving Add Two Numbers",
+      "isLive": false,
+      "timestamp": 1791728623353
     },
     {
       "id": "sess-rocky-3",
@@ -1732,13 +1831,13 @@
       "userName": "Rocky",
       "userHandle": "subhajitdas25639",
       "college": "Invertis University",
-      "startedAt": 1791725295433,
-      "lastActiveAt": 1791727695433,
+      "startedAt": 1791726223353,
+      "lastActiveAt": 1791728623353,
       "durationSeconds": 2400,
       "currentPath": "/dashboard",
       "currentAction": "DSA Dashboard & Daily Streak",
       "isLive": false,
-      "timestamp": 1791727695433
+      "timestamp": 1791728623353
     }
   ]
 }

@@ -569,7 +569,52 @@ const auditLogs = [
   },
 ];
 
-// 4. Update data collections
+// 4. Real Matches Between Campus Coders
+const matches = [
+  {
+    id: 'match-101',
+    roomId: 'CLASH-902',
+    player1: { id: abhishek.id, name: abhishek.name, handle: abhishek.handle, elo: 1248, score: 100 },
+    player2: { id: ahqaf.id, name: ahqaf.name, handle: ahqaf.handle, elo: 1142, score: 85 },
+    winnerId: abhishek.id,
+    problemCount: 2,
+    durationSeconds: 14 * 60,
+    timestamp: now - 3 * hour,
+  },
+  {
+    id: 'match-102',
+    roomId: 'CLASH-845',
+    player1: { id: abhishek.id, name: abhishek.name, handle: abhishek.handle, elo: 1220, score: 95 },
+    player2: { id: rocky.id, name: rocky.name, handle: rocky.handle, elo: 1086, score: 70 },
+    winnerId: abhishek.id,
+    problemCount: 2,
+    durationSeconds: 16 * 60,
+    timestamp: now - 14 * hour,
+  },
+  {
+    id: 'match-103',
+    roomId: 'CLASH-732',
+    player1: { id: ahqaf.id, name: ahqaf.name, handle: ahqaf.handle, elo: 1142, score: 90 },
+    player2: { id: rocky.id, name: rocky.name, handle: rocky.handle, elo: 1060, score: 75 },
+    winnerId: ahqaf.id,
+    problemCount: 1,
+    durationSeconds: 9 * 60,
+    timestamp: now - 1 * day - 2 * hour,
+  },
+  {
+    id: 'match-104',
+    roomId: 'CLASH-619',
+    player1: { id: rocky.id, name: rocky.name, handle: rocky.handle, elo: 1060, score: 88 },
+    player2: { id: 'inv-guest', name: 'Ayush Sharma', handle: 'ayush_cse', elo: 1020, score: 60 },
+    winnerId: rocky.id,
+    problemCount: 1,
+    durationSeconds: 11 * 60,
+    timestamp: now - 2 * day,
+  },
+];
+
+// 5. Update data collections
+data.matches = matches;
 data.userSessions = userSessions;
 data.submissions = submissions;
 data.auditLogs = auditLogs;

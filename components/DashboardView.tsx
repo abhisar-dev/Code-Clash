@@ -76,7 +76,7 @@ export function DashboardView({
       .then((res) => res.json())
       .then((data) => {
         if (data.activities) {
-          setActivities(data.activities.slice(0, 5));
+          setActivities(data.activities.slice(0, 10));
         }
       })
       .catch(() => {});
@@ -337,26 +337,25 @@ export function DashboardView({
           </div>
           <div className="flex items-center gap-6 overflow-x-auto text-[11px] font-mono text-zinc-600 dark:text-zinc-300">
             {activities.map((act) => (
-              <span key={act.id} className="inline-flex items-center gap-1 shrink-0">
+              <span key={act.id} className="inline-flex items-center gap-1.5 shrink-0 bg-zinc-100/60 dark:bg-zinc-800/60 px-2.5 py-1 rounded-md border border-zinc-200/50 dark:border-zinc-700/50">
                 <span className="font-semibold text-zinc-900 dark:text-white">{act.user1Name}</span>
                 {act.user2Name ? (
                   <>
                     <span className="text-zinc-400">defeated</span>
                     <span className="font-medium text-zinc-900 dark:text-white">{act.user2Name}</span>
-                    <span className="text-emerald-600 font-bold">(+{act.eloChange || 28} ELO)</span>
-                  </>
-                ) : act.type === 'login' ? (
-                  <>
-                    <span className="text-zinc-400">logged in</span>
-                    <span className="text-emerald-600 font-bold">●</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[10px]">
+                      (+{act.eloChange || 28} ELO)
+                    </span>
                   </>
                 ) : (
                   <>
                     <span className="text-zinc-400">solved</span>
-                    <span className="text-sky-600 dark:text-sky-400">{act.problemTitle || 'Two Sum'}</span>
+                    <span className="text-sky-600 dark:text-sky-400 font-medium">
+                      {act.problemTitle || 'Two Sum'}
+                    </span>
                   </>
                 )}
-                <span className="text-zinc-400 text-[10px]">({act.timeAgo})</span>
+                <span className="text-zinc-400 text-[10px] font-mono">({act.timeAgo})</span>
               </span>
             ))}
           </div>

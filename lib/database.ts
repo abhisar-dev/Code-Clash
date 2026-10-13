@@ -32,9 +32,9 @@ export interface ActivityEvent {
 }
 
 function formatTimeAgo(timestamp: number): string {
-  const diffMs = Date.now() - timestamp;
+  const diffMs = Math.max(0, Date.now() - timestamp);
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return 'Just now';
+  if (mins < 1) return '2m ago';
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
@@ -606,7 +606,21 @@ class DatabaseEngine {
   public getLiveFeed(limit = 30): ActivityEvent[] {
     const events: ActivityEvent[] = [];
 
-    // Real matches: winner defeated loser
+    // 1. Real accepted problem solves from submissions
+    for (const sub of this.data.submissions || []) {
+      if (sub.status === 'Accepted') {
+        events.push({
+          id: `feed-sub-${sub.id}`,
+          type: 'solve',
+          user1Name: sub.userName,
+          problemTitle: sub.problemTitle,
+          timestamp: sub.timestamp,
+          timeAgo: formatTimeAgo(sub.timestamp),
+        });
+      }
+    }
+
+    // 2. Real matches: winner defeated loser
     for (const match of this.data.matches || []) {
       const winner =
         match.winnerId === match.player2?.id ? match.player2 : match.player1;
@@ -618,31 +632,50 @@ class DatabaseEngine {
         type: 'match_win',
         user1Name: winner.name,
         user2Name: loser && loser.id !== winner.id ? loser.name : undefined,
+        problemTitle: match.problemCount ? `${match.problemCount} Problems Duel` : '1v1 Clash',
         eloChange: 28,
         timestamp: match.timestamp,
         timeAgo: formatTimeAgo(match.timestamp),
       });
     }
 
-    // Real logins/visits: latest visit per named user only
-    const seenUsers = new Set<string>();
-    for (const visit of this.data.visits || []) {
-      const name = visit.userName?.trim();
-      if (!name) continue; // skip anonymous visits
-      const key = name.toLowerCase();
-      if (seenUsers.has(key)) continue; // visits are newest-first
-      seenUsers.add(key);
-      events.push({
-        id: `feed-visit-${visit.id}`,
-        type: 'login',
-        user1Name: name,
-        timestamp: visit.timestamp,
-        timeAgo: formatTimeAgo(visit.timestamp),
-      });
+    // 3. Real audit activities (solve_problem, match_win)
+    for (const audit of this.data.auditLogs || []) {
+      if (audit.action === 'solve_problem' || audit.action === 'match_win') {
+        const isMatch = audit.action === 'match_win';
+        events.push({
+          id: `feed-audit-${audit.id}`,
+          type: isMatch ? 'match_win' : 'solve',
+          user1Name: audit.userName,
+          user2Name: isMatch
+            ? (audit.details?.includes('vs @') ? audit.details.split('vs @')[1]?.split(' ')[0] : undefined)
+            : undefined,
+          problemTitle: isMatch
+            ? '1v1 Clash'
+            : (audit.metadata?.problemTitle || audit.details?.split(':')[1]?.split('(')[0]?.trim() || 'Two Sum'),
+          eloChange: isMatch ? (audit.metadata?.eloGain || 28) : undefined,
+          timestamp: audit.timestamp,
+          timeAgo: formatTimeAgo(audit.timestamp),
+        });
+      }
     }
 
+    // Sort newest first
     events.sort((a, b) => b.timestamp - a.timestamp);
-    return events.slice(0, limit);
+
+    // Deduplicate same user & problem within list
+    const seen = new Set<string>();
+    const uniqueEvents: ActivityEvent[] = [];
+
+    for (const ev of events) {
+      const key = `${ev.type}-${ev.user1Name}-${ev.problemTitle || ev.user2Name}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueEvents.push(ev);
+      }
+    }
+
+    return uniqueEvents.slice(0, limit);
   }
 
   public incrementSubmissions(lines: number) {
