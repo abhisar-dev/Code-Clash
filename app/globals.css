@@ -1,26 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
+  --animate-marquee: marquee 32s linear infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
   }
 }
 
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f7f5f0;
+  --foreground: #1c1917;
+  --font-sans: var(--font-sans), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #151311;
+  --foreground: #f5f5f4;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f7f5f0;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.08), transparent 70%),
+    radial-gradient(rgba(120, 113, 108, 0.16) 1.25px, transparent 1.25px);
+  background-size: 100% 100%, 24px 24px;
+  background-attachment: fixed;
+  color: #1c1917;
+  font-family: var(--font-sans);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.014em;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.dark body {
+  background-color: #151311;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.06), transparent 70%),
+    radial-gradient(rgba(245, 245, 244, 0.08) 1.25px, transparent 1.25px);
+  color: #f5f5f4;
+}
+
+.dark .bg-minimal-dots {
+  background-color: #151311;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.06), transparent 70%),
+    radial-gradient(rgba(245, 245, 244, 0.08) 1.25px, transparent 1.25px);
+}
+
+.dark .bg-minimal-grid {
+  background-color: #151311;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.05), transparent 70%),
+    linear-gradient(to right, rgba(245, 245, 244, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 245, 244, 0.05) 1px, transparent 1px);
+}
+
+.dark .bg-minimal-clean {
+  background-color: #151311;
+  background-image: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(217, 119, 6, 0.05), transparent 60%);
+}
+
+/* Minimalist Premium Beige Background Presets */
+.bg-minimal-dots {
+  background-color: #f7f5f0;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.08), transparent 70%),
+    radial-gradient(rgba(120, 113, 108, 0.16) 1.25px, transparent 1.25px);
+  background-size: 100% 100%, 24px 24px;
+  background-attachment: fixed;
+}
+
+.bg-minimal-grid {
+  background-color: #f7f5f0;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.07), transparent 70%),
+    linear-gradient(to right, rgba(120, 113, 108, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(120, 113, 108, 0.09) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  background-attachment: fixed;
+}
+
+.bg-minimal-clean {
+  background-color: #f7f5f0;
+  background-image: radial-gradient(ellipse 80% 40% at 50% -10%, rgba(217, 119, 6, 0.06), transparent 60%);
+  background-attachment: fixed;
+}
+
+.bg-minimal-dark {
+  background-color: #151311;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(217, 119, 6, 0.06), transparent 70%),
+    radial-gradient(rgba(245, 245, 244, 0.08) 1.25px, transparent 1.25px);
+  background-size: 100% 100%, 24px 24px;
+  background-attachment: fixed;
+}
+
+code, pre, kbd, samp, .font-mono {
+  font-family: var(--font-mono) !important;
+  letter-spacing: -0.02em;
+}
+
+/* Minimalist Ultra-Thin Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.5);
+}
+
+/* Minimalist Input Focus */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.12) !important;
+}
+
+/* Micro-interaction feel */
+button {
+  transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:active {
+  transform: scale(0.99);
+}
+
+/* Custom cursor: subtle dot trail */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: rgba(24, 24, 27, 0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.08s ease-out, opacity 0.15s ease;
+  mix-blend-mode: darken;
+}
+
+.dark .cursor-dot {
+  background: rgba(244, 244, 245, 0.3);
+  mix-blend-mode: lighten;
+}
+
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid rgba(24, 24, 27, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+}
+
+.dark .cursor-ring {
+  border-color: rgba(244, 244, 245, 0.1);
+}
+
+.cursor-ring.hovering {
+  width: 40px;
+  height: 40px;
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+/* Mobile & Touch Devices Cross-Browser Optimizations */
+@media (pointer: coarse), (max-width: 768px) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS Safe Area Support */
+.safe-area-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+.safe-area-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+}
+
+/* Hide scrollbar for clean horizontal swipes on mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth touch scrolling */
+.overflow-y-auto,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
 }

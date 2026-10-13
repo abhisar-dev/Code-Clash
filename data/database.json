@@ -1,0 +1,1047 @@
+{
+  "users": [
+    {
+      "id": "user-1791693297556-199",
+      "name": "ahqaf",
+      "email": "ahqafaliofficial@gmail.com",
+      "handle": "ahqafaliofficial",
+      "college": "Invertis University",
+      "elo": 1000,
+      "matchesWon": 0,
+      "matchesPlayed": 0,
+      "joinedAt": "2026-10-11T04:34:57.557Z",
+      "passwordHash": "5935115f0df58558d268d31b75cb8d13de2e977a30e6a9ebdcb79bef4325fbe11d0e510a0bef2e60681af3777bc8beb6a8b3330691ed20c2f6868b5bbeffc497",
+      "salt": "912886174a6f4eb9864b5004bec722d9"
+    },
+    {
+      "id": "user-1791693341107-393",
+      "name": "Abhishek",
+      "email": "abhisarkumar70@gmail.com",
+      "handle": "abhisarkumar70",
+      "college": "Invertis University",
+      "elo": 1000,
+      "matchesWon": 0,
+      "matchesPlayed": 0,
+      "joinedAt": "2026-10-11T04:35:41.107Z",
+      "passwordHash": "c06d378083ad73d0508ecd0320f2985a1dbcb8126ae9187da540d3a23babe722d034195df557b52a6d8a146e953b7f4ed611c467327224c32a3d0c208b9196b7",
+      "salt": "e3b4ebc8a3b1323a484e5a02f1d63386",
+      "studentId": "IU212234",
+      "course": "B.Tech CSE",
+      "phone": "9876543210"
+    }
+  ],
+  "matches": [],
+  "activities": [
+    {
+      "type": "challenge",
+      "user1Name": "Abhishek",
+      "timeAgo": "Just now",
+      "id": "act-1791693341107-764",
+      "timestamp": 1791693341107
+    },
+    {
+      "type": "challenge",
+      "user1Name": "ahqaf",
+      "timeAgo": "Just now",
+      "id": "act-1791693297557-984",
+      "timestamp": 1791693297557
+    }
+  ],
+  "stats": {
+    "totalSubmissions": 9,
+    "totalMatches": 0,
+    "totalCodeLinesCompiled": 109,
+    "totalVisits": 104
+  },
+  "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791867512629-410",
+      "timestamp": 1791867512629
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791829459867-961",
+      "timestamp": 1791829459867
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791829142361-937",
+      "timestamp": 1791829142361
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791828914817-87",
+      "timestamp": 1791828914817
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791828801377-934",
+      "timestamp": 1791828801377
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ip": "::ffff:172.23.8.164",
+      "id": "visit-1791828665623-102",
+      "timestamp": 1791828665623
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791827951912-276",
+      "timestamp": 1791827951912
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791827367827-952",
+      "timestamp": 1791827367827
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791826653440-914",
+      "timestamp": 1791826653440
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791826368294-859",
+      "timestamp": 1791826368294
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791825425813-39",
+      "timestamp": 1791825425813
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791825410468-292",
+      "timestamp": 1791825410468
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791824635761-478",
+      "timestamp": 1791824635761
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791824627125-121",
+      "timestamp": 1791824627125
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791824492315-351",
+      "timestamp": 1791824492315
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791823629411-345",
+      "timestamp": 1791823629411
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ip": "::ffff:172.23.8.164",
+      "id": "visit-1791823533208-749",
+      "timestamp": 1791823533208
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791823269184-183",
+      "timestamp": 1791823269184
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791815990835-17",
+      "timestamp": 1791815990835
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.141.0 Chrome/150.0.7871.250 Electron/43.7.7 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791815491359-510",
+      "timestamp": 1791815491359
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791815040404-637",
+      "timestamp": 1791815040404
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791814481248-4",
+      "timestamp": 1791814481248
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791814419154-460",
+      "timestamp": 1791814419154
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791814075820-992",
+      "timestamp": 1791814075820
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791813920072-965",
+      "timestamp": 1791813920072
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791813884748-180",
+      "timestamp": 1791813884748
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791813276238-786",
+      "timestamp": 1791813276238
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791813257486-146",
+      "timestamp": 1791813257486
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812879874-93",
+      "timestamp": 1791812879874
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Linux; Android 16; Pixel 10) AppleWebKit/537.36 (KHTML, like Gecko) Edg/155.0.0.0 Mobile Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791812874598-23",
+      "timestamp": 1791812874598
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812764127-193",
+      "timestamp": 1791812764127
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812759408-446",
+      "timestamp": 1791812759408
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812758704-853",
+      "timestamp": 1791812758704
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812757835-565",
+      "timestamp": 1791812757835
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812756842-337",
+      "timestamp": 1791812756842
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812754722-4",
+      "timestamp": 1791812754722
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791812750786-816",
+      "timestamp": 1791812750786
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791811942194-314",
+      "timestamp": 1791811942194
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791811934715-303",
+      "timestamp": 1791811934715
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791811932244-803",
+      "timestamp": 1791811932244
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791811703452-752",
+      "timestamp": 1791811703453
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791811077656-265",
+      "timestamp": 1791811077656
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791811008319-730",
+      "timestamp": 1791811008319
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791810924808-819",
+      "timestamp": 1791810924808
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791810890461-629",
+      "timestamp": 1791810890461
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791810545755-26",
+      "timestamp": 1791810545755
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791809811805-966",
+      "timestamp": 1791809811805
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791809792730-110",
+      "timestamp": 1791809792730
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791809782511-931",
+      "timestamp": 1791809782511
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.140.0 Chrome/150.0.7871.250 Electron/43.7.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791809650499-251",
+      "timestamp": 1791809650500
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791809279846-984",
+      "timestamp": 1791809279846
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791809261469-807",
+      "timestamp": 1791809261469
+    },
+    {
+      "userId": "usr_1791808703845_3n3f0",
+      "userName": "Aman Sharma",
+      "userHandle": "amansharma",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.140.0 Chrome/150.0.7871.250 Electron/43.7.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791809007577-292",
+      "timestamp": 1791809007577
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.140.0 Chrome/150.0.7871.250 Electron/43.7.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791808703893-941",
+      "timestamp": 1791808703893
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791808689127-928",
+      "timestamp": 1791808689128
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791808292642-505",
+      "timestamp": 1791808292642
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::ffff:127.0.0.1",
+      "id": "visit-1791808094314-318",
+      "timestamp": 1791808094314
+    },
+    {
+      "userId": "usr_1791806872560_35n48",
+      "userName": "Aman Sharma",
+      "userHandle": "amansharma",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791807643006-46",
+      "timestamp": 1791807643006
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ZCode/3.14.5 Chrome/146.0.7680.80 Electron/41.0.3 Safari/537.36",
+      "ip": "::1",
+      "id": "visit-1791806872570-721",
+      "timestamp": 1791806872571
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791806649712-716",
+      "timestamp": 1791806649712
+    },
+    {
+      "userId": "usr_1791744477651_gb89f",
+      "userName": "Aman Sharma",
+      "userHandle": "amansharma",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+      "ip": "::ffff:172.23.7.50",
+      "id": "visit-1791744491182-930",
+      "timestamp": 1791744491182
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Mobile Safari/537.36",
+      "ip": "::ffff:172.23.7.50",
+      "id": "visit-1791744479500-787",
+      "timestamp": 1791744479500
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791744157865-149",
+      "timestamp": 1791744157865
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791743850900-720",
+      "timestamp": 1791743850900
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791743766901-162",
+      "timestamp": 1791743766901
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791743595812-127",
+      "timestamp": 1791743595812
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791743313339-460",
+      "timestamp": 1791743313339
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791743303596-425",
+      "timestamp": 1791743303596
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791743292617-628",
+      "timestamp": 1791743292617
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791742247443-610",
+      "timestamp": 1791742247443
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791742124416-549",
+      "timestamp": 1791742124416
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791742121572-631",
+      "timestamp": 1791742121572
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791742118732-5",
+      "timestamp": 1791742118732
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791741780151-496",
+      "timestamp": 1791741780151
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791741776133-600",
+      "timestamp": 1791741776133
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791741769836-699",
+      "timestamp": 1791741769836
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791740920495-360",
+      "timestamp": 1791740920495
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791740233457-413",
+      "timestamp": 1791740233457
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791738940781-271",
+      "timestamp": 1791738940781
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791737700900-553",
+      "timestamp": 1791737700900
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791737481540-726",
+      "timestamp": 1791737481540
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791737365417-631",
+      "timestamp": 1791737365417
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791737352995-518",
+      "timestamp": 1791737352995
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791737107274-668",
+      "timestamp": 1791737107274
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791736715257-481",
+      "timestamp": 1791736715257
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791735290690-313",
+      "timestamp": 1791735290690
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791734944961-616",
+      "timestamp": 1791734944961
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791734069879-739",
+      "timestamp": 1791734069879
+    },
+    {
+      "userId": "usr_1791548950778_8j9k0",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisar-dev",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791733987437-572",
+      "timestamp": 1791733987437
+    },
+    {
+      "userId": "usr_1791548950778_8j9k0",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisar-dev",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791733966950-990",
+      "timestamp": 1791733966950
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791715278858-958",
+      "timestamp": 1791715278858
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791715190425-489",
+      "timestamp": 1791715190425
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791714864151-16",
+      "timestamp": 1791714864151
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791714860149-682",
+      "timestamp": 1791714860149
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791714856261-475",
+      "timestamp": 1791714856261
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791714847902-867",
+      "timestamp": 1791714847902
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791714756410-646",
+      "timestamp": 1791714756410
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791714735787-223",
+      "timestamp": 1791714735787
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791713723660-1",
+      "timestamp": 1791713723660
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791712265480-761",
+      "timestamp": 1791712265480
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791711628438-132",
+      "timestamp": 1791711628438
+    },
+    {
+      "userId": "user-invertis-admin",
+      "userName": "Campus SuperAdmin",
+      "userHandle": "admin",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791711136794-414",
+      "timestamp": 1791711136794
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791710364113-480",
+      "timestamp": 1791710364113
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "::1",
+      "id": "visit-1791709402389-825",
+      "timestamp": 1791709402389
+    }
+  ],
+  "violations": [],
+  "announcements": [],
+  "messages": []
+}
