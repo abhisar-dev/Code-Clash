@@ -375,6 +375,71 @@ class DatabaseEngine {
     return { user: newUser };
   }
 
+  public registerOrGetOAuthUser(params: {
+    provider: 'google' | 'github' | 'apple';
+    name: string;
+    email: string;
+    handle?: string;
+    avatarUrl?: string;
+    college?: string;
+    githubUrl?: string;
+  }): { user: DbUser; isNew: boolean } {
+    const cleanEmail = params.email.toLowerCase().trim();
+    let existing = this.getUserByEmailOrHandle(cleanEmail);
+    if (existing) {
+      if (params.avatarUrl && !existing.avatarUrl) {
+        existing.avatarUrl = params.avatarUrl;
+      }
+      if (params.githubUrl && !existing.githubUrl) {
+        existing.githubUrl = params.githubUrl;
+      }
+      this.persist();
+      return { user: existing, isNew: false };
+    }
+
+    const baseHandle = (
+      params.handle ||
+      cleanEmail.split('@')[0] ||
+      `coder_${params.provider}_${Math.floor(100 + Math.random() * 900)}`
+    )
+      .replace(/[^a-z0-9_]/gi, '')
+      .toLowerCase();
+
+    let handle = baseHandle;
+    let counter = 1;
+    while (this.getUserByEmailOrHandle(handle)) {
+      handle = `${baseHandle}${counter++}`;
+    }
+
+    const randomPass = `oauth_${params.provider}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const { hash, salt } = hashPassword(randomPass);
+
+    const newUser: DbUser = {
+      id: `user-${params.provider}-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      name: params.name.trim() || `${params.provider.toUpperCase()} Developer`,
+      email: cleanEmail,
+      handle,
+      college: params.college?.trim() || 'Invertis University',
+      avatarUrl: params.avatarUrl,
+      githubUrl: params.githubUrl,
+      elo: 1000,
+      matchesWon: 0,
+      matchesPlayed: 0,
+      joinedAt: new Date().toISOString(),
+      passwordHash: hash,
+      salt,
+    };
+
+    this.data.users.push(newUser);
+    this.addActivity({
+      type: 'challenge',
+      user1Name: newUser.name,
+      timeAgo: 'Just now',
+    });
+    this.persist();
+    return { user: newUser, isNew: true };
+  }
+
   public verifyCredentials(identifier: string, rawPass: string): DbUser | null {
     const user = this.getUserByEmailOrHandle(identifier);
     if (!user) return null;

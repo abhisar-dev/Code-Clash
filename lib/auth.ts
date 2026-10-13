@@ -520,3 +520,61 @@ export function createAccount(name: string, email: string, college: string): Use
   saveUserSession(user);
   return user;
 }
+
+// OAuth SSO Client-Side Handler (Google, GitHub, Apple)
+export function oauthSignIn(
+  provider: 'google' | 'github' | 'apple',
+  profile: {
+    name: string;
+    email: string;
+    handle?: string;
+    avatarUrl?: string;
+    college?: string;
+    githubUrl?: string;
+  }
+): User {
+  const cleanEmail = (profile.email || `${provider}_user@invertis.ac.in`).trim().toLowerCase();
+  const accounts = getStoredAccounts();
+  const existing = accounts.find((a) => (a?.user?.email || '').toLowerCase() === cleanEmail);
+  if (existing) {
+    if (profile.avatarUrl && !existing.user.avatarUrl) existing.user.avatarUrl = profile.avatarUrl;
+    if (profile.githubUrl && !existing.user.githubUrl) existing.user.githubUrl = profile.githubUrl;
+    saveUserSession(existing.user);
+    saveRegisteredUser(existing.user);
+    return existing.user;
+  }
+
+  const baseHandle = (
+    profile.handle ||
+    cleanEmail.split('@')[0] ||
+    `coder_${provider}`
+  )
+    .replace(/[^a-z0-9_]/gi, '')
+    .toLowerCase();
+
+  let handle = baseHandle;
+  let counter = 1;
+  while (accounts.some((a) => (a?.user?.handle || '').toLowerCase() === handle.toLowerCase())) {
+    handle = `${baseHandle}${counter++}`;
+  }
+
+  const newUser: User = {
+    id: `user-${provider}-${Date.now()}`,
+    name: profile.name.trim() || `${provider.toUpperCase()} Developer`,
+    email: cleanEmail,
+    handle,
+    college: (profile.college || 'Invertis University').trim(),
+    avatarUrl: profile.avatarUrl,
+    githubUrl: profile.githubUrl,
+    elo: 1000,
+    matchesWon: 0,
+    matchesPlayed: 0,
+    joinedAt: new Date().toISOString(),
+  };
+
+  accounts.push({ user: newUser, password: `oauth_${provider}` });
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+  saveUserSession(newUser);
+  saveRegisteredUser(newUser);
+  return newUser;
+}

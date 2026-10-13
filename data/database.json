@@ -68,12 +68,19 @@
     }
   ],
   "stats": {
-    "totalSubmissions": 40,
+    "totalSubmissions": 44,
     "totalMatches": 0,
-    "totalCodeLinesCompiled": 763,
-    "totalVisits": 114
+    "totalCodeLinesCompiled": 802,
+    "totalVisits": 115
   },
   "visits": [
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+      "ip": "14.139.238.197",
+      "id": "visit-1791878990030-543",
+      "timestamp": 1791878990030
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",

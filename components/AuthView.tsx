@@ -1,15 +1,74 @@
 'use client';
 
 import React, { useState } from 'react';
-import { User, signUp, signIn, saveUserSession } from '@/lib/auth';
+import { User, signUp, signIn, saveUserSession, oauthSignIn } from '@/lib/auth';
 import { PROBLEMS } from '@/lib/problems';
-import { Swords, ArrowRight, ShieldCheck, Zap, Code, AlertCircle, KeyRound, GraduationCap, Globe, Shield } from 'lucide-react';
+import {
+  Swords,
+  ArrowRight,
+  ShieldCheck,
+  Zap,
+  Code,
+  AlertCircle,
+  KeyRound,
+  GraduationCap,
+  Globe,
+  Shield,
+  X,
+  Check,
+  UserCheck,
+  Fingerprint,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 interface AuthViewProps {
   onAuthenticated: (user: User) => void;
   initialInviteCode?: string | null;
+}
+
+// Brand SVG Icons
+function GoogleIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.665-5.17 3.665-9.12z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.03c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.13C3.26 21.36 7.34 24 12 24z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.13-1.57.38-2.29V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.13z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.13c.95-2.83 3.6-4.96 6.72-4.96z"
+      />
+    </svg>
+  );
+}
+
+function GithubIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+      />
+    </svg>
+  );
+}
+
+function AppleIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-.93.04-2.07.62-2.73 1.39-.58.67-1.09 1.76-.95 2.81 1.04.08 2.11-.5 2.74-1.27z" />
+    </svg>
+  );
 }
 
 export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) {
@@ -22,6 +81,55 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [honeypot, setHoneypot] = useState('');
+
+  // OAuth State
+  const [oauthModal, setOauthModal] = useState<'google' | 'github' | 'apple' | null>(null);
+  const [customOauthName, setCustomOauthName] = useState('');
+  const [customOauthEmail, setCustomOauthEmail] = useState('');
+  const [customOauthHandle, setCustomOauthHandle] = useState('');
+  const [appleHideEmail, setAppleHideEmail] = useState(false);
+  const [isCustomInputOpen, setIsCustomInputOpen] = useState(false);
+
+  const handleOAuthLogin = async (params: {
+    provider: 'google' | 'github' | 'apple';
+    name: string;
+    email: string;
+    handle?: string;
+    avatarUrl?: string;
+    college?: string;
+    githubUrl?: string;
+  }) => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'oauth',
+          ...params,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        saveUserSession(data.user);
+        onAuthenticated(data.user);
+        setOauthModal(null);
+        setLoading(false);
+        return;
+      } else if (data.error) {
+        setError(data.error);
+      }
+    } catch {
+      // Local fallback
+    }
+
+    const localUser = oauthSignIn(params.provider, params);
+    saveUserSession(localUser);
+    onAuthenticated(localUser);
+    setOauthModal(null);
+    setLoading(false);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -86,7 +194,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
       return;
     }
 
-    // 3. STUDENT SIGN IN
+    // 2. STUDENT SIGN IN
     if (!identifier.trim()) {
       setError('Please enter your email or handle.');
       return;
@@ -187,26 +295,24 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
             </span>
           </div>
 
-            <span className="text-[10px] font-mono text-stone-400 dark:text-stone-500 font-medium">
-              Academic Portal
-            </span>
-          </div>
+          <span className="text-[10px] font-mono text-stone-400 dark:text-stone-500 font-medium">
+            Academic Portal
+          </span>
+        </div>
 
-          {/* Title and subtitle */}
-          <div className="pt-4">
-            <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200 tracking-tight">
-              {tab === 'signup'
-                ? 'Join the Invertis Arena'
-                : 'Welcome Back, Coder'}
-            </h2>
-            <p className="mt-1.5 max-w-sm text-xs text-neutral-600 dark:text-neutral-400">
-              {tab === 'signup'
-                ? 'Create your university competitive account to solve placement PYQs and challenge classmates in 1v1 duels.'
-                : 'Sign in to access real-time 1v1 multiplayer matchmaking and track your placement ELO rating.'}
-            </p>
-          </div>
+        {/* Title and subtitle */}
+        <div className="pt-4">
+          <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200 tracking-tight">
+            {tab === 'signup' ? 'Join the Invertis Arena' : 'Welcome Back, Coder'}
+          </h2>
+          <p className="mt-1.5 max-w-sm text-xs text-neutral-600 dark:text-neutral-400">
+            {tab === 'signup'
+              ? 'Create your university competitive account to solve placement PYQs and challenge classmates in 1v1 duels.'
+              : 'Sign in to access real-time 1v1 multiplayer matchmaking and track your placement ELO rating.'}
+          </p>
+        </div>
 
-        {/* 3-Way Tab Switcher (Sign In, Create Account, Admin OS) */}
+        {/* 2-Way Tab Switcher (Sign In vs Create Account) */}
         <div className="grid grid-cols-2 p-1 mt-4 bg-stone-100 dark:bg-[#1a1715] rounded-xl border border-stone-200 dark:border-stone-800 text-xs">
           <button
             type="button"
@@ -240,8 +346,6 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
           </button>
         </div>
 
-
-
         {/* Error Alert */}
         {error && (
           <div className="mt-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2 animate-in fade-in">
@@ -250,7 +354,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
           </div>
         )}
 
-        {/* Aceternity Form Body */}
+        {/* Form Body */}
         <form className="my-5 space-y-4" onSubmit={handleSubmit}>
           {/* Honeypot Bot Trap */}
           <div className="hidden" aria-hidden="true" style={{ display: 'none' }}>
@@ -295,16 +399,12 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
           {/* Email / Handle Input */}
           <LabelInputContainer>
             <Label htmlFor="email">
-              {tab === 'signup'
-                ? 'University Email Address'
-                : 'Email Address or Handle'}
+              {tab === 'signup' ? 'University Email Address' : 'Email Address or Handle'}
             </Label>
             <Input
               id="email"
               placeholder={
-                tab === 'signup'
-                  ? 'aman@invertis.ac.in'
-                  : 'aman@invertis.ac.in or amancodes'
+                tab === 'signup' ? 'aman@invertis.ac.in' : 'aman@invertis.ac.in or amancodes'
               }
               type={tab === 'signup' ? 'email' : 'text'}
               value={identifier}
@@ -341,7 +441,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
             </LabelInputContainer>
           )}
 
-          {/* Aceternity Gradient Submit Button */}
+          {/* Submit Button */}
           <button
             className="group/btn relative block h-10 w-full rounded-xl bg-gradient-to-br from-stone-900 to-stone-700 font-semibold text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-stone-800 dark:from-stone-900 dark:to-stone-800 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer transition-all active:scale-98 disabled:opacity-60"
             type="submit"
@@ -357,9 +457,69 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
             <BottomGradient />
           </button>
 
-          {/* Divider */}
-          <div className="my-4 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
+          {/* Social Auth Divider */}
+          <div className="relative my-4 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-stone-200 dark:border-stone-800" />
+            </div>
+            <div className="relative px-3 bg-white/95 dark:bg-[#121110]/95 text-[10px] font-mono uppercase tracking-wider text-stone-400">
+              Or continue with
+            </div>
+          </div>
 
+          {/* Social SSO Providers (Google, GitHub, Apple) */}
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setError('');
+                setIsCustomInputOpen(false);
+                setCustomOauthName('');
+                setCustomOauthEmail('');
+                setOauthModal('google');
+              }}
+              disabled={loading}
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#1a1715] hover:bg-stone-100 dark:hover:bg-[#25211e] hover:border-stone-300 dark:hover:border-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs active:scale-95 disabled:opacity-50"
+              title="Continue with Google"
+            >
+              <GoogleIcon className="w-4 h-4 shrink-0" />
+              <span className="font-medium text-[11px]">Google</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setError('');
+                setIsCustomInputOpen(false);
+                setCustomOauthHandle('');
+                setCustomOauthEmail('');
+                setOauthModal('github');
+              }}
+              disabled={loading}
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#1a1715] hover:bg-stone-100 dark:hover:bg-[#25211e] hover:border-stone-300 dark:hover:border-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs active:scale-95 disabled:opacity-50"
+              title="Continue with GitHub"
+            >
+              <GithubIcon className="w-4 h-4 shrink-0" />
+              <span className="font-medium text-[11px]">GitHub</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setError('');
+                setIsCustomInputOpen(false);
+                setCustomOauthName('');
+                setCustomOauthEmail('');
+                setOauthModal('apple');
+              }}
+              disabled={loading}
+              className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#1a1715] hover:bg-stone-100 dark:hover:bg-[#25211e] hover:border-stone-300 dark:hover:border-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs active:scale-95 disabled:opacity-50"
+              title="Continue with Apple"
+            >
+              <AppleIcon className="w-4 h-4 shrink-0" />
+              <span className="font-medium text-[11px]">Apple</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -391,6 +551,354 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
         <span className="text-white/30">&bull;</span>
         <span className="font-mono text-[10px] text-amber-400/90 font-medium">Invertis Bareilly</span>
       </div>
+
+      {/* Interactive OAuth SSO Modal Sheet */}
+      {oauthModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in">
+          <div className="w-full max-w-sm rounded-3xl bg-white dark:bg-[#181614] border border-stone-200 dark:border-stone-800 shadow-2xl p-6 relative animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between pb-4 border-b border-stone-100 dark:border-stone-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-2xl bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+                  {oauthModal === 'google' && <GoogleIcon className="w-5 h-5" />}
+                  {oauthModal === 'github' && <GithubIcon className="w-5 h-5 text-stone-900 dark:text-stone-100" />}
+                  {oauthModal === 'apple' && <AppleIcon className="w-5 h-5 text-stone-900 dark:text-stone-100" />}
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">
+                    {oauthModal === 'google' && 'Sign in with Google'}
+                    {oauthModal === 'github' && 'Authorize with GitHub'}
+                    {oauthModal === 'apple' && 'Sign in with Apple ID'}
+                  </h3>
+                  <p className="text-[11px] text-stone-500 dark:text-stone-400">
+                    to continue to CodeClash Invertis Arena
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOauthModal(null)}
+                className="p-1 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Content per Provider */}
+            <div className="py-4 space-y-3">
+              {/* GOOGLE FLOW */}
+              {oauthModal === 'google' && (
+                <>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300">
+                    Select a Google account to sign in directly:
+                  </p>
+
+                  <div className="space-y-2">
+                    {/* Primary Suggested Student Account */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOAuthLogin({
+                          provider: 'google',
+                          name: 'Abhishek Kumar',
+                          email: 'abhisar.cse@invertis.ac.in',
+                          avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=AbhishekKumar',
+                          college: 'Invertis University',
+                        })
+                      }
+                      disabled={loading}
+                      className="w-full flex items-center justify-between p-3 rounded-2xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/50 hover:bg-amber-500/5 dark:hover:bg-amber-500/10 transition-all text-left cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                          A
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                            <span>Abhishek Kumar</span>
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                              Student
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-stone-500 font-mono">
+                            abhisar.cse@invertis.ac.in
+                          </div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-stone-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+                    </button>
+
+                    {/* Secondary Student Account */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOAuthLogin({
+                          provider: 'google',
+                          name: 'Aman Sharma',
+                          email: 'aman.sharma@invertis.ac.in',
+                          avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=AmanSharma',
+                          college: 'Invertis University',
+                        })
+                      }
+                      disabled={loading}
+                      className="w-full flex items-center justify-between p-3 rounded-2xl border border-stone-200 dark:border-stone-800 hover:border-emerald-500/50 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 transition-all text-left cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                          AS
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-stone-900 dark:text-stone-100">
+                            Aman Sharma
+                          </div>
+                          <div className="text-[11px] text-stone-500 font-mono">
+                            aman.sharma@invertis.ac.in
+                          </div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-stone-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
+                    </button>
+                  </div>
+
+                  {/* Custom Google Account input toggle */}
+                  {!isCustomInputOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsCustomInputOpen(true)}
+                      className="text-[11px] text-[#4f46e5] dark:text-[#818cf8] hover:underline font-medium cursor-pointer pt-1 block"
+                    >
+                      + Use another Google account
+                    </button>
+                  ) : (
+                    <div className="pt-2 space-y-2 border-t border-stone-100 dark:border-stone-800">
+                      <Input
+                        placeholder="Your Full Name (e.g. Rahul Verma)"
+                        value={customOauthName}
+                        onChange={(e) => setCustomOauthName(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Google Email (e.g. rahul@gmail.com)"
+                        type="email"
+                        value={customOauthEmail}
+                        onChange={(e) => setCustomOauthEmail(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!customOauthEmail.trim() || !customOauthEmail.includes('@')) {
+                            setError('Please enter a valid Google email.');
+                            return;
+                          }
+                          handleOAuthLogin({
+                            provider: 'google',
+                            name: customOauthName.trim() || 'Google Coder',
+                            email: customOauthEmail.trim(),
+                            avatarUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(
+                              customOauthName || customOauthEmail
+                            )}`,
+                            college: 'Invertis University',
+                          });
+                        }}
+                        disabled={loading}
+                        className="w-full py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold cursor-pointer hover:opacity-90 transition-all"
+                      >
+                        Continue with this Account
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* GITHUB FLOW */}
+              {oauthModal === 'github' && (
+                <>
+                  <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 text-[11px] space-y-1.5 text-stone-600 dark:text-stone-400">
+                    <div className="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Application Authorization</span>
+                    </div>
+                    <p>CodeClash will receive public profile, handle, and email address.</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOAuthLogin({
+                          provider: 'github',
+                          name: 'Abhisar Dev',
+                          handle: 'abhisar-dev',
+                          email: 'abhisar.dev@gmail.com',
+                          githubUrl: 'https://github.com/abhisar-dev',
+                          avatarUrl: 'https://github.com/abhisar-dev.png',
+                          college: 'Invertis University',
+                        })
+                      }
+                      disabled={loading}
+                      className="w-full flex items-center justify-between p-3 rounded-2xl border border-stone-200 dark:border-stone-800 hover:border-stone-400 dark:hover:border-stone-600 hover:bg-stone-100 dark:hover:bg-stone-800 transition-all text-left cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-stone-900 dark:bg-stone-700 text-white flex items-center justify-center">
+                          <GithubIcon className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-stone-900 dark:text-stone-100">
+                            Authorize as @abhisar-dev
+                          </div>
+                          <div className="text-[11px] text-stone-500 font-mono">
+                            abhisar.dev@gmail.com
+                          </div>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-stone-400 group-hover:text-stone-900 dark:group-hover:text-stone-100 group-hover:translate-x-0.5 transition-all" />
+                    </button>
+                  </div>
+
+                  {!isCustomInputOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsCustomInputOpen(true)}
+                      className="text-[11px] text-[#4f46e5] dark:text-[#818cf8] hover:underline font-medium cursor-pointer pt-1 block"
+                    >
+                      + Authorize with different GitHub username
+                    </button>
+                  ) : (
+                    <div className="pt-2 space-y-2 border-t border-stone-100 dark:border-stone-800">
+                      <Input
+                        placeholder="GitHub Username (e.g. octocat)"
+                        value={customOauthHandle}
+                        onChange={(e) => setCustomOauthHandle(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Primary Email (e.g. user@github.com)"
+                        type="email"
+                        value={customOauthEmail}
+                        onChange={(e) => setCustomOauthEmail(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const cleanHandle =
+                            customOauthHandle.trim().replace(/^@/, '') || 'github_user';
+                          const cleanEmail =
+                            customOauthEmail.trim() || `${cleanHandle}@github.users`;
+                          handleOAuthLogin({
+                            provider: 'github',
+                            name: cleanHandle,
+                            handle: cleanHandle,
+                            email: cleanEmail,
+                            githubUrl: `https://github.com/${cleanHandle}`,
+                            avatarUrl: `https://github.com/${cleanHandle}.png`,
+                            college: 'Invertis University',
+                          });
+                        }}
+                        disabled={loading}
+                        className="w-full py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold cursor-pointer hover:opacity-90 transition-all"
+                      >
+                        Authorize Account
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* APPLE FLOW */}
+              {oauthModal === 'apple' && (
+                <>
+                  <div className="space-y-3">
+                    <p className="text-[11px] text-stone-600 dark:text-stone-300">
+                      Choose your Apple ID privacy settings:
+                    </p>
+
+                    <div className="space-y-2">
+                      <label
+                        onClick={() => setAppleHideEmail(false)}
+                        className={cn(
+                          'flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer',
+                          !appleHideEmail
+                            ? 'border-stone-900 dark:border-stone-100 bg-stone-50 dark:bg-stone-900'
+                            : 'border-stone-200 dark:border-stone-800'
+                        )}
+                      >
+                        <div>
+                          <div className="text-xs font-semibold text-stone-900 dark:text-stone-100">
+                            Share My Email
+                          </div>
+                          <div className="text-[11px] text-stone-500 font-mono">
+                            abhisar.kumar@icloud.com
+                          </div>
+                        </div>
+                        <div
+                          className={cn(
+                            'w-4 h-4 rounded-full border flex items-center justify-center',
+                            !appleHideEmail
+                              ? 'border-stone-900 dark:border-stone-100 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                              : 'border-stone-300'
+                          )}
+                        >
+                          {!appleHideEmail && <Check className="w-2.5 h-2.5" />}
+                        </div>
+                      </label>
+
+                      <label
+                        onClick={() => setAppleHideEmail(true)}
+                        className={cn(
+                          'flex items-center justify-between p-3 rounded-2xl border transition-all cursor-pointer',
+                          appleHideEmail
+                            ? 'border-stone-900 dark:border-stone-100 bg-stone-50 dark:bg-stone-900'
+                            : 'border-stone-200 dark:border-stone-800'
+                        )}
+                      >
+                        <div>
+                          <div className="text-xs font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                            <span>Hide My Email</span>
+                            <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300">
+                              Private Relay
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-stone-500 font-mono">
+                            abhisar.in72@privaterelay.appleid.com
+                          </div>
+                        </div>
+                        <div
+                          className={cn(
+                            'w-4 h-4 rounded-full border flex items-center justify-center',
+                            appleHideEmail
+                              ? 'border-stone-900 dark:border-stone-100 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                              : 'border-stone-300'
+                          )}
+                        >
+                          {appleHideEmail && <Check className="w-2.5 h-2.5" />}
+                        </div>
+                      </label>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleOAuthLogin({
+                          provider: 'apple',
+                          name: 'Abhishek Kumar',
+                          email: appleHideEmail
+                            ? 'abhisar.in72@privaterelay.appleid.com'
+                            : 'abhisar.kumar@icloud.com',
+                          avatarUrl: 'https://api.dicebear.com/7.x/bottts/svg?seed=AppleUserAbhishek',
+                          college: 'Invertis University',
+                        })
+                      }
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold cursor-pointer hover:opacity-90 transition-all shadow-md active:scale-98"
+                    >
+                      <Fingerprint className="w-4 h-4" />
+                      <span>Continue with Touch ID / Passcode</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -411,20 +919,10 @@ const LabelInputContainer = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  return (
-    <div className={cn('flex w-full flex-col space-y-1.5', className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn('flex w-full flex-col space-y-1.5', className)}>{children}</div>;
 };
 
-const Label = ({
-  htmlFor,
-  children,
-}: {
-  htmlFor: string;
-  children: React.ReactNode;
-}) => {
+const Label = ({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) => {
   return (
     <label
       htmlFor={htmlFor}

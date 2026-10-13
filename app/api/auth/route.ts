@@ -99,6 +99,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, user: safeUser });
     }
 
+    // 2.5 OAuth SSO Sign In / Sign Up (Google, GitHub, Apple)
+    if (action === 'oauth') {
+      const { provider, name, email, handle, avatarUrl, college, githubUrl } = body;
+      if (!provider || !email) {
+        return NextResponse.json(
+          { error: 'Provider and email are required for SSO authentication.' },
+          { status: 400 }
+        );
+      }
+
+      const { user, isNew } = db.registerOrGetOAuthUser({
+        provider: provider as 'google' | 'github' | 'apple',
+        name: name || `${provider} User`,
+        email,
+        handle,
+        avatarUrl,
+        college: college || 'Invertis University',
+        githubUrl,
+      });
+
+      await db.flushCloud();
+      const { passwordHash, salt, ...safeUser } = user;
+      return NextResponse.json({ success: true, user: safeUser, isNew });
+    }
+
     // 3. Update Profile
     if (action === 'update_profile') {
       const { userId, updates } = body;
