@@ -61,7 +61,9 @@ import {
   SidebarMenuButton,
   SidebarMenuBadge,
   SidebarMenuText,
+  SidebarTrigger,
   SidebarInset,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { AdminSection, AdminData } from './admin/types';
 import { UserManagementView } from './admin/UserManagementView';
@@ -79,6 +81,25 @@ function formatDuration(seconds: number): string {
   const h = Math.floor(m / 60);
   const remM = m % 60;
   return `${h}h ${remM > 0 ? `${remM}m` : ''}`.trim();
+}
+
+function AdminSidebarHeader() {
+  const { open } = useSidebar();
+  return (
+    <SidebarHeader className="border-zinc-200 dark:border-zinc-800">
+      <div className={`flex items-center ${open ? 'justify-between' : 'justify-center'}`}>
+        {open && (
+          <div className="flex items-center gap-2 overflow-hidden">
+            <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 shrink-0"></span>
+            <span className="font-mono font-bold text-xs tracking-tight uppercase text-zinc-900 dark:text-zinc-100 truncate">
+              Invertis Admin OS
+            </span>
+          </div>
+        )}
+        <SidebarTrigger />
+      </div>
+    </SidebarHeader>
+  );
 }
 
 interface AdminPanelProps {
@@ -254,15 +275,8 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
       <div className="h-full w-full flex bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 select-none overflow-hidden font-sans">
         {/* Collapsible shadcn/ui Sidebar */}
         <Sidebar collapsible="icon" className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
-          {/* Sidebar Header: Branding */}
-          <SidebarHeader className="border-zinc-200 dark:border-zinc-800">
-            <div className="flex items-center gap-2 overflow-hidden">
-              <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 shrink-0"></span>
-              <SidebarMenuText className="font-mono font-bold text-xs tracking-tight uppercase text-zinc-900 dark:text-zinc-100">
-                Invertis Admin OS
-              </SidebarMenuText>
-            </div>
-          </SidebarHeader>
+          {/* Sidebar Header: Branding & Toggle */}
+          <AdminSidebarHeader />
 
           {/* Sidebar Scrollable Content */}
           <SidebarContent>

@@ -240,7 +240,3 @@ button:active {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Hide only the toggle button in top command bar (inside SidebarInset), keep sidebar toggle */
-main button[title*="Toggle Sidebar"] {
-  display: none !important;
-}
