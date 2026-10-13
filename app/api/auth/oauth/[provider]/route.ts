@@ -21,5 +21,16 @@ export async function GET(
     return NextResponse.redirect(googleAuthUrl);
   }
 
+  if (provider === 'github') {
+    const clientId = process.env.GITHUB_CLIENT_ID;
+    if (!clientId) {
+      return NextResponse.redirect(`${origin}/?oauth_error=missing_github_keys`);
+    }
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${encodeURIComponent(
+      clientId
+    )}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=read:user%20user:email`;
+    return NextResponse.redirect(githubAuthUrl);
+  }
+
   return NextResponse.redirect(`${origin}/?oauth_error=invalid_provider`);
 }
