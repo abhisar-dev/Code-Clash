@@ -239,3 +239,8 @@ button:active {
 .overflow-x-auto {
   -webkit-overflow-scrolling: touch;
 }
+
+/* Hide auto-generated sidebar toggle buttons */
+button[title*="Toggle Sidebar"] {
+  display: none !important;
+}
