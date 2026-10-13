@@ -61,7 +61,6 @@ import {
   SidebarMenuButton,
   SidebarMenuBadge,
   SidebarMenuText,
-  SidebarRail,
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { AdminSection, AdminData } from './admin/types';
@@ -420,9 +419,6 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
               </SidebarMenuText>
             </div>
           </SidebarFooter>
-
-          {/* Interactive Resize Rail */}
-          <SidebarRail />
         </Sidebar>
 
         {/* SidebarInset: Clean White & Grey Executive View */}
