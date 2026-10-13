@@ -71,9 +71,16 @@
     "totalSubmissions": 44,
     "totalMatches": 0,
     "totalCodeLinesCompiled": 802,
-    "totalVisits": 116
+    "totalVisits": 117
   },
   "visits": [
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791879955385-681",
+      "timestamp": 1791879955385
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
