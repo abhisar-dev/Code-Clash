@@ -589,9 +589,23 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
               {/* GOOGLE FLOW */}
               {oauthModal === 'google' && (
                 <>
-                  <p className="text-[11px] text-stone-600 dark:text-stone-300">
-                    Select a Google account to sign in directly:
-                  </p>
+                  {/* Official OAuth 2.0 Redirect */}
+                  <a
+                    href="/api/auth/oauth/google"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold hover:opacity-90 transition-all cursor-pointer shadow-sm"
+                  >
+                    <GoogleIcon className="w-4 h-4" />
+                    <span>Open Official accounts.google.com &rarr;</span>
+                  </a>
+
+                  <div className="relative my-2 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-stone-200 dark:border-stone-800" />
+                    </div>
+                    <div className="relative px-2 bg-white dark:bg-[#181614] text-[10px] font-mono uppercase tracking-wider text-stone-400">
+                      Or 1-Click Fast Student Login
+                    </div>
+                  </div>
 
                   <div className="space-y-2">
                     {/* Primary Suggested Student Account */}
@@ -712,6 +726,24 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
               {/* GITHUB FLOW */}
               {oauthModal === 'github' && (
                 <>
+                  {/* Official OAuth 2.0 Redirect */}
+                  <a
+                    href="/api/auth/oauth/github"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold hover:opacity-90 transition-all cursor-pointer shadow-sm"
+                  >
+                    <GithubIcon className="w-4 h-4" />
+                    <span>Authorize on Official github.com &rarr;</span>
+                  </a>
+
+                  <div className="relative my-2 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-stone-200 dark:border-stone-800" />
+                    </div>
+                    <div className="relative px-2 bg-white dark:bg-[#181614] text-[10px] font-mono uppercase tracking-wider text-stone-400">
+                      Or 1-Click Fast Developer Login
+                    </div>
+                  </div>
+
                   <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 text-[11px] space-y-1.5 text-stone-600 dark:text-stone-400">
                     <div className="font-semibold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
@@ -805,6 +837,24 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
               {/* APPLE FLOW */}
               {oauthModal === 'apple' && (
                 <>
+                  {/* Official Apple ID OAuth Redirect */}
+                  <a
+                    href="/api/auth/oauth/apple"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-semibold hover:opacity-90 transition-all cursor-pointer shadow-sm"
+                  >
+                    <AppleIcon className="w-4 h-4" />
+                    <span>Open Official appleid.apple.com &rarr;</span>
+                  </a>
+
+                  <div className="relative my-2 flex items-center justify-center">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-stone-200 dark:border-stone-800" />
+                    </div>
+                    <div className="relative px-2 bg-white dark:bg-[#181614] text-[10px] font-mono uppercase tracking-wider text-stone-400">
+                      Or 1-Click Fast Apple ID Login
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
                     <p className="text-[11px] text-stone-600 dark:text-stone-300">
                       Choose your Apple ID privacy settings:

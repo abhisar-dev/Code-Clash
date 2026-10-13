@@ -199,6 +199,19 @@ export default function Home() {
     }
 
     // Check user session - restore if genuine logged-in session exists
+    if (typeof window !== 'undefined' && window.location.hash.includes('sso_success=')) {
+      try {
+        const raw = decodeURIComponent(window.location.hash.split('sso_success=')[1].split('&')[0]);
+        const ssoUser = JSON.parse(raw);
+        if (ssoUser && ssoUser.id) {
+          saveUserSession(ssoUser);
+          window.location.hash = '';
+        }
+      } catch (e) {
+        console.error('SSO payload error:', e);
+      }
+    }
+
     const user = getCurrentUser();
     if (user) {
       setCurrentUser(user);
