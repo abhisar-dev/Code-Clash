@@ -71,9 +71,16 @@
     "totalSubmissions": 44,
     "totalMatches": 0,
     "totalCodeLinesCompiled": 802,
-    "totalVisits": 117
+    "totalVisits": 118
   },
   "visits": [
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ip": "172.253.254.55",
+      "id": "visit-1791881170302-619",
+      "timestamp": 1791881170302
+    },
     {
       "path": "/",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
