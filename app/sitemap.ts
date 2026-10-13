@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://codeclash.dev';
+  const baseUrl = 'https://codeclash-in.vercel.app';
 
   return [
     {
