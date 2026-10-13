@@ -17,23 +17,39 @@ function runProcess(
   return new Promise((resolve) => {
     let stdout = '';
     let stderr = '';
-    const proc = spawn(cmd, args, {
-      ...options,
-      timeout: options?.timeout || 7000,
-    });
+    let settled = false;
+    const finish = (res: { stdout: string; stderr: string; code: number | null }) => {
+      if (!settled) {
+        settled = true;
+        resolve(res);
+      }
+    };
 
-    proc.stdout?.on('data', (d) => {
-      stdout += d.toString();
-    });
-    proc.stderr?.on('data', (d) => {
-      stderr += d.toString();
-    });
-    proc.on('close', (code) => {
-      resolve({ stdout, stderr, code });
-    });
-    proc.on('error', (err) => {
-      resolve({ stdout: '', stderr: err.message, code: -1 });
-    });
+    try {
+      const proc = spawn(cmd, args, {
+        ...options,
+        timeout: options?.timeout || 7000,
+      });
+
+      proc.stdout?.on('data', (d) => {
+        stdout += d.toString();
+      });
+      proc.stderr?.on('data', (d) => {
+        stderr += d.toString();
+      });
+      proc.on('close', (code) => {
+        finish({ stdout, stderr, code });
+      });
+      proc.on('error', (err) => {
+        finish({ stdout: '', stderr: err.message, code: -1 });
+      });
+    } catch (err: unknown) {
+      finish({
+        stdout: '',
+        stderr: err instanceof Error ? err.message : String(err),
+        code: -1,
+      });
+    }
   });
 }
 
@@ -44,17 +60,6 @@ function parseRunnerOutput(
 ) {
   const startTag = '__CODECLASH_OUTPUT_START__';
   const endTag = '__CODECLASH_OUTPUT_END__';
-
-  if (stderr && !stdout.includes(startTag)) {
-    return {
-      success: false,
-      compileError: stderr,
-      allPassed: false,
-      results: [],
-      passedCount: 0,
-      totalCount: totalTestCases,
-    };
-  }
 
   if (stdout.includes(startTag) && stdout.includes(endTag)) {
     const startIndex = stdout.indexOf(startTag) + startTag.length;
@@ -91,14 +96,170 @@ function parseRunnerOutput(
     }
   }
 
+  if (stderr) {
+    return {
+      success: false,
+      compileError: stderr,
+      allPassed: false,
+      results: [],
+      passedCount: 0,
+      totalCount: totalTestCases,
+    };
+  }
+
   return {
     success: false,
-    compileError: stderr || stdout || 'Execution timed out or returned no output',
+    compileError: stdout || 'Execution timed out or returned no output',
     allPassed: false,
     results: [],
     passedCount: 0,
     totalCount: totalTestCases,
   };
+}
+
+async function runOnCloudCompiler(
+  language: 'python' | 'cpp' | 'java',
+  wrappedCode: string,
+  totalTestCases: number
+) {
+  const compilerMap: Record<'python' | 'cpp' | 'java', { compiler: string; options?: string }> = {
+    python: { compiler: 'cpython-3.14.0' },
+    cpp: { compiler: 'gcc-13.2.0', options: '-std=c++17\n-O2' },
+    java: { compiler: 'openjdk-jdk-22+36' },
+  };
+
+  const cfg = compilerMap[language];
+  const payload: Record<string, string> = {
+    compiler: cfg.compiler,
+    code: wrappedCode,
+  };
+  if (cfg.options) {
+    payload['compiler-option-raw'] = cfg.options;
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12000);
+
+  try {
+    const res = await fetch('https://wandbox.org/api/compile.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'CodeClash-Compiler-Engine',
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+
+    if (!res.ok) {
+      throw new Error(`Cloud compiler returned HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const stdout = data.program_output || '';
+    const stderr =
+      (data.compiler_error || '') +
+      (data.program_error ? (data.compiler_error ? '\n' : '') + data.program_error : '');
+
+    // Clean internal file names in compiler error messages
+    const cleanStderr = stderr
+      .replace(/prog\.cc/g, 'Solution.cpp')
+      .replace(/prog\.java/g, 'Solution.java')
+      .replace(/prog\.py/g, 'Solution.py');
+
+    return parseRunnerOutput(stdout, cleanStderr, totalTestCases);
+  } catch (err: unknown) {
+    clearTimeout(timer);
+    return {
+      success: false,
+      compileError:
+        err instanceof Error ? `Execution service error: ${err.message}` : 'Execution error',
+      allPassed: false,
+      results: [],
+      passedCount: 0,
+      totalCount: totalTestCases,
+    };
+  }
+}
+
+function executeJavaScriptInVm(wrappedCode: string, totalTestCases: number) {
+  const startTag = '__CODECLASH_OUTPUT_START__';
+  const endTag = '__CODECLASH_OUTPUT_END__';
+  let runOutput = '';
+
+  const sandbox = {
+    console: {
+      log: (...args: unknown[]) => {
+        runOutput +=
+          args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
+      },
+      error: (...args: unknown[]) => {
+        runOutput +=
+          args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
+      },
+    },
+    process: {
+      hrtime: (time?: [number, number]) => {
+        if (!time) {
+          const now = performance.now();
+          const sec = Math.floor(now / 1000);
+          const nsec = Math.floor((now % 1000) * 1e6);
+          return [sec, nsec];
+        }
+        const now = performance.now();
+        const startMs = time[0] * 1000 + time[1] / 1e6;
+        const diffMs = now - startMs;
+        return [Math.floor(diffMs / 1000), Math.floor((diffMs % 1000) * 1e6)];
+      },
+    },
+    JSON,
+    Math,
+    Array,
+    Object,
+    String,
+    Number,
+    Boolean,
+    Map,
+    Set,
+    WeakMap,
+    WeakSet,
+    Symbol,
+    BigInt,
+    Int32Array,
+    Float64Array,
+    Uint8Array,
+    Uint32Array,
+    RegExp,
+    Error,
+    TypeError,
+    RangeError,
+    parseInt,
+    parseFloat,
+    isNaN,
+    isFinite,
+    Infinity,
+    NaN,
+  };
+
+  const context = vm.createContext(sandbox);
+
+  try {
+    const script = new vm.Script(wrappedCode);
+    script.runInContext(context, { timeout: 3500 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return {
+      success: false,
+      compileError: msg,
+      allPassed: false,
+      results: [],
+      passedCount: 0,
+      totalCount: totalTestCases,
+    };
+  }
+
+  return parseRunnerOutput(runOutput, '', totalTestCases);
 }
 
 export async function POST(req: NextRequest) {
@@ -145,193 +306,93 @@ export async function POST(req: NextRequest) {
 
     // Wrap user code with test harness
     const { code: wrappedCode } = wrapCodeWithTestRunner(language, code, problem);
-
-    const startTag = '__CODECLASH_OUTPUT_START__';
-    const endTag = '__CODECLASH_OUTPUT_END__';
+    const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
 
     // 1. JavaScript Execution (In-Process Isolated VM Sandbox)
     if (language === 'javascript') {
-      let runOutput = '';
-      const sandbox = {
-        console: {
-          log: (...args: unknown[]) => {
-            runOutput += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
-          },
-          error: (...args: unknown[]) => {
-            runOutput += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n';
-          },
-        },
-        process: {
-          hrtime: (time?: [number, number]) => {
-            if (!time) {
-              const now = performance.now();
-              const sec = Math.floor(now / 1000);
-              const nsec = Math.floor((now % 1000) * 1e6);
-              return [sec, nsec];
-            }
-            const now = performance.now();
-            const startMs = time[0] * 1000 + time[1] / 1e6;
-            const diffMs = now - startMs;
-            return [Math.floor(diffMs / 1000), Math.floor((diffMs % 1000) * 1e6)];
-          },
-        },
-        JSON,
-        Math,
-        Array,
-        Object,
-        String,
-        Number,
-        Boolean,
-        Map,
-        Set,
-      };
-
-      const context = vm.createContext(sandbox);
-
-      try {
-        const script = new vm.Script(wrappedCode);
-        script.runInContext(context, { timeout: 3000 }); // 3s timeout
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err);
-        return NextResponse.json({
-          success: false,
-          compileError: msg,
-          allPassed: false,
-          results: [],
-          passedCount: 0,
-          totalCount: problem.testCases.length,
-        });
-      }
-
-      if (runOutput.includes(startTag) && runOutput.includes(endTag)) {
-        const startIndex = runOutput.indexOf(startTag) + startTag.length;
-        const endIndex = runOutput.indexOf(endTag);
-        const jsonStr = runOutput.substring(startIndex, endIndex).trim();
-        const results = JSON.parse(jsonStr);
-
-        const passedCount = results.filter((r: { passed: boolean }) => r.passed).length;
-        const allPassed = passedCount === results.length;
-        const totalRuntimeMs = results.reduce(
-          (acc: number, r: { runtimeMs: number }) => acc + (r.runtimeMs || 0),
-          0
-        );
-
-        return NextResponse.json({
-          success: true,
-          results,
-          allPassed,
-          passedCount,
-          totalCount: results.length,
-          totalRuntimeMs: Number(totalRuntimeMs.toFixed(2)),
-          compileError: null,
-        });
-      }
-
-      return NextResponse.json({
-        success: false,
-        compileError: runOutput || 'Execution completed without output',
-        allPassed: false,
-        results: [],
-        passedCount: 0,
-        totalCount: problem.testCases.length,
-      });
+      const jsRes = executeJavaScriptInVm(wrappedCode, problem.testCases.length);
+      return NextResponse.json(jsRes);
     }
 
-    // 2. Python Execution (Isolated Process Runner with 4s Timeout)
+    // 2. Python Execution (Local Python with automatic Cloud Compiler fallback)
     if (language === 'python') {
+      if (isServerless) {
+        const cloudRes = await runOnCloudCompiler('python', wrappedCode, problem.testCases.length);
+        return NextResponse.json(cloudRes);
+      }
+
       const tmpDir = os.tmpdir();
-      const tmpFile = path.join(tmpDir, `codeclash_${Date.now()}_${Math.random().toString(36).substring(7)}.py`);
+      const tmpFile = path.join(
+        tmpDir,
+        `codeclash_${Date.now()}_${Math.random().toString(36).substring(7)}.py`
+      );
 
       await fs.promises.writeFile(tmpFile, wrappedCode, 'utf-8');
-
-      return new Promise<NextResponse>((resolve) => {
-        const pyProcess = spawn('python', [tmpFile], {
-          timeout: 4000,
-        });
-
-        let stdout = '';
-        let stderr = '';
-
-        pyProcess.stdout.on('data', (data) => {
-          stdout += data.toString();
-        });
-
-        pyProcess.stderr.on('data', (data) => {
-          stderr += data.toString();
-        });
-
-        pyProcess.on('close', async () => {
-          try {
-            await fs.promises.unlink(tmpFile);
-          } catch {
-            // Ignore cleanup errors
-          }
-
-          const parsed = parseRunnerOutput(stdout, stderr, problem.testCases.length);
-          return resolve(NextResponse.json(parsed));
-        });
-
-        pyProcess.on('error', (err) => {
-          resolve(
-            NextResponse.json({
-              success: false,
-              compileError: 'Failed to spawn Python process: ' + err.message,
-              allPassed: false,
-              results: [],
-              passedCount: 0,
-              totalCount: problem.testCases.length,
-            })
-          );
-        });
-      });
+      try {
+        const pyRes = await runProcess('python', [tmpFile], { timeout: 5000 });
+        if (pyRes.code === -1) {
+          // Local Python not found, use Cloud Compiler
+          const cloudRes = await runOnCloudCompiler('python', wrappedCode, problem.testCases.length);
+          return NextResponse.json(cloudRes);
+        }
+        const parsed = parseRunnerOutput(pyRes.stdout, pyRes.stderr, problem.testCases.length);
+        return NextResponse.json(parsed);
+      } finally {
+        try {
+          await fs.promises.unlink(tmpFile);
+        } catch {}
+      }
     }
 
-    // 3. C++ Execution (g++ Compiler with -O2)
+    // 3. C++ Execution (Local g++ with Cloud C++17 Compiler fallback)
     if (language === 'cpp') {
-      const gppPath = 'g++';
+      if (isServerless) {
+        const cloudRes = await runOnCloudCompiler('cpp', wrappedCode, problem.testCases.length);
+        return NextResponse.json(cloudRes);
+      }
+
       const tmpDir = os.tmpdir();
       const rand = `${Date.now()}_${Math.random().toString(36).substring(7)}`;
       const cppFile = path.join(tmpDir, `codeclash_${rand}.cpp`);
-      const exeFile = path.join(tmpDir, `codeclash_${rand}.exe`);
+      const exeFile = path.join(
+        tmpDir,
+        process.platform === 'win32' ? `codeclash_${rand}.exe` : `codeclash_${rand}`
+      );
 
       await fs.promises.writeFile(cppFile, wrappedCode, 'utf-8');
 
       try {
-        // Compile
         const compileRes = await runProcess(
-          gppPath,
+          'g++',
           ['-std=c++14', '-O2', cppFile, '-o', exeFile],
           { timeout: 7000 }
         );
 
         if (compileRes.code !== 0) {
-          const cleanErr = compileRes.stderr
-            .replace(new RegExp(cppFile.replace(/\\/g, '\\\\'), 'g'), 'Solution.cpp')
-            .replace(new RegExp(tmpDir.replace(/\\/g, '\\\\'), 'g'), '');
-          return NextResponse.json({
-            success: false,
-            compileError: cleanErr || 'C++ compilation failed',
-            allPassed: false,
-            results: [],
-            passedCount: 0,
-            totalCount: problem.testCases.length,
-          });
+          // Fallback to Cloud GCC 13.2 (C++17) in case local compiler is missing or older GCC 6.3
+          const cloudRes = await runOnCloudCompiler('cpp', wrappedCode, problem.testCases.length);
+          return NextResponse.json(cloudRes);
         }
 
-        // Execute binary
         const runRes = await runProcess(exeFile, [], { timeout: 4000 });
         const parsed = parseRunnerOutput(runRes.stdout, runRes.stderr, problem.testCases.length);
         return NextResponse.json(parsed);
       } finally {
-        try { await fs.promises.unlink(cppFile); } catch {}
-        try { await fs.promises.unlink(exeFile); } catch {}
+        try {
+          await fs.promises.unlink(cppFile);
+        } catch {}
+        try {
+          await fs.promises.unlink(exeFile);
+        } catch {}
       }
     }
 
-    // 4. Java Execution (javac + java Runner)
+    // 4. Java Execution (Local javac/java with Cloud OpenJDK fallback)
     if (language === 'java') {
-      const javacPath = 'javac';
-      const javaPath = 'java';
+      if (isServerless) {
+        const cloudRes = await runOnCloudCompiler('java', wrappedCode, problem.testCases.length);
+        return NextResponse.json(cloudRes);
+      }
 
       const runDir = path.join(
         os.tmpdir(),
@@ -343,37 +404,28 @@ export async function POST(req: NextRequest) {
       await fs.promises.writeFile(javaFile, wrappedCode, 'utf-8');
 
       try {
-        // Compile
         const compileRes = await runProcess(
-          javacPath,
+          'javac',
           ['SolutionRunner.java'],
           { cwd: runDir, timeout: 7000 }
         );
 
         if (compileRes.code !== 0) {
-          const cleanErr = compileRes.stderr
-            .replace(/SolutionRunner\.java/g, 'Solution.java')
-            .replace(new RegExp(runDir.replace(/\\/g, '\\\\'), 'g'), '');
-          return NextResponse.json({
-            success: false,
-            compileError: cleanErr || 'Java compilation failed',
-            allPassed: false,
-            results: [],
-            passedCount: 0,
-            totalCount: problem.testCases.length,
-          });
+          const cloudRes = await runOnCloudCompiler('java', wrappedCode, problem.testCases.length);
+          return NextResponse.json(cloudRes);
         }
 
-        // Execute JVM class
         const runRes = await runProcess(
-          javaPath,
+          'java',
           ['SolutionRunner'],
           { cwd: runDir, timeout: 4000 }
         );
         const parsed = parseRunnerOutput(runRes.stdout, runRes.stderr, problem.testCases.length);
         return NextResponse.json(parsed);
       } finally {
-        try { await fs.promises.rm(runDir, { recursive: true, force: true }); } catch {}
+        try {
+          await fs.promises.rm(runDir, { recursive: true, force: true });
+        } catch {}
       }
     }
 

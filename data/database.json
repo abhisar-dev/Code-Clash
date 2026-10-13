@@ -28,10 +28,30 @@
       "studentId": "IU212234",
       "course": "B.Tech CSE",
       "phone": "9876543210"
+    },
+    {
+      "id": "user-1791870421769-216",
+      "name": "Rocky",
+      "email": "subhajitdas25639@gmail.com",
+      "handle": "subhajitdas25639",
+      "college": "Invertis University",
+      "elo": 1000,
+      "matchesWon": 0,
+      "matchesPlayed": 0,
+      "joinedAt": "2026-10-13T05:47:01.769Z",
+      "passwordHash": "6bb5e9a2a470b6260bf6a97a5bf0173d6eeca441ee014a036b385a450fd90d41ce5d39dee94fe7dcc4a03eefc39a4bb024a670949c8d7d685506ef2c057dfaef",
+      "salt": "d7f402501d2a21e6b7cc82f425235744"
     }
   ],
   "matches": [],
   "activities": [
+    {
+      "type": "challenge",
+      "user1Name": "Rocky",
+      "timeAgo": "Just now",
+      "id": "act-1791870421769-310",
+      "timestamp": 1791870421769
+    },
     {
       "type": "challenge",
       "user1Name": "Abhishek",
@@ -48,12 +68,103 @@
     }
   ],
   "stats": {
-    "totalSubmissions": 9,
+    "totalSubmissions": 19,
     "totalMatches": 0,
-    "totalCodeLinesCompiled": 109,
-    "totalVisits": 104
+    "totalCodeLinesCompiled": 459,
+    "totalVisits": 114
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791872630381-825",
+      "timestamp": 1791872630381
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791872335105-395",
+      "timestamp": 1791872335105
+    },
+    {
+      "userId": "user-1791870421769-216",
+      "userName": "Rocky",
+      "userHandle": "subhajitdas25639",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "117.99.18.50",
+      "id": "visit-1791870771138-247",
+      "timestamp": 1791870771138
+    },
+    {
+      "userId": "user-1791870421769-216",
+      "userName": "Rocky",
+      "userHandle": "subhajitdas25639",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "117.99.18.50",
+      "id": "visit-1791870667023-79",
+      "timestamp": 1791870667023
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "117.99.18.50",
+      "id": "visit-1791870370506-391",
+      "timestamp": 1791870370506
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1791870311979-543",
+      "timestamp": 1791870311979
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1791870125928-507",
+      "timestamp": 1791870125928
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791869786453-370",
+      "timestamp": 1791869786453
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791869616561-265",
+      "timestamp": 1791869616561
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791869196584-508",
+      "timestamp": 1791869196584
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
