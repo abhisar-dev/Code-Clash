@@ -41,6 +41,11 @@ import {
   CheckCheck,
   Copy,
   Check,
+  UserPlus,
+  Settings,
+  FolderKanban,
+  FileSpreadsheet,
+  ShieldCheck,
 } from 'lucide-react';
 import { User } from '@/lib/auth';
 import {
@@ -60,51 +65,13 @@ import {
   SidebarRail,
   SidebarInset,
 } from '@/components/ui/sidebar';
-
-type AdminSection =
-  | 'overview'
-  | 'online_users'
-  | 'session_durations'
-  | 'user_audit'
-  | 'submissions_inspect'
-  | 'all_users'
-  | 'visits'
-  | 'graphs'
-  | 'activity'
-  | 'violations'
-  | 'announcements'
-  | 'mail';
-
-interface AdminData {
-  stats: {
-    onlineCount: number;
-    totalUsers: number;
-    totalVisits: number;
-    totalMatches: number;
-    totalSubmissions: number;
-    totalCodeLinesCompiled: number;
-    pendingViolations: number;
-    activeAnnouncements: number;
-    messagesSent: number;
-    totalOnlineHours?: number;
-    totalAuditEvents?: number;
-  };
-  onlineUsers: any[];
-  allUsers: User[];
-  visits: any[];
-  activities: any[];
-  matches: any[];
-  violations: any[];
-  announcements: any[];
-  messages: any[];
-  daysTrend: { date: string; visits: number; matches: number; activeUsers: number }[];
-  browserStats: Record<string, number>;
-  departmentBreakdown: Record<string, number>;
-  userSessions?: any[];
-  auditLogs?: any[];
-  submissions?: any[];
-  userDurations?: any[];
-}
+import { AdminSection, AdminData } from './admin/types';
+import { UserManagementView } from './admin/UserManagementView';
+import { ContentManagementView } from './admin/ContentManagementView';
+import { WebsiteSettingsView } from './admin/WebsiteSettingsView';
+import { DatabaseAdminView } from './admin/DatabaseAdminView';
+import { ReportsExportView } from './admin/ReportsExportView';
+import { SecurityAccessView } from './admin/SecurityAccessView';
 
 function formatDuration(seconds: number): string {
   if (!seconds || seconds < 60) return `${Math.max(1, seconds || 0)}s`;
@@ -257,19 +224,31 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
     }
   };
 
-  const navItems = [
-    { id: 'overview', label: '1. Executive Dashboard', icon: <Activity className="w-4 h-4" /> },
-    { id: 'online_users', label: '2. Live Online Students', icon: <Radio className="w-4 h-4 text-emerald-500" />, badge: data?.stats.onlineCount },
-    { id: 'session_durations', label: '3. Online Time & Durations', icon: <Clock className="w-4 h-4 text-sky-500" /> },
-    { id: 'user_audit', label: '4. User Activity Audit Trail', icon: <Terminal className="w-4 h-4 text-amber-500" />, count: data?.auditLogs?.length },
-    { id: 'submissions_inspect', label: '5. Student Code Inspector', icon: <Code className="w-4 h-4 text-indigo-500" />, count: data?.submissions?.length },
-    { id: 'all_users', label: '6. Student Profiles & Directory', icon: <Users className="w-4 h-4" />, count: data?.stats.totalUsers },
-    { id: 'graphs', label: '7. Visual Growth Graphs', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'visits', label: '8. Campus Web Visits', icon: <Eye className="w-4 h-4" />, count: data?.stats.totalVisits },
-    { id: 'activity', label: '9. Live 1v1 Battle Feed', icon: <Swords className="w-4 h-4" /> },
-    { id: 'violations', label: '10. Conduct & Bot Alerts', icon: <ShieldAlert className="w-4 h-4 text-rose-500" />, badge: data?.stats.pendingViolations },
-    { id: 'announcements', label: '11. Campus Notices', icon: <Bell className="w-4 h-4" /> },
-    { id: 'mail', label: '12. Dispatcher & Mail Hub', icon: <Mail className="w-4 h-4" /> },
+  const governanceItems = [
+    { id: 'overview', label: '1. Executive Dashboard', icon: <Activity className="w-4 h-4 text-zinc-900 dark:text-zinc-100" /> },
+    { id: 'user_management', label: '2. User & Roles Management', icon: <Users className="w-4 h-4 text-emerald-500" />, count: data?.stats?.totalUsers },
+    { id: 'content_management', label: '3. DSA Problem Bank Manager', icon: <FolderKanban className="w-4 h-4 text-sky-500" />, count: (data?.customProblems?.length || 0) + 120 },
+    { id: 'site_settings', label: '4. Website Settings Hub', icon: <Settings className="w-4 h-4 text-indigo-500" /> },
+    { id: 'database_admin', label: '5. Database & Cloud Backups', icon: <Database className="w-4 h-4 text-amber-500" /> },
+    { id: 'reports_export', label: '6. Analytics & CSV Reports', icon: <FileSpreadsheet className="w-4 h-4 text-emerald-600" /> },
+    { id: 'security_access', label: '7. Security & IP Firewall', icon: <ShieldCheck className="w-4 h-4 text-rose-500" />, badge: data?.blockedIps?.length },
+  ];
+
+  const monitoringItems = [
+    { id: 'online_users', label: '8. Live Online Students', icon: <Radio className="w-4 h-4 text-emerald-500" />, badge: data?.stats?.onlineCount },
+    { id: 'session_durations', label: '9. Online Time & Durations', icon: <Clock className="w-4 h-4 text-sky-500" /> },
+    { id: 'user_audit', label: '10. User Activity Audit Trail', icon: <Terminal className="w-4 h-4 text-amber-500" />, count: data?.auditLogs?.length },
+    { id: 'submissions_inspect', label: '11. Student Code Inspector', icon: <Code className="w-4 h-4 text-indigo-500" />, count: data?.submissions?.length },
+    { id: 'all_users', label: '12. Student Directory & Profiles', icon: <Users className="w-4 h-4 text-zinc-400" />, count: data?.stats?.totalUsers },
+    { id: 'graphs', label: '13. Visual Growth Graphs', icon: <BarChart3 className="w-4 h-4 text-zinc-400" /> },
+    { id: 'visits', label: '14. Campus Web Visits', icon: <Eye className="w-4 h-4 text-zinc-400" />, count: data?.stats?.totalVisits },
+    { id: 'activity', label: '15. Live 1v1 Battle Feed', icon: <Swords className="w-4 h-4 text-zinc-400" /> },
+  ];
+
+  const communicationItems: { id: AdminSection; label: string; icon: React.ReactNode; badge?: number; count?: number }[] = [
+    { id: 'violations', label: '16. Conduct & Bot Alerts', icon: <ShieldAlert className="w-4 h-4 text-rose-500" />, badge: data?.stats?.pendingViolations },
+    { id: 'announcements', label: '17. Campus Notices', icon: <Bell className="w-4 h-4 text-amber-500" />, count: data?.announcements?.length },
+    { id: 'mail', label: '18. Dispatcher & Mail Hub', icon: <Mail className="w-4 h-4 text-sky-500" />, count: data?.messages?.length },
   ];
 
   return (
@@ -292,10 +271,13 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
 
           {/* Sidebar Scrollable Content */}
           <SidebarContent>
+            {/* Group 1: Core Governance */}
             <SidebarGroup>
-              <SidebarGroupLabel className="text-zinc-400 dark:text-zinc-500 font-mono">Control Centers</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-zinc-400 dark:text-zinc-500 font-mono text-[10px] tracking-wider uppercase">
+                Core Administration
+              </SidebarGroupLabel>
               <SidebarMenu>
-                {navItems.map((item) => {
+                {governanceItems.map((item) => {
                   const isActive = section === item.id;
                   return (
                     <SidebarMenuItem key={item.id}>
@@ -313,7 +295,83 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                           {item.label}
                         </SidebarMenuText>
                         {item.badge !== undefined && item.badge > 0 && (
-                          <SidebarMenuBadge className="bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">{item.badge}</SidebarMenuBadge>
+                          <SidebarMenuBadge className="bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono text-[10px]">{item.badge}</SidebarMenuBadge>
+                        )}
+                        {item.count !== undefined && (
+                          <SidebarMenuText className="ml-auto font-mono text-[10px] opacity-60">
+                            {item.count}
+                          </SidebarMenuText>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroup>
+
+            {/* Group 2: Monitoring & Real Telemetry */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-zinc-400 dark:text-zinc-500 font-mono text-[10px] tracking-wider uppercase">
+                Monitoring &amp; Telemetry
+              </SidebarGroupLabel>
+              <SidebarMenu>
+                {monitoringItems.map((item) => {
+                  const isActive = section === item.id;
+                  return (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        onClick={() => {
+                          setSection(item.id as AdminSection);
+                          setSelectedUserDetail(null);
+                        }}
+                        tooltip={item.label}
+                        className={isActive ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'}
+                      >
+                        {item.icon}
+                        <SidebarMenuText className="font-medium text-xs">
+                          {item.label}
+                        </SidebarMenuText>
+                        {item.badge !== undefined && item.badge > 0 && (
+                          <SidebarMenuBadge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono text-[10px]">{item.badge}</SidebarMenuBadge>
+                        )}
+                        {item.count !== undefined && (
+                          <SidebarMenuText className="ml-auto font-mono text-[10px] opacity-60">
+                            {item.count}
+                          </SidebarMenuText>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroup>
+
+            {/* Group 3: Communications & Conduct */}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-zinc-400 dark:text-zinc-500 font-mono text-[10px] tracking-wider uppercase">
+                Communication &amp; Alerts
+              </SidebarGroupLabel>
+              <SidebarMenu>
+                {communicationItems.map((item) => {
+                  const isActive = section === item.id;
+                  return (
+                    <SidebarMenuItem key={item.id}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        onClick={() => {
+                          setSection(item.id as AdminSection);
+                          setSelectedUserDetail(null);
+                        }}
+                        tooltip={item.label}
+                        className={isActive ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'}
+                      >
+                        {item.icon}
+                        <SidebarMenuText className="font-medium text-xs">
+                          {item.label}
+                        </SidebarMenuText>
+                        {item.badge !== undefined && item.badge > 0 && (
+                          <SidebarMenuBadge className="bg-rose-500/10 text-rose-600 dark:text-rose-400 font-mono text-[10px]">{item.badge}</SidebarMenuBadge>
                         )}
                         {item.count !== undefined && (
                           <SidebarMenuText className="ml-auto font-mono text-[10px] opacity-60">
@@ -551,6 +609,58 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                 </div>
               </div>
             </div>
+          )}
+
+          {/* ================= SECTION: USER MANAGEMENT ================= */}
+          {section === 'user_management' && data && (
+            <UserManagementView
+              allUsers={data.allUsers}
+              userDurations={data.userDurations}
+              currentUser={currentUser}
+              onRefresh={fetchAdminData}
+              onSelectUserProfile={onSelectUserProfile}
+            />
+          )}
+
+          {/* ================= SECTION: CONTENT MANAGEMENT ================= */}
+          {section === 'content_management' && data && (
+            <ContentManagementView
+              customProblems={data.customProblems}
+              currentUser={currentUser}
+              onRefresh={fetchAdminData}
+            />
+          )}
+
+          {/* ================= SECTION: WEBSITE SETTINGS ================= */}
+          {section === 'site_settings' && data && (
+            <WebsiteSettingsView
+              siteSettings={data.siteSettings}
+              currentUser={currentUser}
+              onRefresh={fetchAdminData}
+            />
+          )}
+
+          {/* ================= SECTION: DATABASE MANAGEMENT ================= */}
+          {section === 'database_admin' && data && (
+            <DatabaseAdminView
+              data={data}
+              onRefresh={fetchAdminData}
+            />
+          )}
+
+          {/* ================= SECTION: ANALYTICS & REPORTS EXPORT ================= */}
+          {section === 'reports_export' && data && (
+            <ReportsExportView
+              data={data}
+            />
+          )}
+
+          {/* ================= SECTION: SECURITY & ACCESS CONTROL ================= */}
+          {section === 'security_access' && data && (
+            <SecurityAccessView
+              data={data}
+              onRefresh={fetchAdminData}
+            />
           )}
 
           {/* ================= SECTION 2: LIVE ONLINE USERS ================= */}

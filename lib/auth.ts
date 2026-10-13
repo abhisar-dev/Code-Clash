@@ -9,7 +9,7 @@ export interface User {
   matchesWon: number;
   matchesPlayed: number;
   joinedAt: string;
-  role?: 'admin' | 'student';
+  role?: 'admin' | 'student' | 'proctor';
   isAdmin?: boolean;
   // Personal & Invertis Academic Information
   studentId?: string; // e.g., IU212234

@@ -80,6 +80,31 @@ export async function GET(req: NextRequest) {
     const totalOnlineSeconds = userDurations.reduce((acc, u) => acc + (u.totalOnlineSeconds || 0), 0);
     const totalOnlineHours = Number((totalOnlineSeconds / 3600).toFixed(1));
 
+    const siteSettings = db.getSiteSettings();
+    const customProblems = db.getCustomProblems();
+    const blockedIps = db.getBlockedIps();
+
+    // Genuine system diagnostics
+    const mem = process.memoryUsage();
+    const systemHealth = {
+      nodeVersion: process.version,
+      platform: process.platform,
+      uptimeSeconds: Math.floor(process.uptime()),
+      heapUsedMb: Number((mem.heapUsed / 1024 / 1024).toFixed(1)),
+      heapTotalMb: Number((mem.heapTotal / 1024 / 1024).toFixed(1)),
+      rssMb: Number((mem.rss / 1024 / 1024).toFixed(1)),
+      dbStats: {
+        totalUsers: allUsers.length,
+        totalMatches: matches.length,
+        totalSubmissions: stats.totalSubmissions || submissions.length || 0,
+        totalVisits: stats.totalVisits ?? visits.length,
+        totalAuditLogs: auditLogs.length,
+        totalSessions: userSessions.length,
+        totalCustomProblems: customProblems.length,
+        payloadSizeBytes: Buffer.byteLength(JSON.stringify(db.getFullBackup())),
+      },
+    };
+
     return NextResponse.json({
       status: 'ok',
       stats: {
@@ -94,6 +119,8 @@ export async function GET(req: NextRequest) {
         messagesSent: messages.length,
         totalOnlineHours,
         totalAuditEvents: auditLogs.length,
+        customProblemsCount: customProblems.length,
+        blockedIpsCount: blockedIps.length,
       },
       onlineUsers,
       allUsers,
@@ -110,6 +137,10 @@ export async function GET(req: NextRequest) {
       auditLogs,
       submissions,
       userDurations,
+      siteSettings,
+      customProblems,
+      blockedIps,
+      systemHealth,
     });
   } catch (error) {
     console.error('Admin API error:', error);
@@ -123,6 +154,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { action } = body;
 
+    // 1. Visit Tracking
     if (action === 'record_visit') {
       const { userId, userName, userHandle, path } = body;
       const visit = db.recordVisit({
@@ -137,6 +169,106 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, visit });
     }
 
+    // 2. User Management
+    if (action === 'create_user') {
+      const { user } = db.createUser(body);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, user: toSafeUser(user) });
+    }
+
+    if (action === 'update_user') {
+      const { userId, updates } = body;
+      const user = db.adminUpdateUser(userId, updates);
+      await db.flushCloud();
+      return NextResponse.json({ success: !!user, user: user ? toSafeUser(user) : null });
+    }
+
+    if (action === 'delete_user') {
+      const { userId } = body;
+      const ok = db.deleteUser(userId);
+      await db.flushCloud();
+      return NextResponse.json({ success: ok });
+    }
+
+    if (action === 'set_user_status') {
+      const { userId, status } = body;
+      const user = db.setUserAccountStatus(userId, status);
+      await db.flushCloud();
+      return NextResponse.json({ success: !!user, user: user ? toSafeUser(user) : null });
+    }
+
+    // 3. Content Management (Problems Bank)
+    if (action === 'create_problem') {
+      const { problem } = body;
+      const created = db.addCustomProblem(problem);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, problem: created });
+    }
+
+    if (action === 'update_problem') {
+      const { id, updates } = body;
+      const updated = db.updateCustomProblem(id, updates);
+      await db.flushCloud();
+      return NextResponse.json({ success: !!updated, problem: updated });
+    }
+
+    if (action === 'delete_problem') {
+      const { id } = body;
+      const ok = db.deleteCustomProblem(id);
+      await db.flushCloud();
+      return NextResponse.json({ success: ok });
+    }
+
+    // 4. Website Settings
+    if (action === 'update_settings') {
+      const { settings } = body;
+      const updated = db.updateSiteSettings(settings);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, settings: updated });
+    }
+
+    // 5. Database Management & Backups
+    if (action === 'export_backup') {
+      const backup = db.getFullBackup();
+      return NextResponse.json({ success: true, backup });
+    }
+
+    if (action === 'restore_backup') {
+      const { backupData } = body;
+      const ok = db.restoreBackup(backupData);
+      await db.flushCloud();
+      return NextResponse.json({ success: ok });
+    }
+
+    if (action === 'prune_logs') {
+      const { retentionDays } = body;
+      const result = db.pruneLogs(retentionDays || 30);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, ...result });
+    }
+
+    if (action === 'force_cloud_sync') {
+      await db.ensureSynced(true);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, timestamp: Date.now() });
+    }
+
+    // 6. Security & IP Access Control
+    if (action === 'block_ip') {
+      const { ip } = body;
+      const blocked = db.blockIp(ip);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, blockedIps: blocked });
+    }
+
+    if (action === 'unblock_ip') {
+      const { ip } = body;
+      const blocked = db.unblockIp(ip);
+      await db.flushCloud();
+      return NextResponse.json({ success: true, blockedIps: blocked });
+    }
+
+    // 7. Communication & Announcements
     if (action === 'create_announcement') {
       const { title, message, type, author } = body;
       const ann = db.addAnnouncement({

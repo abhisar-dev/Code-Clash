@@ -3,6 +3,7 @@ import * as os from 'os';
 import * as path from 'path';
 import { hashPassword, verifyPassword } from './security';
 import { User } from './auth';
+import { Problem } from './problems';
 
 export interface DbUser extends User {
   passwordHash: string;
@@ -134,6 +135,32 @@ export interface UserSessionRecord {
   timestamp?: number;
 }
 
+export interface SiteSettings {
+  platformTitle: string;
+  collegeBranding: string;
+  maintenanceMode: boolean;
+  defaultMatchTimeMinutes: number;
+  penaltyPerWrongSubmissionSeconds: number;
+  minEloForRanked: number;
+  allowGuestSpectate: boolean;
+  enableSoundEffects: boolean;
+  announcementTicker?: string;
+  announcementTickerActive?: boolean;
+}
+
+export const DEFAULT_SITE_SETTINGS: SiteSettings = {
+  platformTitle: 'CodeClash - Invertis Edition',
+  collegeBranding: 'Invertis University Bareilly',
+  maintenanceMode: false,
+  defaultMatchTimeMinutes: 15,
+  penaltyPerWrongSubmissionSeconds: 30,
+  minEloForRanked: 1000,
+  allowGuestSpectate: true,
+  enableSoundEffects: true,
+  announcementTicker: 'CodeClash Invertis Season 2 is live! Compete in 1v1 DSA battles to climb the university leaderboard.',
+  announcementTickerActive: true,
+};
+
 export interface DatabaseSchema {
   users: DbUser[];
   matches: DbMatch[];
@@ -145,6 +172,9 @@ export interface DatabaseSchema {
   submissions: DbSubmission[];
   auditLogs: UserAuditLog[];
   userSessions: UserSessionRecord[];
+  siteSettings: SiteSettings;
+  customProblems: Problem[];
+  blockedIps: string[];
   stats: {
     totalSubmissions: number;
     totalMatches: number;
@@ -184,6 +214,9 @@ class DatabaseEngine {
     if (!parsed.submissions) parsed.submissions = [];
     if (!parsed.auditLogs) parsed.auditLogs = [];
     if (!parsed.userSessions) parsed.userSessions = [];
+    if (!parsed.siteSettings) parsed.siteSettings = { ...DEFAULT_SITE_SETTINGS };
+    if (!parsed.customProblems) parsed.customProblems = [];
+    if (!parsed.blockedIps) parsed.blockedIps = [];
     if (!parsed.stats) {
       parsed.stats = {
         totalSubmissions: 0,
@@ -239,6 +272,9 @@ class DatabaseEngine {
       submissions: [],
       auditLogs: [],
       userSessions: [],
+      siteSettings: { ...DEFAULT_SITE_SETTINGS },
+      customProblems: [],
+      blockedIps: [],
       stats: {
         totalSubmissions: 0,
         totalMatches: 0,
@@ -549,6 +585,128 @@ class DatabaseEngine {
     if (updates.followersCount !== undefined) user.followersCount = updates.followersCount;
     if (updates.followingCount !== undefined) user.followingCount = updates.followingCount;
 
+    this.persist();
+    return user;
+  }
+
+  public createUser(params: {
+    name: string;
+    email: string;
+    handle?: string;
+    college?: string;
+    role?: 'student' | 'admin' | 'proctor';
+    elo?: number;
+    password?: string;
+    course?: string;
+    studentId?: string;
+    phone?: string;
+  }): { user: DbUser } {
+    const cleanEmail = params.email.toLowerCase().trim();
+    const handle = (params.handle || cleanEmail.split('@')[0].replace(/[^a-z0-9]/g, '') || `user${Math.floor(100 + Math.random() * 900)}`).toLowerCase();
+    const { hash, salt } = hashPassword(params.password || 'Invertis@2026');
+
+    const newUser: DbUser = {
+      id: `user-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      name: params.name.trim(),
+      email: cleanEmail,
+      handle,
+      college: params.college?.trim() || 'Invertis University',
+      elo: params.elo || 1000,
+      matchesWon: 0,
+      matchesPlayed: 0,
+      joinedAt: new Date().toISOString(),
+      role: params.role || 'student',
+      isAdmin: params.role === 'admin',
+      studentId: params.studentId?.trim() || `IU${Math.floor(100000 + Math.random() * 900000)}`,
+      course: params.course?.trim() || 'B.Tech CSE',
+      phone: params.phone?.trim() || '',
+      accountStatus: 'Active',
+      passwordHash: hash,
+      salt,
+    };
+
+    this.data.users.push(newUser);
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'create_user',
+      actionCategory: 'auth',
+      details: `Created new ${newUser.role} account for ${newUser.name} (${newUser.email})`,
+    });
+    this.persist();
+    return { user: newUser };
+  }
+
+  public adminUpdateUser(
+    userId: string,
+    updates: Partial<DbUser & { role?: 'student' | 'admin' | 'proctor'; isAdmin?: boolean; password?: string }>
+  ): DbUser | null {
+    const user = this.data.users.find((u) => u.id === userId);
+    if (!user) return null;
+
+    if (updates.name !== undefined) user.name = updates.name.trim();
+    if (updates.email !== undefined) user.email = updates.email.toLowerCase().trim();
+    if (updates.handle !== undefined) user.handle = updates.handle.toLowerCase().trim();
+    if (updates.college !== undefined) user.college = updates.college.trim();
+    if (updates.role !== undefined) {
+      user.role = updates.role;
+      user.isAdmin = updates.role === 'admin';
+    }
+    if (updates.elo !== undefined) user.elo = Number(updates.elo);
+    if (updates.studentId !== undefined) user.studentId = updates.studentId.trim();
+    if (updates.course !== undefined) user.course = updates.course.trim();
+    if (updates.phone !== undefined) user.phone = updates.phone.trim();
+    if (updates.bio !== undefined) user.bio = updates.bio.trim();
+    if (updates.accountStatus !== undefined) user.accountStatus = updates.accountStatus;
+    if (updates.password && updates.password.trim()) {
+      const { hash, salt } = hashPassword(updates.password.trim());
+      user.passwordHash = hash;
+      user.salt = salt;
+    }
+
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'update_user',
+      actionCategory: 'auth',
+      details: `Updated profile & roles for ${user.name} (@${user.handle})`,
+    });
+
+    this.persist();
+    return user;
+  }
+
+  public deleteUser(userId: string): boolean {
+    const idx = this.data.users.findIndex((u) => u.id === userId);
+    if (idx === -1) return false;
+    const deleted = this.data.users[idx];
+    this.data.users.splice(idx, 1);
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'delete_user',
+      actionCategory: 'auth',
+      details: `Deleted user record for ${deleted.name} (@${deleted.handle})`,
+    });
+    this.persist();
+    return true;
+  }
+
+  public setUserAccountStatus(userId: string, status: 'Active' | 'Suspended' | 'Banned'): DbUser | null {
+    const user = this.data.users.find((u) => u.id === userId);
+    if (!user) return null;
+    user.accountStatus = status;
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'set_user_status',
+      actionCategory: 'auth',
+      details: `Changed account status for ${user.name} to ${status}`,
+    });
     this.persist();
     return user;
   }
@@ -927,6 +1085,171 @@ class DatabaseEngine {
         currentAction: activeSession?.currentAction || 'Offline',
       };
     }).sort((a, b) => b.totalOnlineSeconds - a.totalOnlineSeconds);
+  }
+
+  // --- DSA Problem Bank Content Management ---
+
+  public getCustomProblems(): Problem[] {
+    return this.data.customProblems || [];
+  }
+
+  public addCustomProblem(problem: Problem): Problem {
+    if (!this.data.customProblems) this.data.customProblems = [];
+    const newProblem: Problem = {
+      ...problem,
+      id: problem.id || `custom-${Date.now()}`,
+      slug: problem.slug || problem.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+    };
+    this.data.customProblems.unshift(newProblem);
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'create_problem',
+      actionCategory: 'dsa',
+      details: `Created custom DSA challenge: "${newProblem.title}" [${newProblem.difficulty}]`,
+    });
+    this.persist();
+    return newProblem;
+  }
+
+  public updateCustomProblem(id: string, updates: Partial<Problem>): Problem | null {
+    if (!this.data.customProblems) this.data.customProblems = [];
+    const prob = this.data.customProblems.find((p) => p.id === id);
+    if (!prob) return null;
+    Object.assign(prob, updates);
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'update_problem',
+      actionCategory: 'dsa',
+      details: `Updated custom DSA challenge: "${prob.title}"`,
+    });
+    this.persist();
+    return prob;
+  }
+
+  public deleteCustomProblem(id: string): boolean {
+    if (!this.data.customProblems) return false;
+    const idx = this.data.customProblems.findIndex((p) => p.id === id);
+    if (idx === -1) return false;
+    const deleted = this.data.customProblems[idx];
+    this.data.customProblems.splice(idx, 1);
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'delete_problem',
+      actionCategory: 'dsa',
+      details: `Deleted custom DSA challenge: "${deleted.title}"`,
+    });
+    this.persist();
+    return true;
+  }
+
+  // --- Website Global Settings ---
+
+  public getSiteSettings(): SiteSettings {
+    if (!this.data.siteSettings) {
+      this.data.siteSettings = { ...DEFAULT_SITE_SETTINGS };
+    }
+    return this.data.siteSettings;
+  }
+
+  public updateSiteSettings(settings: Partial<SiteSettings>): SiteSettings {
+    if (!this.data.siteSettings) {
+      this.data.siteSettings = { ...DEFAULT_SITE_SETTINGS };
+    }
+    this.data.siteSettings = {
+      ...this.data.siteSettings,
+      ...settings,
+    };
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'update_settings',
+      actionCategory: 'profile',
+      details: 'Updated platform configuration and contest parameters',
+    });
+    this.persist();
+    return this.data.siteSettings;
+  }
+
+  // --- Database Management & Backups ---
+
+  public getFullBackup(): DatabaseSchema {
+    return JSON.parse(JSON.stringify(this.data));
+  }
+
+  public restoreBackup(schema: any): boolean {
+    if (!schema || !Array.isArray(schema.users)) {
+      throw new Error('Invalid database backup payload: missing users array');
+    }
+    const normalized = this.normalizeSchema(schema);
+    this.data = normalized;
+    this.persist();
+    return true;
+  }
+
+  public pruneLogs(retentionDays = 30): { prunedVisits: number; prunedAudit: number } {
+    const cutoff = Date.now() - retentionDays * 24 * 60 * 60 * 1000;
+    const initialVisits = (this.data.visits || []).length;
+    const initialAudit = (this.data.auditLogs || []).length;
+
+    this.data.visits = (this.data.visits || []).filter((v) => v.timestamp >= cutoff);
+    this.data.auditLogs = (this.data.auditLogs || []).filter((a) => a.timestamp >= cutoff);
+
+    const prunedVisits = initialVisits - this.data.visits.length;
+    const prunedAudit = initialAudit - this.data.auditLogs.length;
+
+    this.persist();
+    return { prunedVisits, prunedAudit };
+  }
+
+  // --- Security & IP Access Control ---
+
+  public getBlockedIps(): string[] {
+    return this.data.blockedIps || [];
+  }
+
+  public blockIp(ip: string): string[] {
+    if (!this.data.blockedIps) this.data.blockedIps = [];
+    const cleanIp = ip.trim();
+    if (cleanIp && !this.data.blockedIps.includes(cleanIp)) {
+      this.data.blockedIps.push(cleanIp);
+      this.recordUserAudit({
+        userId: 'admin',
+        userName: 'Administrator',
+        userHandle: 'admin',
+        action: 'block_ip',
+        actionCategory: 'auth',
+        details: `Blocked IP address: ${cleanIp}`,
+      });
+      this.persist();
+    }
+    return this.data.blockedIps;
+  }
+
+  public unblockIp(ip: string): string[] {
+    if (!this.data.blockedIps) return [];
+    this.data.blockedIps = this.data.blockedIps.filter((i) => i !== ip.trim());
+    this.recordUserAudit({
+      userId: 'admin',
+      userName: 'Administrator',
+      userHandle: 'admin',
+      action: 'unblock_ip',
+      actionCategory: 'auth',
+      details: `Unblocked IP address: ${ip}`,
+    });
+    this.persist();
+    return this.data.blockedIps;
+  }
+
+  public isIpBlocked(ip: string): boolean {
+    if (!this.data.blockedIps) return false;
+    return this.data.blockedIps.includes(ip.trim());
   }
 
   public getStats() {
