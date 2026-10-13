@@ -61,7 +61,6 @@ import {
   SidebarMenuButton,
   SidebarMenuBadge,
   SidebarMenuText,
-  SidebarTrigger,
   SidebarRail,
   SidebarInset,
 } from '@/components/ui/sidebar';
@@ -256,16 +255,13 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
       <div className="h-full w-full flex bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 select-none overflow-hidden font-sans">
         {/* Collapsible shadcn/ui Sidebar */}
         <Sidebar collapsible="icon" className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
-          {/* Sidebar Header: Branding & Toggle */}
+          {/* Sidebar Header: Branding */}
           <SidebarHeader className="border-zinc-200 dark:border-zinc-800">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 shrink-0"></span>
-                <SidebarMenuText className="font-mono font-bold text-xs tracking-tight uppercase text-zinc-900 dark:text-zinc-100">
-                  Invertis Admin OS
-                </SidebarMenuText>
-              </div>
-              <SidebarTrigger />
+            <div className="flex items-center gap-2 overflow-hidden">
+              <span className="w-2.5 h-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 shrink-0"></span>
+              <SidebarMenuText className="font-mono font-bold text-xs tracking-tight uppercase text-zinc-900 dark:text-zinc-100">
+                Invertis Admin OS
+              </SidebarMenuText>
             </div>
           </SidebarHeader>
 
@@ -434,7 +430,6 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
           {/* Top Command Bar */}
           <div className="h-14 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
-              <SidebarTrigger />
               <div className="hidden sm:flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                 <span className="text-xs font-mono font-semibold text-zinc-700 dark:text-zinc-300">

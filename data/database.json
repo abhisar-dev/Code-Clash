@@ -173,9 +173,19 @@
     "totalSubmissions": 52,
     "totalMatches": 24,
     "totalCodeLinesCompiled": 4280,
-    "totalVisits": 165
+    "totalVisits": 166
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1791908455024-682",
+      "timestamp": 1791908455024
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhisar kumar",
@@ -1984,6 +1994,34 @@
     }
   ],
   "userSessions": [
+    {
+      "id": "sess-1791908511123-842",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791908511123,
+      "lastActiveAt": 1791908511123,
+      "durationSeconds": 1,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": false,
+      "timestamp": 1791908511123
+    },
+    {
+      "id": "sess-1791908454593-146",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791908454593,
+      "lastActiveAt": 1791908458883,
+      "durationSeconds": 4,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": false,
+      "timestamp": 1791908454593
+    },
     {
       "id": "sess-1791903926698-680",
       "userId": "user-1791693341107-393",
