@@ -240,7 +240,7 @@ button:active {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Hide auto-generated sidebar toggle buttons */
-button[title*="Toggle Sidebar"] {
+/* Hide only the toggle button inside px-6 margin area (top command bar), keep the sidebar one */
+.px-6 button[title*="Toggle Sidebar"] {
   display: none !important;
 }
