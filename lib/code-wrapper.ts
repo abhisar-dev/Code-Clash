@@ -132,7 +132,9 @@ function parseCppSignature(codeStr: string) {
     }
   }
   if (!lastValid) return null;
-  const retType = lastValid[1].replace(/^public:\s*/, '').trim();
+  const retType = lastValid[1]
+    .replace(/^(?:public:|private:|protected:|static|inline|virtual|constexpr|\s)+/g, '')
+    .trim();
   const fnName = lastValid[2].trim();
   const paramsRaw = lastValid[3].trim();
   const params = paramsRaw
@@ -168,7 +170,9 @@ function parseJavaSignature(codeStr: string) {
     }
   }
   if (!lastValid) return null;
-  const retType = lastValid[1].trim();
+  const retType = lastValid[1]
+    .replace(/^(?:public|private|protected|static|final|synchronized|\s)+/g, '')
+    .trim();
   const fnName = lastValid[2].trim();
   const paramsRaw = lastValid[3].trim();
   const params = paramsRaw
