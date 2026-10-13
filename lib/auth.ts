@@ -22,6 +22,8 @@ export interface User {
   accountStatus?: string; // 'Active'
   followersCount?: number;
   followingCount?: number;
+  totalOnlineSeconds?: number;
+  lastActiveAt?: number;
 }
 
 export interface StoredAccount {

@@ -31,6 +31,16 @@ import {
   ExternalLink,
   Shield,
   Layers as LayersIcon,
+  Code,
+  FileCode,
+  History,
+  Sparkles,
+  Laptop,
+  Smartphone,
+  Play,
+  CheckCheck,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { User } from '@/lib/auth';
 import {
@@ -54,6 +64,9 @@ import {
 type AdminSection =
   | 'overview'
   | 'online_users'
+  | 'session_durations'
+  | 'user_audit'
+  | 'submissions_inspect'
   | 'all_users'
   | 'visits'
   | 'graphs'
@@ -73,6 +86,8 @@ interface AdminData {
     pendingViolations: number;
     activeAnnouncements: number;
     messagesSent: number;
+    totalOnlineHours?: number;
+    totalAuditEvents?: number;
   };
   onlineUsers: any[];
   allUsers: User[];
@@ -85,6 +100,20 @@ interface AdminData {
   daysTrend: { date: string; visits: number; matches: number; activeUsers: number }[];
   browserStats: Record<string, number>;
   departmentBreakdown: Record<string, number>;
+  userSessions?: any[];
+  auditLogs?: any[];
+  submissions?: any[];
+  userDurations?: any[];
+}
+
+function formatDuration(seconds: number): string {
+  if (!seconds || seconds < 60) return `${Math.max(1, seconds || 0)}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  if (m < 60) return `${m}m ${s > 0 ? `${s}s` : ''}`.trim();
+  const h = Math.floor(m / 60);
+  const remM = m % 60;
+  return `${h}h ${remM > 0 ? `${remM}m` : ''}`.trim();
 }
 
 interface AdminPanelProps {
@@ -99,6 +128,22 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUserDetail, setSelectedUserDetail] = useState<User | null>(null);
+  const [userModalTab, setUserModalTab] = useState<'profile' | 'sessions' | 'audit' | 'code'>('profile');
+
+  // Audit log filter states
+  const [auditUserFilter, setAuditUserFilter] = useState('all');
+  const [auditCategoryFilter, setAuditCategoryFilter] = useState('all');
+  const [auditSearchQuery, setAuditSearchQuery] = useState('');
+
+  // Submissions inspector filter states
+  const [submissionLangFilter, setSubmissionLangFilter] = useState('all');
+  const [submissionStatusFilter, setSubmissionStatusFilter] = useState('all');
+  const [inspectCodeModal, setInspectCodeModal] = useState<any | null>(null);
+  const [codeCopied, setCodeCopied] = useState(false);
+
+  // Session duration states
+  const [durationSearchQuery, setDurationSearchQuery] = useState('');
+  const [durationSortBy, setDurationSortBy] = useState<'duration' | 'name' | 'sessions'>('duration');
 
   // New Announcement Form State
   const [annTitle, setAnnTitle] = useState('');
@@ -215,13 +260,16 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
   const navItems = [
     { id: 'overview', label: '1. Executive Dashboard', icon: <Activity className="w-4 h-4" /> },
     { id: 'online_users', label: '2. Live Online Students', icon: <Radio className="w-4 h-4 text-emerald-500" />, badge: data?.stats.onlineCount },
-    { id: 'all_users', label: '3. Student Profiles & Work', icon: <Users className="w-4 h-4" />, count: data?.stats.totalUsers },
-    { id: 'graphs', label: '4. Visual Growth Graphs', icon: <BarChart3 className="w-4 h-4" /> },
-    { id: 'visits', label: '5. Campus Web Visits', icon: <Eye className="w-4 h-4" />, count: data?.stats.totalVisits },
-    { id: 'activity', label: '6. Real-Time DSA Feed', icon: <Terminal className="w-4 h-4" /> },
-    { id: 'violations', label: '7. Conduct & Bot Alerts', icon: <ShieldAlert className="w-4 h-4 text-rose-500" />, badge: data?.stats.pendingViolations },
-    { id: 'announcements', label: '8. Campus Notices', icon: <Bell className="w-4 h-4" /> },
-    { id: 'mail', label: '9. Dispatcher & Mail Hub', icon: <Mail className="w-4 h-4" /> },
+    { id: 'session_durations', label: '3. Online Time & Durations', icon: <Clock className="w-4 h-4 text-sky-500" /> },
+    { id: 'user_audit', label: '4. User Activity Audit Trail', icon: <Terminal className="w-4 h-4 text-amber-500" />, count: data?.auditLogs?.length },
+    { id: 'submissions_inspect', label: '5. Student Code Inspector', icon: <Code className="w-4 h-4 text-indigo-500" />, count: data?.submissions?.length },
+    { id: 'all_users', label: '6. Student Profiles & Directory', icon: <Users className="w-4 h-4" />, count: data?.stats.totalUsers },
+    { id: 'graphs', label: '7. Visual Growth Graphs', icon: <BarChart3 className="w-4 h-4" /> },
+    { id: 'visits', label: '8. Campus Web Visits', icon: <Eye className="w-4 h-4" />, count: data?.stats.totalVisits },
+    { id: 'activity', label: '9. Live 1v1 Battle Feed', icon: <Swords className="w-4 h-4" /> },
+    { id: 'violations', label: '10. Conduct & Bot Alerts', icon: <ShieldAlert className="w-4 h-4 text-rose-500" />, badge: data?.stats.pendingViolations },
+    { id: 'announcements', label: '11. Campus Notices', icon: <Bell className="w-4 h-4" /> },
+    { id: 'mail', label: '12. Dispatcher & Mail Hub', icon: <Mail className="w-4 h-4" /> },
   ];
 
   return (
@@ -532,7 +580,10 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                   {data.onlineUsers.map((u) => (
                     <div
                       key={u.id}
-                      onClick={() => setSelectedUserDetail(u)}
+                      onClick={() => {
+                        setSelectedUserDetail(u);
+                        setUserModalTab('sessions');
+                      }}
                       className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer space-y-3"
                     >
                       <div className="flex items-center justify-between">
@@ -550,6 +601,21 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                         </span>
                       </div>
 
+                      <div className="space-y-1 bg-zinc-50 dark:bg-zinc-800/60 p-2.5 rounded-lg text-[11px] font-mono border border-zinc-100 dark:border-zinc-800">
+                        <div className="flex items-center justify-between text-zinc-500">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-sky-500" />
+                            Session Time:
+                          </span>
+                          <span className="font-bold text-sky-600 dark:text-sky-400">
+                            {formatDuration(u.sessionSeconds)}
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-zinc-400 truncate">
+                          Action: <span className="text-zinc-700 dark:text-zinc-300 font-sans">{u.currentAction || 'Active'}</span>
+                        </div>
+                      </div>
+
                       <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[11px] font-mono text-zinc-500">
                         <span>{u.college || 'Invertis University'}</span>
                         <span className="font-bold text-zinc-900 dark:text-zinc-100">{u.elo || 1000} ELO</span>
@@ -558,6 +624,576 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* ================= SECTION 3: ONLINE TIME & SESSION DURATIONS ================= */}
+          {section === 'session_durations' && data && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 font-sans flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-sky-500" />
+                    <span>Student Online Time &amp; Session Tracker</span>
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Live session durations, lifetime online study hours, and real-time student activity tracking.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-400 font-mono text-xs font-semibold flex items-center gap-1.5 border border-sky-500/20">
+                    <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                    SYNCING REAL-TIME
+                  </span>
+                </div>
+              </div>
+
+              {/* 4 Top Summary Cards for Sessions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase font-semibold text-zinc-400 flex items-center justify-between">
+                    <span>Total Campus Hours</span>
+                    <Clock className="w-3.5 h-3.5 text-sky-500" />
+                  </div>
+                  <div className="text-2xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
+                    {data.stats.totalOnlineHours || '0.0'} hrs
+                  </div>
+                  <div className="text-[11px] text-zinc-500">Cumulative student study time</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase font-semibold text-zinc-400 flex items-center justify-between">
+                    <span>Live Active Sessions</span>
+                    <Radio className="w-3.5 h-3.5 text-emerald-500" />
+                  </div>
+                  <div className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+                    {data.onlineUsers.length} Students
+                  </div>
+                  <div className="text-[11px] text-zinc-500">Connected right now</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase font-semibold text-zinc-400 flex items-center justify-between">
+                    <span>Avg Session Length</span>
+                    <History className="w-3.5 h-3.5 text-indigo-500" />
+                  </div>
+                  <div className="text-2xl font-bold font-mono text-zinc-900 dark:text-zinc-100">
+                    {data.userSessions && data.userSessions.length > 0
+                      ? formatDuration(
+                          Math.round(
+                            data.userSessions.reduce((a, s) => a + (s.durationSeconds || 0), 0) /
+                              data.userSessions.length
+                          )
+                        )
+                      : '22m'}
+                  </div>
+                  <div className="text-[11px] text-zinc-500">Across all student visits</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
+                  <div className="text-[10px] font-mono uppercase font-semibold text-zinc-400 flex items-center justify-between">
+                    <span>Most Dedicated Today</span>
+                    <Award className="w-3.5 h-3.5 text-amber-500" />
+                  </div>
+                  <div className="text-lg font-bold font-mono text-zinc-900 dark:text-zinc-100 truncate">
+                    {data.userDurations?.[0]?.userName || 'Student'}
+                  </div>
+                  <div className="text-[11px] text-zinc-500 truncate">
+                    {formatDuration(data.userDurations?.[0]?.totalOnlineSeconds || 0)} total logged
+                  </div>
+                </div>
+              </div>
+
+              {/* Section Part 1: Live Active Sessions Right Now */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-xs uppercase font-mono tracking-wider text-zinc-500 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Live Continuous Sessions ({data.onlineUsers.length})</span>
+                  </h3>
+                  <span className="text-[11px] font-mono text-zinc-400">Pings every 3.5s</span>
+                </div>
+
+                {data.onlineUsers.length === 0 ? (
+                  <div className="p-6 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-center text-xs text-zinc-500">
+                    No active students connected at this second.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {data.onlineUsers.map((u) => (
+                      <div
+                        key={u.id}
+                        onClick={() => {
+                          setSelectedUserDetail(u);
+                          setUserModalTab('sessions');
+                        }}
+                        className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer space-y-2.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 font-mono font-bold text-xs flex items-center justify-center border border-zinc-200 dark:border-zinc-700">
+                              {u.name?.slice(0, 2).toUpperCase() || 'ST'}
+                            </div>
+                            <div>
+                              <div className="font-semibold text-xs text-zinc-900 dark:text-zinc-100">{u.name}</div>
+                              <div className="text-[10px] font-mono text-zinc-400">@{u.handle}</div>
+                            </div>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-mono font-bold">
+                            Live
+                          </span>
+                        </div>
+
+                        <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-100 dark:border-zinc-800/80 space-y-1.5 text-xs">
+                          <div className="flex items-center justify-between font-mono">
+                            <span className="text-zinc-500 text-[11px]">Current Session:</span>
+                            <span className="font-bold text-sky-600 dark:text-sky-400">
+                              {formatDuration(u.sessionSeconds)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-[11px] text-zinc-500 font-mono">
+                            <span>Started At:</span>
+                            <span>{new Date(u.connectedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
+                          <div className="pt-1 border-t border-zinc-200 dark:border-zinc-700/60 text-[10px] text-zinc-400 truncate">
+                            <span className="font-semibold text-zinc-600 dark:text-zinc-300 font-sans">{u.currentAction || 'Browsing platform'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Section Part 2: All Students Time Leaderboard */}
+              <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h3 className="font-semibold text-xs uppercase font-mono tracking-wider text-zinc-500">
+                      Lifetime Online Time Leaderboard ({data.userDurations?.length || 0} Students)
+                    </h3>
+                    <p className="text-[11px] text-zinc-400">
+                      Aggregated study hours across all continuous sessions.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2.5" />
+                      <input
+                        type="text"
+                        placeholder="Filter by name or handle..."
+                        value={durationSearchQuery}
+                        onChange={(e) => setDurationSearchQuery(e.target.value)}
+                        className="pl-8 pr-3 py-1.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs focus:outline-none focus:border-zinc-400 w-48 sm:w-56"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs font-mono">
+                      <thead className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 text-[10px] text-zinc-400 uppercase">
+                        <tr>
+                          <th className="py-2.5 px-4 font-semibold">Rank</th>
+                          <th className="py-2.5 px-4 font-semibold">Student</th>
+                          <th className="py-2.5 px-4 font-semibold">Status</th>
+                          <th className="py-2.5 px-4 font-semibold">Total Time Spent</th>
+                          <th className="py-2.5 px-4 font-semibold">Sessions</th>
+                          <th className="py-2.5 px-4 font-semibold">Last Active</th>
+                          <th className="py-2.5 px-4 font-semibold text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                        {((data.userDurations || []).filter((u: any) =>
+                          u.userName.toLowerCase().includes(durationSearchQuery.toLowerCase()) ||
+                          u.userHandle.toLowerCase().includes(durationSearchQuery.toLowerCase())
+                        )).map((u: any, idx: number) => (
+                          <tr key={u.userId} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
+                            <td className="py-3 px-4 font-bold text-zinc-400">
+                              #{idx + 1}
+                            </td>
+                            <td className="py-3 px-4">
+                              <div className="font-semibold text-zinc-900 dark:text-zinc-100">{u.userName}</div>
+                              <div className="text-[10px] text-zinc-400">@{u.userHandle} &bull; {u.course}</div>
+                            </td>
+                            <td className="py-3 px-4">
+                              {u.isOnline ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                  Online ({formatDuration(u.activeSessionSeconds)})
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 text-[10px]">
+                                  Offline
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="font-bold text-sky-600 dark:text-sky-400">
+                                {formatDuration(u.totalOnlineSeconds)}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-zinc-500">
+                              {u.sessionCount || 1} sessions
+                            </td>
+                            <td className="py-3 px-4 text-zinc-400 text-[11px]">
+                              {new Date(u.lastActiveAt).toLocaleDateString()} {new Date(u.lastActiveAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <button
+                                onClick={() => {
+                                  const fullU = data.allUsers.find((x) => x.id === u.userId) || (u as any);
+                                  setSelectedUserDetail(fullU);
+                                  setUserModalTab('sessions');
+                                }}
+                                className="px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-zinc-700 text-[11px] font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+                              >
+                                View Timeline
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= SECTION 4: USER ACTIVITY AUDIT TRAIL ================= */}
+          {section === 'user_audit' && data && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 font-sans flex items-center gap-2">
+                    <Terminal className="w-5 h-5 text-amber-500" />
+                    <span>User Activity Audit Trail &amp; Journey</span>
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Trace exact actions done by students on the platform: problem views, code executions, test passes, 1v1 duel battles, and logins.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 font-mono text-xs">
+                  <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 font-semibold border border-amber-500/20">
+                    {data.auditLogs?.length || 0} Events Recorded
+                  </span>
+                </div>
+              </div>
+
+              {/* Filtering Bar */}
+              <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[10px] font-mono font-semibold uppercase text-zinc-500 mb-1">
+                      Filter by Student
+                    </label>
+                    <select
+                      value={auditUserFilter}
+                      onChange={(e) => setAuditUserFilter(e.target.value)}
+                      className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                    >
+                      <option value="all">All Students ({data.allUsers.length})</option>
+                      {data.allUsers.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.name} (@{u.handle})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-mono font-semibold uppercase text-zinc-500 mb-1">
+                      Filter by Action Category
+                    </label>
+                    <select
+                      value={auditCategoryFilter}
+                      onChange={(e) => setAuditCategoryFilter(e.target.value)}
+                      className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2.5 py-1.5 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                    >
+                      <option value="all">All Event Types</option>
+                      <option value="dsa">DSA &amp; Code Executions</option>
+                      <option value="battle">1v1 Battles &amp; Clashes</option>
+                      <option value="navigation">Page Navigations</option>
+                      <option value="auth">Logins &amp; Authentication</option>
+                      <option value="profile">Profile &amp; Settings Updates</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-mono font-semibold uppercase text-zinc-500 mb-1">
+                      Search Event Details
+                    </label>
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2.5" />
+                      <input
+                        type="text"
+                        placeholder="Search Two Sum, python, room..."
+                        value={auditSearchQuery}
+                        onChange={(e) => setAuditSearchQuery(e.target.value)}
+                        className="w-full pl-8 pr-2.5 py-1.5 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Audit Log Timeline */}
+              <div className="space-y-2">
+                {(() => {
+                  let filtered = (data.auditLogs || []).filter((l: any) => {
+                    if (auditUserFilter !== 'all' && l.userId !== auditUserFilter) return false;
+                    if (auditCategoryFilter !== 'all' && l.actionCategory !== auditCategoryFilter) return false;
+                    if (auditSearchQuery) {
+                      const q = auditSearchQuery.toLowerCase();
+                      const matchDetails = (l.details || '').toLowerCase().includes(q);
+                      const matchName = (l.userName || '').toLowerCase().includes(q);
+                      const matchHandle = (l.userHandle || '').toLowerCase().includes(q);
+                      if (!matchDetails && !matchName && !matchHandle) return false;
+                    }
+                    return true;
+                  });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="p-8 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-center text-xs text-zinc-500">
+                        No activity events matching the current filter criteria.
+                      </div>
+                    );
+                  }
+
+                  return filtered.map((l: any) => {
+                    const isAccepted = l.details?.includes('Accepted');
+                    const isError = l.details?.includes('Error') || l.details?.includes('Wrong Answer');
+                    return (
+                      <div
+                        key={l.id}
+                        className="p-3.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all flex items-start justify-between gap-4 text-xs font-mono"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                            l.actionCategory === 'dsa'
+                              ? isAccepted
+                                ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+                                : isError
+                                ? 'bg-rose-500/10 text-rose-600 border-rose-500/20'
+                                : 'bg-sky-500/10 text-sky-600 border-sky-500/20'
+                              : l.actionCategory === 'battle'
+                              ? 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border-zinc-200 dark:border-zinc-700'
+                          }`}>
+                            {l.actionCategory === 'dsa' ? (
+                              <Code className="w-4 h-4" />
+                            ) : l.actionCategory === 'battle' ? (
+                              <Swords className="w-4 h-4" />
+                            ) : l.actionCategory === 'auth' ? (
+                              <Shield className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span
+                                onClick={() => setAuditUserFilter(l.userId)}
+                                className="font-bold text-zinc-900 dark:text-zinc-100 hover:underline cursor-pointer"
+                              >
+                                {l.userName}
+                              </span>
+                              <span className="text-[11px] text-zinc-400">@{l.userHandle}</span>
+                              <span className={`px-2 py-0.2 rounded text-[10px] font-bold uppercase ${
+                                l.actionCategory === 'dsa'
+                                  ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400'
+                                  : l.actionCategory === 'battle'
+                                  ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'
+                              }`}>
+                                {l.action}
+                              </span>
+                            </div>
+
+                            <p className="text-zinc-600 dark:text-zinc-300 font-sans text-xs">
+                              {l.details}
+                            </p>
+
+                            {l.metadata && Object.keys(l.metadata).length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 pt-1 text-[10px] text-zinc-400">
+                                {Object.entries(l.metadata).map(([k, v]) => (
+                                  <span key={k} className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                                    {k}: <strong className="text-zinc-700 dark:text-zinc-300">{String(v)}</strong>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-right shrink-0">
+                          <span className="text-[11px] text-zinc-400">
+                            {new Date(l.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                          </span>
+                          <div className="text-[10px] text-zinc-500">
+                            {new Date(l.timestamp).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </div>
+          )}
+
+          {/* ================= SECTION 5: STUDENT CODE SUBMISSIONS INSPECTOR ================= */}
+          {section === 'submissions_inspect' && data && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 font-sans flex items-center gap-2">
+                    <Code className="w-5 h-5 text-indigo-500" />
+                    <span>Student Code Submissions &amp; Solutions Inspector</span>
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Live inspection of authentic student code submissions across Python, C++, Java, and JavaScript.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 font-mono text-xs">
+                  <span className="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 font-semibold border border-indigo-500/20">
+                    {data.submissions?.length || 0} Submissions Logged
+                  </span>
+                </div>
+              </div>
+
+              {/* Filters */}
+              <div className="p-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-zinc-400 uppercase text-[10px] font-semibold">Language:</span>
+                  {['all', 'python', 'cpp', 'java', 'javascript'].map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => setSubmissionLangFilter(lang)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                        submissionLangFilter === lang
+                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                      }`}
+                    >
+                      {lang.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-zinc-400 uppercase text-[10px] font-semibold">Status:</span>
+                  {['all', 'Accepted', 'Wrong Answer', 'Compile Error'].map((st) => (
+                    <button
+                      key={st}
+                      onClick={() => setSubmissionStatusFilter(st)}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
+                        submissionStatusFilter === st
+                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                      }`}
+                    >
+                      {st}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Submissions Table */}
+              <div className="rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs font-mono">
+                    <thead className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 text-[10px] text-zinc-400 uppercase">
+                      <tr>
+                        <th className="py-2.5 px-4 font-semibold">Student</th>
+                        <th className="py-2.5 px-4 font-semibold">Problem</th>
+                        <th className="py-2.5 px-4 font-semibold">Language</th>
+                        <th className="py-2.5 px-4 font-semibold">Verdict</th>
+                        <th className="py-2.5 px-4 font-semibold">Tests Passed</th>
+                        <th className="py-2.5 px-4 font-semibold">Runtime</th>
+                        <th className="py-2.5 px-4 font-semibold">Time</th>
+                        <th className="py-2.5 px-4 font-semibold text-right">Inspect Code</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                      {((data.submissions || []).filter((s: any) => {
+                        if (submissionLangFilter !== 'all' && s.language !== submissionLangFilter) return false;
+                        if (submissionStatusFilter !== 'all' && s.status !== submissionStatusFilter) return false;
+                        return true;
+                      })).length === 0 ? (
+                        <tr>
+                          <td colSpan={8} className="py-8 text-center text-zinc-500">
+                            No code submissions found matching the criteria.
+                          </td>
+                        </tr>
+                      ) : (
+                        ((data.submissions || []).filter((s: any) => {
+                          if (submissionLangFilter !== 'all' && s.language !== submissionLangFilter) return false;
+                          if (submissionStatusFilter !== 'all' && s.status !== submissionStatusFilter) return false;
+                          return true;
+                        })).map((s: any) => (
+                          <tr key={s.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
+                            <td className="py-3 px-4">
+                              <div className="font-semibold text-zinc-900 dark:text-zinc-100">{s.userName}</div>
+                              <div className="text-[10px] text-zinc-400">@{s.userHandle}</div>
+                            </td>
+                            <td className="py-3 px-4 font-sans font-semibold text-zinc-800 dark:text-zinc-200">
+                              {s.problemTitle}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                                s.language === 'python'
+                                  ? 'bg-blue-500/10 text-blue-700 dark:text-blue-400'
+                                  : s.language === 'cpp'
+                                  ? 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400'
+                                  : s.language === 'java'
+                                  ? 'bg-orange-500/10 text-orange-700 dark:text-orange-400'
+                                  : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                              }`}>
+                                {s.language}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                s.status === 'Accepted'
+                                  ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
+                                  : s.status === 'Compile Error'
+                                  ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400'
+                                  : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                              }`}>
+                                {s.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 font-bold text-zinc-700 dark:text-zinc-300">
+                              {s.passedCount}/{s.totalCount}
+                            </td>
+                            <td className="py-3 px-4 text-zinc-500">
+                              {s.runtimeMs}ms
+                            </td>
+                            <td className="py-3 px-4 text-[11px] text-zinc-400">
+                              {new Date(s.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <button
+                                onClick={() => setInspectCodeModal(s)}
+                                className="px-3 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 text-xs font-semibold cursor-pointer flex items-center gap-1.5 ml-auto"
+                              >
+                                <Code className="w-3.5 h-3.5" />
+                                <span>Inspect Code</span>
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
 
@@ -586,7 +1222,7 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                 </div>
               </div>
 
-              {/* Selected User Detailed Drawer / Card */}
+              {/* Selected User Detailed Drawer / Card with Tabs */}
               {selectedUserDetail && (
                 <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border-2 border-zinc-300 dark:border-zinc-700 shadow-xs space-y-4 animate-in fade-in">
                   <div className="flex items-start justify-between">
@@ -595,9 +1231,19 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                         {selectedUserDetail.name?.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <h3 className="font-bold text-base text-zinc-900 dark:text-zinc-100">
-                          {selectedUserDetail.name}
-                        </h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-base text-zinc-900 dark:text-zinc-100">
+                            {selectedUserDetail.name}
+                          </h3>
+                          {(() => {
+                            const uDur = (data.userDurations || []).find((x: any) => x.userId === selectedUserDetail.id);
+                            return uDur?.isOnline ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-mono text-[10px] font-bold">
+                                Online Now ({formatDuration(uDur.activeSessionSeconds)})
+                              </span>
+                            ) : null;
+                          })()}
+                        </div>
                         <p className="text-xs font-mono text-zinc-400">
                           @{selectedUserDetail.handle} &bull; {selectedUserDetail.email}
                         </p>
@@ -611,54 +1257,261 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-2">
-                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <div className="text-zinc-400 text-[10px]">CURRENT ELO</div>
-                      <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                        {selectedUserDetail.elo}
-                      </div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <div className="text-zinc-400 text-[10px]">MATCHES WON</div>
-                      <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-                        {selectedUserDetail.matchesWon}
-                      </div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <div className="text-zinc-400 text-[10px]">TOTAL PLAYED</div>
-                      <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                        {selectedUserDetail.matchesPlayed}
-                      </div>
-                    </div>
-                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <div className="text-zinc-400 text-[10px]">WIN RATIO</div>
-                      <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                        {selectedUserDetail.matchesPlayed > 0
-                          ? `${Math.round((selectedUserDetail.matchesWon / selectedUserDetail.matchesPlayed) * 100)}%`
-                          : '0%'}
-                      </div>
-                    </div>
+                  {/* Tabs header */}
+                  <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-2 text-xs font-mono">
+                    <button
+                      onClick={() => setUserModalTab('profile')}
+                      className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+                        userModalTab === 'profile'
+                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                          : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      1. Profile Overview
+                    </button>
+                    <button
+                      onClick={() => setUserModalTab('sessions')}
+                      className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        userModalTab === 'sessions'
+                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                          : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      <Clock className="w-3.5 h-3.5 text-sky-500" />
+                      <span>2. Session Time &amp; Durations</span>
+                    </button>
+                    <button
+                      onClick={() => setUserModalTab('audit')}
+                      className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        userModalTab === 'audit'
+                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                          : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      <Terminal className="w-3.5 h-3.5 text-amber-500" />
+                      <span>3. Activity Trail</span>
+                    </button>
+                    <button
+                      onClick={() => setUserModalTab('code')}
+                      className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        userModalTab === 'code'
+                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                          : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                      }`}
+                    >
+                      <Code className="w-3.5 h-3.5 text-indigo-500" />
+                      <span>4. Code Submissions</span>
+                    </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-mono pt-1">
-                    <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <span className="text-[10px] text-zinc-400 block uppercase">Student ID</span>
-                      <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedUserDetail.studentId || 'Not assigned'}</span>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <span className="text-[10px] text-zinc-400 block uppercase">Course / Branch</span>
-                      <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedUserDetail.course || 'Not specified'}</span>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
-                      <span className="text-[10px] text-zinc-400 block uppercase">Phone Number</span>
-                      <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedUserDetail.phone || 'Not provided'}</span>
-                    </div>
-                  </div>
+                  {/* Tab 1: Profile Overview */}
+                  {userModalTab === 'profile' && (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-1">
+                        <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <div className="text-zinc-400 text-[10px]">CURRENT ELO</div>
+                          <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                            {selectedUserDetail.elo}
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <div className="text-zinc-400 text-[10px]">MATCHES WON</div>
+                          <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                            {selectedUserDetail.matchesWon}
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <div className="text-zinc-400 text-[10px]">TOTAL PLAYED</div>
+                          <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                            {selectedUserDetail.matchesPlayed}
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <div className="text-zinc-400 text-[10px]">WIN RATIO</div>
+                          <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                            {selectedUserDetail.matchesPlayed > 0
+                              ? `${Math.round((selectedUserDetail.matchesWon / selectedUserDetail.matchesPlayed) * 100)}%`
+                              : '0%'}
+                          </div>
+                        </div>
+                      </div>
 
-                  <div className="flex items-center justify-between text-xs text-zinc-500 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-                    <span>Campus: <strong>{selectedUserDetail.college}</strong></span>
-                    <span>Joined: <strong>{new Date(selectedUserDetail.joinedAt).toLocaleDateString()}</strong></span>
-                  </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs font-mono">
+                        <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <span className="text-[10px] text-zinc-400 block uppercase">Student ID</span>
+                          <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedUserDetail.studentId || 'Not assigned'}</span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <span className="text-[10px] text-zinc-400 block uppercase">Course / Branch</span>
+                          <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedUserDetail.course || 'Not specified'}</span>
+                        </div>
+                        <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                          <span className="text-[10px] text-zinc-400 block uppercase">Phone Number</span>
+                          <span className="font-semibold text-zinc-900 dark:text-zinc-100">{selectedUserDetail.phone || 'Not provided'}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-zinc-500 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                        <span>Campus: <strong>{selectedUserDetail.college}</strong></span>
+                        <span>Joined: <strong>{new Date(selectedUserDetail.joinedAt).toLocaleDateString()}</strong></span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tab 2: Sessions & Online Time */}
+                  {userModalTab === 'sessions' && (
+                    <div className="space-y-3 font-mono text-xs">
+                      {(() => {
+                        const dur = (data.userDurations || []).find((x: any) => x.userId === selectedUserDetail.id);
+                        const userSess = (data.userSessions || []).filter((s: any) => s.userId === selectedUserDetail.id);
+                        return (
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                                <span className="text-[10px] text-zinc-400 uppercase block font-semibold">Total Platform Time</span>
+                                <span className="text-xl font-bold text-sky-600 dark:text-sky-400">
+                                  {formatDuration(dur?.totalOnlineSeconds || 0)}
+                                </span>
+                              </div>
+                              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                                <span className="text-[10px] text-zinc-400 uppercase block font-semibold">Total Logged Sessions</span>
+                                <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                                  {userSess.length || dur?.sessionCount || 1}
+                                </span>
+                              </div>
+                              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                                <span className="text-[10px] text-zinc-400 uppercase block font-semibold">Current State</span>
+                                <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                                  {dur?.isOnline ? 'Online Now' : 'Offline'}
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              <h4 className="text-[10px] font-bold uppercase text-zinc-400 tracking-wider">
+                                Continuous Sessions History ({userSess.length})
+                              </h4>
+                              {userSess.length === 0 ? (
+                                <div className="p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800 text-center text-zinc-400">
+                                  No session splits recorded yet. User online time is tracked on live heartbeat.
+                                </div>
+                              ) : (
+                                <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                                  {userSess.map((s: any) => (
+                                    <div
+                                      key={s.id}
+                                      className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 flex items-center justify-between"
+                                    >
+                                      <div>
+                                        <div className="font-semibold text-zinc-900 dark:text-zinc-100">
+                                          Session: {formatDuration(s.durationSeconds)}
+                                        </div>
+                                        <div className="text-[10px] text-zinc-400">
+                                          {s.currentAction || s.currentPath || 'Active'}
+                                        </div>
+                                      </div>
+                                      <div className="text-right text-[10px] text-zinc-400">
+                                        {new Date(s.startedAt).toLocaleDateString()} {new Date(s.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+
+                  {/* Tab 3: Activity Audit Trail */}
+                  {userModalTab === 'audit' && (
+                    <div className="space-y-2 font-mono text-xs">
+                      {(() => {
+                        const userLogs = (data.auditLogs || []).filter((l: any) => l.userId === selectedUserDetail.id);
+                        if (userLogs.length === 0) {
+                          return (
+                            <div className="p-6 rounded-lg bg-zinc-50 dark:bg-zinc-800 text-center text-zinc-400">
+                              No activity logs recorded for this student yet.
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="space-y-2 max-h-64 overflow-y-auto">
+                            {userLogs.map((l: any) => (
+                              <div
+                                key={l.id}
+                                className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-start justify-between gap-3"
+                              >
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-zinc-700 text-[10px] font-bold uppercase">
+                                      {l.action}
+                                    </span>
+                                    <span className="font-semibold text-zinc-800 dark:text-zinc-200 font-sans">
+                                      {l.details}
+                                    </span>
+                                  </div>
+                                </div>
+                                <span className="text-[10px] text-zinc-400 shrink-0">
+                                  {new Date(l.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+
+                  {/* Tab 4: Code Submissions */}
+                  {userModalTab === 'code' && (
+                    <div className="space-y-2 font-mono text-xs">
+                      {(() => {
+                        const userSubs = (data.submissions || []).filter((s: any) => s.userId === selectedUserDetail.id);
+                        if (userSubs.length === 0) {
+                          return (
+                            <div className="p-6 rounded-lg bg-zinc-50 dark:bg-zinc-800 text-center text-zinc-400">
+                              No code submissions recorded for this student yet.
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="space-y-2 max-h-64 overflow-y-auto">
+                            {userSubs.map((s: any) => (
+                              <div
+                                key={s.id}
+                                className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-between gap-3"
+                              >
+                                <div>
+                                  <div className="flex items-center gap-2 font-semibold">
+                                    <span>{s.problemTitle}</span>
+                                    <span className="text-[10px] uppercase font-bold text-indigo-500">
+                                      {s.language}
+                                    </span>
+                                    <span className={`text-[10px] font-bold ${
+                                      s.status === 'Accepted' ? 'text-emerald-500' : 'text-rose-500'
+                                    }`}>
+                                      {s.status} ({s.passedCount}/{s.totalCount})
+                                    </span>
+                                  </div>
+                                  <div className="text-[10px] text-zinc-400">
+                                    {s.runtimeMs}ms &bull; {new Date(s.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                  </div>
+                                </div>
+                                <button
+                                  onClick={() => setInspectCodeModal(s)}
+                                  className="px-2.5 py-1 rounded-md bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 text-[11px] font-semibold cursor-pointer shrink-0"
+                                >
+                                  View Code
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1272,6 +2125,74 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
           </div>
         </SidebarInset>
       </div>
+
+      {/* Inspect Code Modal Popup */}
+      {inspectCodeModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="w-full max-w-3xl bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-sm text-zinc-900 dark:text-zinc-100 font-sans">
+                    {inspectCodeModal.problemTitle}
+                  </h3>
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${
+                    inspectCodeModal.status === 'Accepted'
+                      ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
+                      : inspectCodeModal.status === 'Compile Error'
+                      ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400'
+                      : 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                  }`}>
+                    {inspectCodeModal.status}
+                  </span>
+                </div>
+                <p className="text-xs text-zinc-500 font-mono mt-0.5">
+                  Submitted by {inspectCodeModal.userName} (@{inspectCodeModal.userHandle}) &bull; {inspectCodeModal.language?.toUpperCase()} &bull; {inspectCodeModal.passedCount}/{inspectCodeModal.totalCount} Passed
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(inspectCodeModal.code || '');
+                    setCodeCopied(true);
+                    setTimeout(() => setCodeCopied(false), 2000);
+                  }}
+                  className="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer flex items-center gap-1.5"
+                >
+                  {codeCopied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{codeCopied ? 'Copied' : 'Copy Code'}</span>
+                </button>
+                <button
+                  onClick={() => setInspectCodeModal(null)}
+                  className="w-8 h-8 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center text-zinc-500 cursor-pointer text-lg font-bold"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+
+            {/* Code Body */}
+            <div className="flex-1 overflow-auto p-4 bg-zinc-950 text-zinc-100 font-mono text-xs leading-relaxed select-text">
+              <pre className="whitespace-pre-wrap font-mono">
+                {inspectCodeModal.code || '// No code body recorded for this submission'}
+              </pre>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex items-center justify-between text-[11px] font-mono text-zinc-500">
+              <span>Lines: {inspectCodeModal.linesOfCode || inspectCodeModal.code?.split('\n').length || 1} &bull; Runtime: {inspectCodeModal.runtimeMs}ms &bull; Memory: {inspectCodeModal.memoryMb || '16.4'}MB</span>
+              <button
+                onClick={() => setInspectCodeModal(null)}
+                className="px-4 py-1.5 rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold cursor-pointer"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </SidebarProvider>
   );
 }

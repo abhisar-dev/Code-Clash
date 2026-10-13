@@ -405,12 +405,33 @@ export default function Home() {
 
     const pollPresence = async () => {
       try {
+        const currentActionDesc = isMatchActive
+          ? `In 1v1 Battle (${roomId || 'Arena'})`
+          : activeNavTab === 'problems'
+          ? `Coding: ${currentProblem?.title || 'Problem'} (${selectedLanguage.toUpperCase()})`
+          : activeNavTab === 'leaderboard'
+          ? 'Viewing Campus Leaderboard'
+          : activeNavTab === 'dashboard'
+          ? 'Reviewing DSA Progress & Stats'
+          : `Browsing ${activeNavTab}`;
+
+        const currentPathStr = isMatchActive
+          ? `/arena/${roomId || 'active'}`
+          : activeNavTab === 'problems'
+          ? `/problems/${currentProblem?.id || '1'}`
+          : `/${activeNavTab}`;
+
         const res = await fetch('/api/presence', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'heartbeat',
             user: currentUser,
+            telemetry: {
+              currentPath: currentPathStr,
+              currentAction: currentActionDesc,
+              device: typeof window !== 'undefined' && window.innerWidth < 768 ? 'Mobile' : 'Desktop',
+            },
           }),
         });
         const data = await res.json();
@@ -626,6 +647,8 @@ export default function Home() {
           language: selectedLanguage,
           code: currentCode,
           problemId: currentProblem.id,
+          user: { id: currentUser.id, name: currentUser.name, handle: currentUser.handle },
+          isSubmission: false,
         }),
       });
 
@@ -719,6 +742,8 @@ export default function Home() {
           language: selectedLanguage,
           code: currentCode,
           problemId: currentProblem.id,
+          user: { id: currentUser.id, name: currentUser.name, handle: currentUser.handle },
+          isSubmission: true,
         }),
       });
 

@@ -8,6 +8,11 @@ export interface PresenceUser {
   avatarUrl?: string;
   college: string;
   lastPing: number;
+  connectedAt: number;
+  sessionSeconds: number;
+  currentPath: string;
+  currentAction: string;
+  device?: string;
 }
 
 export interface ChallengeInvite {
@@ -33,13 +38,24 @@ class PresenceManager {
   private users: Map<string, PresenceUser> = new Map();
   private challenges: Map<string, ChallengeInvite> = new Map();
 
-  // Heartbeat ping from an active browser session
-  heartbeat(user: User): {
+  // Heartbeat ping from an active browser session with duration and path tracking
+  heartbeat(
+    user: User,
+    telemetry?: { currentPath?: string; currentAction?: string; device?: string }
+  ): {
     onlineUserIds: string[];
     incomingInvite: ChallengeInvite | null;
     outgoingInvite: ChallengeInvite | null;
   } {
     const now = Date.now();
+    const existing = this.users.get(user.id);
+    
+    // Maintain connectedAt if continuous (or reset if was offline > 30s)
+    const connectedAt = existing && (now - existing.lastPing < 30000)
+      ? existing.connectedAt
+      : now;
+    const sessionSeconds = Math.max(1, Math.floor((now - connectedAt) / 1000));
+
     this.users.set(user.id, {
       id: user.id,
       name: user.name,
@@ -48,6 +64,11 @@ class PresenceManager {
       avatarUrl: user.avatarUrl,
       college: user.college,
       lastPing: now,
+      connectedAt,
+      sessionSeconds,
+      currentPath: telemetry?.currentPath || existing?.currentPath || '/',
+      currentAction: telemetry?.currentAction || existing?.currentAction || 'Exploring platform',
+      device: telemetry?.device || existing?.device || 'Desktop',
     });
 
     // Cleanup expired users (inactive for > 18 seconds)

@@ -71,6 +71,15 @@ export async function GET(req: NextRequest) {
       departmentBreakdown[course] = (departmentBreakdown[course] || 0) + 1;
     });
 
+    const userSessions = db.getUserSessions(100);
+    const auditLogs = db.getUserAuditLogs({ limit: 200 });
+    const submissions = db.getSubmissions(150);
+    const userDurations = db.getUserOnlineDurationsSummary();
+
+    // Calculate total study time
+    const totalOnlineSeconds = userDurations.reduce((acc, u) => acc + (u.totalOnlineSeconds || 0), 0);
+    const totalOnlineHours = Number((totalOnlineSeconds / 3600).toFixed(1));
+
     return NextResponse.json({
       status: 'ok',
       stats: {
@@ -78,11 +87,13 @@ export async function GET(req: NextRequest) {
         totalUsers: allUsers.length,
         totalVisits: stats.totalVisits ?? visits.length,
         totalMatches: matches.length,
-        totalSubmissions: stats.totalSubmissions || 0,
+        totalSubmissions: stats.totalSubmissions || submissions.length || 0,
         totalCodeLinesCompiled: stats.totalCodeLinesCompiled || 0,
         pendingViolations: violations.filter((v) => v.status === 'pending').length,
         activeAnnouncements: announcements.filter((a) => a.active).length,
         messagesSent: messages.length,
+        totalOnlineHours,
+        totalAuditEvents: auditLogs.length,
       },
       onlineUsers,
       allUsers,
@@ -95,6 +106,10 @@ export async function GET(req: NextRequest) {
       daysTrend,
       browserStats,
       departmentBreakdown,
+      userSessions,
+      auditLogs,
+      submissions,
+      userDurations,
     });
   } catch (error) {
     console.error('Admin API error:', error);
@@ -162,6 +177,20 @@ export async function POST(req: NextRequest) {
       });
       await db.flushCloud();
       return NextResponse.json({ success: true, message: msg });
+    }
+
+    if (action === 'record_audit') {
+      const { userId, userName, userHandle, action: act, actionCategory, details, metadata } = body;
+      const log = db.recordUserAudit({
+        userId,
+        userName,
+        userHandle,
+        action: act || 'navigation',
+        actionCategory: actionCategory || 'navigation',
+        details: details || '',
+        metadata,
+      });
+      return NextResponse.json({ success: true, log });
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });

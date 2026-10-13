@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { presenceManager } from '@/lib/presence-store';
+import { db } from '@/lib/database';
 import { User } from '@/lib/auth';
 
 export async function GET() {
@@ -10,18 +11,21 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, user, fromUser, toUser, roomId, challengeId, response } = body;
+    const { action, user, telemetry, fromUser, toUser, roomId, challengeId, response } = body;
 
     if (!action) {
       return NextResponse.json({ error: 'Missing action' }, { status: 400 });
     }
 
-    // 1. Client presence heartbeat & sync
+    // 1. Client presence heartbeat & sync with telemetry
     if (action === 'heartbeat') {
       if (!user?.id) {
         return NextResponse.json({ error: 'Missing user' }, { status: 400 });
       }
-      const data = presenceManager.heartbeat(user as User);
+      const data = presenceManager.heartbeat(user as User, telemetry);
+      try {
+        db.heartbeatUserSession(user, telemetry);
+      } catch {}
       return NextResponse.json(data);
     }
 

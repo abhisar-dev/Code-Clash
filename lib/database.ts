@@ -22,13 +22,26 @@ export interface DbMatch {
 
 export interface ActivityEvent {
   id: string;
-  type: 'match_win' | 'solve' | 'challenge' | 'rating_up';
+  type: 'match_win' | 'solve' | 'challenge' | 'rating_up' | 'login';
   user1Name: string;
   user2Name?: string;
   problemTitle?: string;
   eloChange?: number;
   timeAgo: string;
   timestamp: number;
+}
+
+function formatTimeAgo(timestamp: number): string {
+  const diffMs = Date.now() - timestamp;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  return `${months}mo ago`;
 }
 
 export interface DbVisit {
@@ -76,6 +89,51 @@ export interface DbMessage {
   status: 'sent' | 'draft';
 }
 
+export interface UserAuditLog {
+  id: string;
+  userId: string;
+  userName: string;
+  userHandle: string;
+  action: string;
+  actionCategory: 'dsa' | 'battle' | 'auth' | 'navigation' | 'profile';
+  details: string;
+  metadata?: Record<string, any>;
+  timestamp: number;
+}
+
+export interface DbSubmission {
+  id: string;
+  userId: string;
+  userName: string;
+  userHandle: string;
+  problemId: number;
+  problemTitle: string;
+  language: string;
+  status: 'Accepted' | 'Wrong Answer' | 'Compile Error' | 'Runtime Error';
+  passedCount: number;
+  totalCount: number;
+  runtimeMs: number;
+  memoryMb: number;
+  code: string;
+  linesOfCode: number;
+  timestamp: number;
+}
+
+export interface UserSessionRecord {
+  id: string;
+  userId: string;
+  userName: string;
+  userHandle: string;
+  college?: string;
+  startedAt: number;
+  lastActiveAt: number;
+  durationSeconds: number;
+  currentPath: string;
+  currentAction: string;
+  isLive: boolean;
+  timestamp?: number;
+}
+
 export interface DatabaseSchema {
   users: DbUser[];
   matches: DbMatch[];
@@ -84,6 +142,9 @@ export interface DatabaseSchema {
   violations: DbViolation[];
   announcements: DbAnnouncement[];
   messages: DbMessage[];
+  submissions: DbSubmission[];
+  auditLogs: UserAuditLog[];
+  userSessions: UserSessionRecord[];
   stats: {
     totalSubmissions: number;
     totalMatches: number;
@@ -120,6 +181,9 @@ class DatabaseEngine {
     if (!parsed.violations) parsed.violations = [];
     if (!parsed.announcements) parsed.announcements = [];
     if (!parsed.messages) parsed.messages = [];
+    if (!parsed.submissions) parsed.submissions = [];
+    if (!parsed.auditLogs) parsed.auditLogs = [];
+    if (!parsed.userSessions) parsed.userSessions = [];
     if (!parsed.stats) {
       parsed.stats = {
         totalSubmissions: 0,
@@ -172,6 +236,9 @@ class DatabaseEngine {
       violations: [],
       announcements: [],
       messages: [],
+      submissions: [],
+      auditLogs: [],
+      userSessions: [],
       stats: {
         totalSubmissions: 0,
         totalMatches: 0,
@@ -247,6 +314,9 @@ class DatabaseEngine {
     this.data.violations = mergeById(this.data.violations, remote.violations, 200);
     this.data.announcements = mergeById(this.data.announcements, remote.announcements, 50);
     this.data.messages = mergeById(this.data.messages, remote.messages, 200);
+    this.data.submissions = mergeById(this.data.submissions || [], remote.submissions || [], 500);
+    this.data.auditLogs = mergeById(this.data.auditLogs || [], remote.auditLogs || [], 500);
+    this.data.userSessions = mergeById(this.data.userSessions || [], remote.userSessions || [], 200);
 
     this.data.stats = {
       totalSubmissions: Math.max(this.data.stats.totalSubmissions, remote.stats.totalSubmissions),
@@ -623,6 +693,161 @@ class DatabaseEngine {
 
   public getMatches(limit = 50): DbMatch[] {
     return (this.data.matches || []).slice(0, limit);
+  }
+
+  public heartbeatUserSession(
+    user: { id: string; name: string; handle: string; college?: string },
+    telemetry?: { currentPath?: string; currentAction?: string }
+  ): UserSessionRecord {
+    if (!this.data.userSessions) this.data.userSessions = [];
+    const now = Date.now();
+    const path = telemetry?.currentPath || '/';
+    const action = telemetry?.currentAction || 'Active on platform';
+
+    // Find active session for user (last active within 40 seconds)
+    let activeSession = this.data.userSessions.find(
+      (s) => s.userId === user.id && s.isLive && now - s.lastActiveAt < 40000
+    );
+
+    if (activeSession) {
+      activeSession.lastActiveAt = now;
+      activeSession.durationSeconds = Math.max(1, Math.floor((now - activeSession.startedAt) / 1000));
+      activeSession.currentPath = path;
+      activeSession.currentAction = action;
+    } else {
+      // Mark any old sessions for this user as ended
+      this.data.userSessions.forEach((s) => {
+        if (s.userId === user.id && s.isLive) {
+          s.isLive = false;
+        }
+      });
+
+      activeSession = {
+        id: `sess-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        userId: user.id,
+        userName: user.name,
+        userHandle: user.handle,
+        college: user.college || 'Invertis University',
+        startedAt: now,
+        lastActiveAt: now,
+        durationSeconds: 1,
+        currentPath: path,
+        currentAction: action,
+        isLive: true,
+        timestamp: now,
+      };
+      this.data.userSessions.unshift(activeSession);
+      if (this.data.userSessions.length > 200) this.data.userSessions.pop();
+    }
+
+    // Accumulate online seconds on user record
+    const targetUser = this.data.users.find((u) => u.id === user.id);
+    if (targetUser) {
+      targetUser.totalOnlineSeconds = (targetUser.totalOnlineSeconds || 0) + 4;
+      targetUser.lastActiveAt = now;
+    }
+
+    this.persist();
+    return activeSession;
+  }
+
+  public getUserSessions(limit = 100): UserSessionRecord[] {
+    const now = Date.now();
+    (this.data.userSessions || []).forEach((s) => {
+      if (s.isLive && now - s.lastActiveAt > 25000) {
+        s.isLive = false;
+      }
+    });
+    return (this.data.userSessions || []).slice(0, limit);
+  }
+
+  public recordUserAudit(entry: Omit<UserAuditLog, 'id' | 'timestamp'>): UserAuditLog {
+    if (!this.data.auditLogs) this.data.auditLogs = [];
+    const fullLog: UserAuditLog = {
+      ...entry,
+      id: `audit-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      timestamp: Date.now(),
+    };
+    this.data.auditLogs.unshift(fullLog);
+    if (this.data.auditLogs.length > 500) this.data.auditLogs.pop();
+    this.persist();
+    return fullLog;
+  }
+
+  public getUserAuditLogs(filter?: { userId?: string; category?: string; limit?: number }): UserAuditLog[] {
+    let logs = this.data.auditLogs || [];
+    if (filter?.userId) {
+      logs = logs.filter((l) => l.userId === filter.userId);
+    }
+    if (filter?.category && filter.category !== 'all') {
+      logs = logs.filter((l) => l.actionCategory === filter.category);
+    }
+    return logs.slice(0, filter?.limit || 150);
+  }
+
+  public recordSubmission(sub: Omit<DbSubmission, 'id' | 'timestamp'>): DbSubmission {
+    if (!this.data.submissions) this.data.submissions = [];
+    const fullSub: DbSubmission = {
+      ...sub,
+      id: `sub-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      timestamp: Date.now(),
+    };
+    this.data.submissions.unshift(fullSub);
+    if (this.data.submissions.length > 300) this.data.submissions.pop();
+
+    this.data.stats.totalSubmissions = (this.data.stats.totalSubmissions || 0) + 1;
+    this.data.stats.totalCodeLinesCompiled = (this.data.stats.totalCodeLinesCompiled || 0) + (sub.linesOfCode || 10);
+
+    // Auto-record audit log for this submission
+    this.recordUserAudit({
+      userId: sub.userId,
+      userName: sub.userName,
+      userHandle: sub.userHandle,
+      action: sub.status === 'Accepted' ? 'solve_problem' : 'submit_code',
+      actionCategory: 'dsa',
+      details: `${sub.status}: ${sub.problemTitle} (${sub.language.toUpperCase()}) - ${sub.passedCount}/${sub.totalCount} Passed`,
+      metadata: {
+        problemId: sub.problemId,
+        language: sub.language,
+        runtimeMs: sub.runtimeMs,
+        memoryMb: sub.memoryMb,
+      },
+    });
+
+    this.persist();
+    return fullSub;
+  }
+
+  public getSubmissions(limit = 100): DbSubmission[] {
+    return (this.data.submissions || []).slice(0, limit);
+  }
+
+  public getUserOnlineDurationsSummary() {
+    const now = Date.now();
+    return this.data.users.map((u) => {
+      const userSessions = (this.data.userSessions || []).filter((s) => s.userId === u.id);
+      const totalRecordedSeconds = userSessions.reduce((acc, s) => acc + s.durationSeconds, 0);
+      const lifetimeSeconds = Math.max(u.totalOnlineSeconds || 0, totalRecordedSeconds);
+      const activeSession = userSessions.find((s) => s.isLive && now - s.lastActiveAt < 25000);
+
+      return {
+        userId: u.id,
+        userName: u.name,
+        userHandle: u.handle,
+        college: u.college || 'Invertis University',
+        avatarUrl: u.avatarUrl,
+        elo: u.elo || 1000,
+        course: u.course || 'B.Tech CSE',
+        totalOnlineSeconds: lifetimeSeconds,
+        totalOnlineMinutes: Math.floor(lifetimeSeconds / 60),
+        sessionCount: userSessions.length,
+        isOnline: Boolean(activeSession),
+        activeSessionSeconds: activeSession ? activeSession.durationSeconds : 0,
+        lastActiveAt: u.lastActiveAt || (userSessions[0]?.lastActiveAt) || now,
+        currentPath: activeSession?.currentPath || '/',
+        currentAction: activeSession?.currentAction || 'Offline',
+      };
+    }).sort((a, b) => b.totalOnlineSeconds - a.totalOnlineSeconds);
   }
 
   public getStats() {
