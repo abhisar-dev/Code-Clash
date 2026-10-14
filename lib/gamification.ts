@@ -1,8 +1,9 @@
 // lib/gamification.ts
-// Comprehensive Invertis CodeClash Gamification & Streaks Engine
+// 100% Real-Data Invertis CodeClash Gamification & Streaks Engine
+// ZERO fake data, ZERO mock dates, ZERO synthetic numbers.
 
-import { User } from './auth';
-import { PROBLEMS, Problem } from './problems';
+import { User, getSubmissions, getMatchHistory } from './auth';
+import { PROBLEMS } from './problems';
 
 export interface SkillBadge {
   id: string;
@@ -16,7 +17,6 @@ export interface SkillBadge {
   targetProgress: number;
   unlocked: boolean;
   unlockedAt?: string;
-  matchingCategories?: string[];
 }
 
 export interface Achievement {
@@ -65,9 +65,8 @@ export interface GamificationState {
   unlockedAchievementsCount: number;
 }
 
-const STREAK_DATES_KEY = 'codeclash_streak_dates';
+const REAL_ACTIVITY_DATES_KEY = 'codeclash_real_activity_dates';
 const LONGEST_STREAK_KEY = 'codeclash_longest_streak';
-const SEED_FLAG_KEY = 'codeclash_gamification_seeded';
 
 function getTodayString(): string {
   const d = new Date();
@@ -78,29 +77,21 @@ function formatDateString(d: Date): string {
   return d.toISOString().split('T')[0];
 }
 
-// Seed realistic consecutive active dates for authentic campus user experience
-export function ensureGamificationHistorySeeded(): void {
+// Clean any previous fake/seeded keys from localStorage
+function cleanOldFakeStorage(): void {
   if (typeof window === 'undefined') return;
-  const alreadySeeded = localStorage.getItem(SEED_FLAG_KEY);
-  if (!alreadySeeded) {
-    const dates: string[] = [];
-    const now = new Date();
-    // Seed the past 6 days + today as active for a 7-day streak
-    for (let i = 6; i >= 0; i--) {
-      const past = new Date(now);
-      past.setDate(now.getDate() - i);
-      dates.push(formatDateString(past));
-    }
-    localStorage.setItem(STREAK_DATES_KEY, JSON.stringify(dates));
-    localStorage.setItem(LONGEST_STREAK_KEY, '7');
-    localStorage.setItem(SEED_FLAG_KEY, 'true');
-  }
+  try {
+    localStorage.removeItem('codeclash_gamification_seeded');
+    localStorage.removeItem('codeclash_streak_dates');
+  } catch {}
 }
 
+// Record genuine daily activity when a user actually solves, submits, or plays
 export function recordDailyActivity(dateStr?: string): void {
   if (typeof window === 'undefined') return;
+  cleanOldFakeStorage();
   const target = dateStr || getTodayString();
-  const raw = localStorage.getItem(STREAK_DATES_KEY);
+  const raw = localStorage.getItem(REAL_ACTIVITY_DATES_KEY);
   let dates: string[] = [];
   if (raw) {
     try {
@@ -112,41 +103,62 @@ export function recordDailyActivity(dateStr?: string): void {
   if (!dates.includes(target)) {
     dates.push(target);
     dates.sort();
-    localStorage.setItem(STREAK_DATES_KEY, JSON.stringify(dates));
+    localStorage.setItem(REAL_ACTIVITY_DATES_KEY, JSON.stringify(dates));
   }
 }
 
-export function calculateStreakInfo(): StreakInfo {
+// Calculate 100% REAL streak from actual submissions and activity
+export function calculateStreakInfo(userSubmissions?: any[], userMatches?: any[]): StreakInfo {
   if (typeof window === 'undefined') {
     return {
-      currentStreak: 7,
-      longestStreak: 7,
-      lastActiveDate: getTodayString(),
-      isActiveToday: true,
+      currentStreak: 0,
+      longestStreak: 0,
+      lastActiveDate: '',
+      isActiveToday: false,
       daysHistory: [],
     };
   }
 
-  ensureGamificationHistorySeeded();
+  cleanOldFakeStorage();
 
-  const raw = localStorage.getItem(STREAK_DATES_KEY);
-  let activeDates: string[] = [];
+  // Gather genuine active dates from real submissions and matches
+  const activeDateSet = new Set<string>();
+
+  // 1. From real stored activity key
+  const raw = localStorage.getItem(REAL_ACTIVITY_DATES_KEY);
   if (raw) {
     try {
-      activeDates = JSON.parse(raw);
-    } catch {
-      activeDates = [];
-    }
+      const parsed: string[] = JSON.parse(raw);
+      parsed.forEach((d) => activeDateSet.add(d));
+    } catch {}
   }
 
+  // 2. From real user submissions
+  const subs = userSubmissions || getSubmissions();
+  subs.forEach((s) => {
+    if (s.timestamp && s.status === 'Accepted') {
+      activeDateSet.add(new Date(s.timestamp).toISOString().split('T')[0]);
+    }
+  });
+
+  // 3. From real user match records
+  const matches = userMatches || getMatchHistory();
+  matches.forEach((m) => {
+    if (m.timestamp) {
+      activeDateSet.add(new Date(m.timestamp).toISOString().split('T')[0]);
+    }
+  });
+
+  const activeDates = Array.from(activeDateSet).sort();
   const todayStr = getTodayString();
   const isActiveToday = activeDates.includes(todayStr);
 
-  // Calculate current streak
+  // Calculate actual consecutive streak leading up to today (or yesterday if not yet active today)
   let currentStreak = 0;
   const checkDate = new Date();
+
   if (!isActiveToday) {
-    // If not active today, check if yesterday was active to keep streak alive
+    // If not active yet today, check if yesterday was active
     checkDate.setDate(checkDate.getDate() - 1);
   }
 
@@ -160,12 +172,12 @@ export function calculateStreakInfo(): StreakInfo {
     }
   }
 
-  // Update longest streak
+  // Update actual longest streak
   const savedLongest = parseInt(localStorage.getItem(LONGEST_STREAK_KEY) || '0', 10);
-  const longestStreak = Math.max(savedLongest, currentStreak, 7);
+  const longestStreak = Math.max(savedLongest, currentStreak);
   localStorage.setItem(LONGEST_STREAK_KEY, longestStreak.toString());
 
-  // Generate 7-day weekly history window (Mon to Sun of current week)
+  // Generate real 7-day weekly history window (Mon to Sun of current week)
   const now = new Date();
   const dayOfWeek = (now.getDay() + 6) % 7; // 0 for Mon, 6 for Sun
   const monday = new Date(now);
@@ -192,13 +204,13 @@ export function calculateStreakInfo(): StreakInfo {
     });
   }
 
-  // Streak notification
+  // Real, genuine streak notification
   let notification: StreakInfo['notification'] = undefined;
   if (currentStreak >= 7) {
     notification = {
       type: 'milestone',
       title: `${currentStreak}-Day Coding Streak Active`,
-      message: `Outstanding discipline! You have unlocked the Streak Warrior badge and 7-Day Consistency King milestone.`,
+      message: `Outstanding consistency! You have unlocked the Streak Warrior badge with ${currentStreak} consecutive days.`,
     };
   } else if (!isActiveToday && currentStreak > 0) {
     notification = {
@@ -217,14 +229,14 @@ export function calculateStreakInfo(): StreakInfo {
   return {
     currentStreak,
     longestStreak,
-    lastActiveDate: activeDates[activeDates.length - 1] || todayStr,
+    lastActiveDate: activeDates[activeDates.length - 1] || '',
     isActiveToday,
     daysHistory,
     notification,
   };
 }
 
-// Full Gamification Engine
+// 100% Real-Data Gamification Engine
 export function computeGamification(
   currentUser: User | null,
   solvedProblemIds: string[] = [],
@@ -243,12 +255,12 @@ export function computeGamification(
     course: 'B.Tech CSE',
   };
 
-  const streak = calculateStreakInfo();
-  const department = user.course || 'B.Tech CSE';
+  const streak = calculateStreakInfo(submissions, matchHistory);
+  const department = (user.course || 'B.Tech CSE').trim();
 
-  // 1. Calculate problem category counts from solvedProblemIds
+  // 1. Calculate REAL problem category counts from actual solvedProblemIds
   const solvedProblems = PROBLEMS.filter((p) => solvedProblemIds.includes(p.id));
-  
+
   const arraySolved = solvedProblems.filter((p) =>
     ['Arrays & Hashing', 'Two Pointers', 'Sliding Window'].includes(p.category)
   ).length;
@@ -266,21 +278,20 @@ export function computeGamification(
   ).length;
 
   const stringSolved = solvedProblems.filter((p) =>
-    ['String', 'Strings', 'Two Pointers'].includes(p.category)
+    ['String', 'Strings'].includes(p.category)
   ).length;
 
-  // Fast solutions (< 3 mins = 180,000 ms)
+  // Real fast solutions (< 3 mins = 180,000 ms runtime or match)
   const fastSubmissions = submissions.filter((s) => s.status === 'Accepted' && (s.runtimeMs || 0) < 180000);
-  const fastMatches = matchHistory.filter((m) => m.outcome === 'Won');
-  const speedCount = fastSubmissions.length > 0 || fastMatches.length > 0 ? 1 : 0;
+  const speedCount = fastSubmissions.length;
 
   // Clean sheet (first attempt 100% pass)
-  const cleanSheetCount = submissions.filter((s) => s.status === 'Accepted').length > 0 ? 1 : 0;
+  const cleanSheetCount = submissions.filter((s) => s.status === 'Accepted').length;
 
-  // Distinct languages used
+  // Distinct languages used in actual submissions
   const languagesUsed = new Set(submissions.map((s) => s.language).filter(Boolean));
 
-  // 2. Define Skill Badges
+  // 2. Define Skill Badges (Unlocked strictly if real requirement is met!)
   const badges: SkillBadge[] = [
     {
       id: 'array_master',
@@ -292,7 +303,7 @@ export function computeGamification(
       tier: 'Gold',
       currentProgress: Math.min(3, arraySolved),
       targetProgress: 3,
-      unlocked: arraySolved >= 3 || solvedProblemIds.length >= 3,
+      unlocked: arraySolved >= 3,
       unlockedAt: arraySolved >= 3 ? 'Unlocked' : undefined,
     },
     {
@@ -313,12 +324,12 @@ export function computeGamification(
       title: 'Speed Runner',
       category: 'Speed & Precision',
       description: 'Lightning-fast submissions and high APM inside the 1v1 Arena.',
-      requirement: 'Solve a problem or win a 1v1 duel in record time',
+      requirement: 'Solve a problem with tests passing in under 3 minutes',
       iconName: 'zap',
       tier: 'Gold',
-      currentProgress: speedCount,
+      currentProgress: Math.min(1, speedCount),
       targetProgress: 1,
-      unlocked: speedCount >= 1 || (user.matchesWon || 0) >= 1,
+      unlocked: speedCount >= 1,
       unlockedAt: speedCount >= 1 ? 'Unlocked' : undefined,
     },
     {
@@ -357,7 +368,7 @@ export function computeGamification(
       tier: 'Bronze',
       currentProgress: Math.min(2, stringSolved),
       targetProgress: 2,
-      unlocked: stringSolved >= 2 || solvedProblemIds.length >= 2,
+      unlocked: stringSolved >= 2,
       unlockedAt: stringSolved >= 2 ? 'Unlocked' : undefined,
     },
     {
@@ -381,9 +392,9 @@ export function computeGamification(
       requirement: 'Submit accepted solution on first attempt',
       iconName: 'check',
       tier: 'Silver',
-      currentProgress: cleanSheetCount,
+      currentProgress: Math.min(1, cleanSheetCount),
       targetProgress: 1,
-      unlocked: cleanSheetCount >= 1 || solvedProblemIds.length >= 1,
+      unlocked: cleanSheetCount >= 1,
       unlockedAt: cleanSheetCount >= 1 ? 'Unlocked' : undefined,
     },
     {
@@ -414,10 +425,10 @@ export function computeGamification(
     },
   ];
 
-  // 3. Department & Global Rank Computations
+  // 3. Department & Global Rank Computations (strictly based on actual list position)
   const sortedGlobal = [...allContestants].sort((a, b) => (b.elo || 1000) - (a.elo || 1000));
   const globalUserIdx = sortedGlobal.findIndex((u) => u.id === user.id || u.handle === user.handle);
-  const globalRankNum = globalUserIdx >= 0 ? globalUserIdx + 1 : Math.min(2, allContestants.length + 1);
+  const globalRankNum = globalUserIdx >= 0 ? globalUserIdx + 1 : sortedGlobal.length + 1;
 
   // Department specific contestants
   const deptContestants = allContestants.filter(
@@ -425,7 +436,7 @@ export function computeGamification(
   ).sort((a, b) => (b.elo || 1000) - (a.elo || 1000));
 
   const deptUserIdx = deptContestants.findIndex((u) => u.id === user.id || u.handle === user.handle);
-  const deptRankNum = deptUserIdx >= 0 ? deptUserIdx + 1 : 1;
+  const deptRankNum = deptUserIdx >= 0 ? deptUserIdx + 1 : deptContestants.length + 1;
 
   // 4. Define Milestones & Achievements
   const achievements: Achievement[] = [
@@ -487,13 +498,13 @@ export function computeGamification(
     {
       id: 'speed_demon',
       title: 'Speed Demon',
-      description: 'Submit an accepted solution or win a duel in under 3 minutes',
+      description: 'Submit an accepted solution in under 3 minutes',
       rewardPoints: 100,
       category: 'Speed',
       iconName: 'zap',
-      currentProgress: speedCount,
+      currentProgress: Math.min(1, speedCount),
       targetProgress: 1,
-      unlocked: speedCount >= 1 || (user.matchesWon || 0) >= 1,
+      unlocked: speedCount >= 1,
     },
     {
       id: 'dept_top3',
@@ -502,9 +513,9 @@ export function computeGamification(
       rewardPoints: 200,
       category: 'Milestone',
       iconName: 'graduation',
-      currentProgress: deptRankNum <= 3 ? 1 : 0,
+      currentProgress: deptRankNum <= 3 && deptContestants.length > 0 ? 1 : 0,
       targetProgress: 1,
-      unlocked: deptRankNum <= 3,
+      unlocked: deptRankNum <= 3 && deptContestants.length > 0,
     },
     {
       id: 'streak_7',
@@ -524,7 +535,7 @@ export function computeGamification(
       rewardPoints: 75,
       category: 'Mastery',
       iconName: 'globe',
-      currentProgress: Math.min(2, Math.max(1, languagesUsed.size)),
+      currentProgress: Math.min(2, languagesUsed.size),
       targetProgress: 2,
       unlocked: languagesUsed.size >= 2,
     },
@@ -541,8 +552,8 @@ export function computeGamification(
     },
   ];
 
-  // 5. Clash Points Calculation
-  let clashPoints = 100; // Base Welcome XP
+  // 5. Real Clash Points Calculation
+  let clashPoints = 0; // Pure earned XP
   clashPoints += (solvedProblemIds.length || 0) * 25; // 25 pts per solved problem
   clashPoints += (user.matchesWon || 0) * 30; // 30 pts per match won
   achievements.forEach((a) => {
@@ -562,7 +573,7 @@ export function computeGamification(
       rank: deptRankNum,
       total: Math.max(1, deptContestants.length),
       department,
-      isTop3: deptRankNum <= 3,
+      isTop3: deptRankNum <= 3 && deptContestants.length > 0,
     },
     unlockedBadgesCount: badges.filter((b) => b.unlocked).length,
     unlockedAchievementsCount: achievements.filter((a) => a.unlocked).length,

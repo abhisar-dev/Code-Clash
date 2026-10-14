@@ -35,7 +35,10 @@ export interface ActivityEvent {
 function formatTimeAgo(timestamp: number): string {
   const diffMs = Math.max(0, Date.now() - timestamp);
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return '2m ago';
+  if (mins < 1) {
+    const secs = Math.max(1, Math.floor(diffMs / 1000));
+    return `${secs}s ago`;
+  }
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours}h ago`;
@@ -217,17 +220,16 @@ class DatabaseEngine {
     if (!parsed.siteSettings) parsed.siteSettings = { ...DEFAULT_SITE_SETTINGS };
     if (!parsed.customProblems) parsed.customProblems = [];
     if (!parsed.blockedIps) parsed.blockedIps = [];
-    if (!parsed.stats) {
-      parsed.stats = {
-        totalSubmissions: 0,
-        totalMatches: 0,
-        totalCodeLinesCompiled: 0,
-        totalVisits: 0,
-      };
-    }
-    if (parsed.stats.totalVisits === undefined) {
-      parsed.stats.totalVisits = parsed.visits.length;
-    }
+    const totalLines = (parsed.submissions || []).reduce(
+      (acc: number, s: any) => acc + (s.linesOfCode || (s.code ? s.code.split('\n').length : 0)),
+      0
+    );
+    parsed.stats = {
+      totalSubmissions: parsed.submissions?.length || 0,
+      totalMatches: parsed.matches?.length || 0,
+      totalCodeLinesCompiled: totalLines,
+      totalVisits: parsed.visits?.length || 0,
+    };
     return parsed as DatabaseSchema;
   }
 
@@ -1253,10 +1255,16 @@ class DatabaseEngine {
   }
 
   public getStats() {
+    const totalLines = (this.data.submissions || []).reduce(
+      (acc, s) => acc + (s.linesOfCode || (s.code ? s.code.split('\n').length : 0)),
+      0
+    );
     return {
-      ...this.data.stats,
+      totalSubmissions: this.data.submissions?.length || 0,
+      totalMatches: this.data.matches?.length || 0,
+      totalCodeLinesCompiled: totalLines,
       totalUsers: this.data.users.length,
-      totalVisits: this.data.stats.totalVisits || this.data.visits?.length || 0,
+      totalVisits: this.data.visits?.length || 0,
       activeMatches: 0,
       pendingViolations: (this.data.violations || []).filter((v) => v.status === 'pending').length,
     };

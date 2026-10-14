@@ -74,13 +74,16 @@ export async function POST(req: NextRequest) {
 
       // If no human currently in queue, find closest competitive peer from database registry
       const allUsers = db.getUsers().filter((u) => u.id !== user.id);
-      const randomOpponent = allUsers[Math.floor(Math.random() * allUsers.length)] || {
-        id: 'user-priya',
-        name: 'Priya Patel',
-        handle: 'priyadevelops',
-        college: 'Invertis University',
-        elo: 1285,
-      };
+      const randomOpponent = allUsers.length > 0
+        ? allUsers[Math.floor(Math.random() * allUsers.length)]
+        : {
+            id: 'bot-clash-ai',
+            name: 'CodeClash Bot',
+            handle: 'clash_bot',
+            college: 'Invertis University',
+            elo: 1100,
+            avatarUrl: '',
+          };
 
       const roomId = `CLASH-1V1-${Math.floor(1000 + Math.random() * 9000)}`;
       const contestProblems = getRandomContestProblems();
@@ -105,7 +108,7 @@ export async function POST(req: NextRequest) {
       const p2: Player = {
         id: randomOpponent.id,
         name: randomOpponent.name,
-        avatar: randomOpponent.avatarUrl || '',
+        avatar: ('avatarUrl' in randomOpponent ? (randomOpponent.avatarUrl as string) : '') || '',
         elo: randomOpponent.elo,
         isTyping: false,
         currentQuestionIndex: 0,

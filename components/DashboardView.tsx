@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { User, getRegisteredUsers, getTier, getMatchHistory, MatchRecord } from '@/lib/auth';
+import { User, getRegisteredUsers, getTier, getMatchHistory, getSubmissions, MatchRecord } from '@/lib/auth';
 import { Avatar } from '@/components/Avatar';
 import {
   Swords,
@@ -152,8 +152,9 @@ export function DashboardView({
   };
 
   const contestBadge = getContestBadge(currentElo);
-  const streakInfo = calculateStreakInfo();
-  const gamificationState = computeGamification(user, solvedProblemIds, [], matchHistory, getRegisteredUsers());
+  const userSubmissions = getSubmissions();
+  const streakInfo = calculateStreakInfo(userSubmissions, matchHistory);
+  const gamificationState = computeGamification(user, solvedProblemIds, userSubmissions, matchHistory, getRegisteredUsers());
 
   return (
     <div className="h-full overflow-y-auto p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-5xl mx-auto space-y-6">

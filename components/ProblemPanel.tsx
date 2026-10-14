@@ -440,10 +440,10 @@ export function ProblemPanel({ problem }: ProblemPanelProps) {
                       {sol.title}
                     </h3>
                     <div className="flex items-center gap-2 mt-0.5 text-[11px] text-zinc-400 font-mono">
-                      <span>@{sol.author}</span>
+                      <span>{sol.author}</span>
                       <span>•</span>
-                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                        ▲ {sol.votes} votes
+                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold uppercase">
+                        {sol.language}
                       </span>
                     </div>
                   </div>

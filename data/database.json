@@ -170,12 +170,22 @@
     }
   ],
   "stats": {
-    "totalSubmissions": 54,
-    "totalMatches": 24,
-    "totalCodeLinesCompiled": 4288,
-    "totalVisits": 171
+    "totalSubmissions": 13,
+    "totalMatches": 4,
+    "totalCodeLinesCompiled": 230,
+    "totalVisits": 140
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791982895517-368",
+      "timestamp": 1791982895517
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
@@ -2084,6 +2094,20 @@
     }
   ],
   "userSessions": [
+    {
+      "id": "sess-1791982859233-662",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791982859233,
+      "lastActiveAt": 1791982923101,
+      "durationSeconds": 63,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1791982859233
+    },
     {
       "id": "sess-1791973228725-72",
       "userId": "user-1791693341107-393",

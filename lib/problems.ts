@@ -7272,29 +7272,29 @@ export function getProblemEditorial(problem: Problem) {
   };
 }
 
-// Curated Community Solutions
+// Curated Reference Solutions
 export function getProblemSolutions(problem: Problem) {
   return [
     {
-      title: `Optimal O(N) Clean ${problem.starterCode.python ? 'Python3' : 'Standard'} Solution (Beats 99%)`,
-      author: 'stefan_d',
-      votes: Math.floor(problem.title.length * 47 + 100),
+      title: `Optimal O(N) Clean ${problem.starterCode.python ? 'Python3' : 'Standard'} Solution`,
+      author: 'CodeClash Editorial',
+      votes: 0,
       language: 'python',
       code: problem.starterCode.python.replace('pass', '# Optimal One-Pass Hash Table\n        lookup = {}\n        # Process sequence with O(1) state lookup\n        return []'),
       explanation: 'Uses a dictionary for instant O(1) lookup of required elements, minimizing both computational passes and auxiliary overhead.',
     },
     {
       title: `High-Performance Modern C++ In-Place Solution`,
-      author: 'alex_code',
-      votes: Math.floor(problem.title.length * 31 + 50),
+      author: 'CodeClash Editorial',
+      votes: 0,
       language: 'cpp',
       code: problem.starterCode.cpp,
       explanation: 'Memory-efficient C++ solution leveraging std::unordered_map with pre-reserved bucket capacity for zero-allocation performance.',
     },
     {
-      title: `Clean Idiomatic Java with Detailed Comments`,
-      author: 'priya_dev',
-      votes: Math.floor(problem.title.length * 23 + 30),
+      title: `Clean Idiomatic Java Solution`,
+      author: 'CodeClash Editorial',
+      votes: 0,
       language: 'java',
       code: problem.starterCode.java,
       explanation: 'Readable enterprise-grade Java solution using HashMap with fast-fail boundary checks.',
