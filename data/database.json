@@ -170,12 +170,32 @@
     }
   ],
   "stats": {
-    "totalSubmissions": 52,
+    "totalSubmissions": 54,
     "totalMatches": 24,
-    "totalCodeLinesCompiled": 4280,
-    "totalVisits": 170
+    "totalCodeLinesCompiled": 4288,
+    "totalVisits": 171
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "14.139.238.197",
+      "id": "visit-1791973226272-664",
+      "timestamp": 1791973226272
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1791918886035-136",
+      "timestamp": 1791918886035
+    },
     {
       "path": "/",
       "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
@@ -1450,6 +1470,23 @@
   "messages": [],
   "submissions": [
     {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "problemId": 1,
+      "problemTitle": "1. Two Sum",
+      "language": "python",
+      "status": "Wrong Answer",
+      "passedCount": 0,
+      "totalCount": 5,
+      "runtimeMs": 0.24,
+      "memoryMb": 16.4,
+      "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        pass\n",
+      "linesOfCode": 4,
+      "id": "sub-1791973244322-174",
+      "timestamp": 1791973244322
+    },
+    {
       "id": "sub-1791900703353",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
@@ -1655,6 +1692,22 @@
     }
   ],
   "auditLogs": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "action": "submit_code",
+      "actionCategory": "dsa",
+      "details": "Wrong Answer: 1. Two Sum (PYTHON) - 0/5 Passed",
+      "metadata": {
+        "problemId": 1,
+        "language": "python",
+        "runtimeMs": 0.24,
+        "memoryMb": 16.4
+      },
+      "id": "audit-1791973244322-358",
+      "timestamp": 1791973244322
+    },
     {
       "id": "audit-1791900703353",
       "userId": "user-1791693341107-393",
@@ -2031,6 +2084,48 @@
     }
   ],
   "userSessions": [
+    {
+      "id": "sess-1791973228725-72",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791973228725,
+      "lastActiveAt": 1791973963717,
+      "durationSeconds": 734,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1791973228725
+    },
+    {
+      "id": "sess-1791973226255-32",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791973226255,
+      "lastActiveAt": 1791973226255,
+      "durationSeconds": 1,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": false,
+      "timestamp": 1791973226255
+    },
+    {
+      "id": "sess-1791918880606-43",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhishek",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1791918880606,
+      "lastActiveAt": 1791918880606,
+      "durationSeconds": 1,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1791918880606
+    },
     {
       "id": "sess-1791915582481-432",
       "userId": "user-1791693341107-393",

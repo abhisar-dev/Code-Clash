@@ -30,6 +30,7 @@ import {
   FileCheck,
 } from 'lucide-react';
 import { PROBLEMS, Problem, getProblemCompanies, getProblemTags } from '@/lib/problems';
+import { calculateStreakInfo, computeGamification } from '@/lib/gamification';
 
 interface DashboardViewProps {
   user: User;
@@ -151,6 +152,8 @@ export function DashboardView({
   };
 
   const contestBadge = getContestBadge(currentElo);
+  const streakInfo = calculateStreakInfo();
+  const gamificationState = computeGamification(user, solvedProblemIds, [], matchHistory, getRegisteredUsers());
 
   return (
     <div className="h-full overflow-y-auto p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-5xl mx-auto space-y-6">
@@ -491,8 +494,27 @@ export function DashboardView({
                   <Flame className="w-3.5 h-3.5 text-orange-500 fill-current" />
                   <span>Daily Streak</span>
                 </span>
-                <span className="font-bold text-orange-500">{solvedProblemIds.length > 0 ? solvedProblemIds.length : 0} Days</span>
+                <span className="font-bold text-orange-500">{streakInfo.currentStreak} Days</span>
               </div>
+
+              {/* Earned Badges Mini-Pills */}
+              {gamificationState.badges.filter((b) => b.unlocked).length > 0 && (
+                <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                  {gamificationState.badges.filter((b) => b.unlocked).slice(0, 2).map((b) => (
+                    <span
+                      key={b.id}
+                      className="px-1.5 py-0.5 rounded text-[9px] font-mono font-medium bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                    >
+                      {b.title}
+                    </span>
+                  ))}
+                  {gamificationState.unlockedBadgesCount > 2 && (
+                    <span className="text-[9px] font-mono text-zinc-400">
+                      +{gamificationState.unlockedBadgesCount - 2} more
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="p-2.5 rounded-lg bg-zinc-100/80 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/50 space-y-1">
                 <div className="flex items-center justify-between text-[11px]">

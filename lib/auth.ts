@@ -24,6 +24,12 @@ export interface User {
   followingCount?: number;
   totalOnlineSeconds?: number;
   lastActiveAt?: number;
+  // Gamification & Streaks
+  streak?: number;
+  longestStreak?: number;
+  clashPoints?: number;
+  badges?: string[];
+  achievements?: string[];
 }
 
 export interface StoredAccount {

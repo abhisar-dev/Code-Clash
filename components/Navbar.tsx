@@ -213,6 +213,11 @@ export function Navbar({
                     NEW
                   </span>
                 )}
+                {tab.id === 'leaderboard' && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-purple-500/20 text-purple-700 dark:text-purple-400">
+                    RANKS
+                  </span>
+                )}
               </button>
             );
           })}

@@ -1227,6 +1227,8 @@ export default function Home() {
           onChallengeUser={handleInitiateLeaderboardChallenge}
           onOpenShareInvite={() => setIsShareModalOpen(true)}
           onlineUserIds={onlineUserIds}
+          solvedProblemIds={solvedProblemIds}
+          onNavigateToDaily={() => setActiveNavTab('arena')}
         />
       )}
 

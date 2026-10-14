@@ -22,7 +22,11 @@ import {
   ArrowLeft,
   FileText,
   Award,
+  Flame,
+  Trophy,
+  Zap,
 } from 'lucide-react';
+import { calculateStreakInfo, computeGamification } from '@/lib/gamification';
 
 const GithubIcon = ({ className = 'w-3.5 h-3.5' }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -55,6 +59,9 @@ export function ProfileView({
   const [isEditing, setIsEditing] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const streakInfo = calculateStreakInfo();
+  const gamification = computeGamification(user);
 
   // Form State
   const [name, setName] = useState(user.name || '');
@@ -299,17 +306,58 @@ export function ProfileView({
             </div>
 
             <div className="mt-6 grid grid-cols-2 overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-              <div className="border-r border-zinc-200 px-4 py-3 text-center">
-                <div className="text-3xl font-black tracking-[-0.08em] text-zinc-900">{user.followersCount || 0}</div>
-                <div className="mt-1 text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-zinc-400">
+              <div className="border-r border-b border-zinc-200 px-3 py-3 text-center">
+                <div className="text-2xl font-black tracking-[-0.08em] text-zinc-900">{user.followersCount || 0}</div>
+                <div className="mt-0.5 text-[9px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-400">
                   Followers
                 </div>
               </div>
-              <div className="px-4 py-3 text-center">
-                <div className="text-3xl font-black tracking-[-0.08em] text-zinc-900">{user.followingCount || 0}</div>
-                <div className="mt-1 text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-zinc-400">
+              <div className="border-b border-zinc-200 px-3 py-3 text-center">
+                <div className="text-2xl font-black tracking-[-0.08em] text-zinc-900">{user.followingCount || 0}</div>
+                <div className="mt-0.5 text-[9px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-400">
                   Following
                 </div>
+              </div>
+              <div className="border-r border-zinc-200 px-3 py-3 text-center">
+                <div className="text-2xl font-black tracking-[-0.08em] text-orange-500 font-mono flex items-center justify-center gap-1">
+                  <Flame className="w-4 h-4 fill-current" />
+                  <span>{streakInfo.currentStreak}d</span>
+                </div>
+                <div className="mt-0.5 text-[9px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-400">
+                  Daily Streak
+                </div>
+              </div>
+              <div className="px-3 py-3 text-center">
+                <div className="text-2xl font-black tracking-[-0.08em] text-amber-500 font-mono">
+                  {gamification.clashPoints}
+                </div>
+                <div className="mt-0.5 text-[9px] font-mono font-bold uppercase tracking-[0.15em] text-zinc-400">
+                  Clash Points
+                </div>
+              </div>
+            </div>
+
+            {/* Earned Badges Showcase */}
+            <div className="mt-3 p-3.5 rounded-2xl border border-zinc-200 bg-white space-y-2 text-left">
+              <div className="flex items-center justify-between text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
+                <span className="flex items-center gap-1.5">
+                  <Award className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Skill Badges</span>
+                </span>
+                <span className="text-zinc-400 text-[10px]">
+                  {gamification.unlockedBadgesCount} / {gamification.badges.length}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {gamification.badges.filter((b) => b.unlocked).map((b) => (
+                  <span
+                    key={b.id}
+                    title={b.description}
+                    className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-semibold bg-amber-500/10 text-amber-600 border border-amber-500/20"
+                  >
+                    {b.title}
+                  </span>
+                ))}
               </div>
             </div>
 
