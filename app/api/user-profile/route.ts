@@ -45,6 +45,9 @@ export async function GET(req: NextRequest) {
     }
 
     const safeUser = toSafeUser(user);
+    if (safeUser.handle === 'abhisarkumar70' || safeUser.email === 'abhisarkumar70@gmail.com') {
+      safeUser.name = 'Abhisar';
+    }
 
     // 1. Calculate Real Student Ranking (Global & Department)
     const activeContestants = allDbUsers
@@ -195,7 +198,10 @@ export async function GET(req: NextRequest) {
         timeAgo: formatElapsed(s.timestamp),
       })),
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.digest === 'NEXT_PRERENDER_INTERRUPTED' || error?.message?.includes('prerender')) {
+      throw error;
+    }
     console.error('User Profile API Error:', error);
     return NextResponse.json({ error: 'Internal server error fetching profile' }, { status: 500 });
   }

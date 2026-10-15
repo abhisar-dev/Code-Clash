@@ -99,12 +99,20 @@ export function LeaderboardView({
         if (res.ok) {
           const data = await res.json();
           if (data.contestants && Array.isArray(data.contestants) && isMounted) {
-            // Merge with local user if not present
-            let merged = [...data.contestants];
-            if (localCurrent && !merged.some((u) => u.id === localCurrent.id || u.handle === localCurrent.handle)) {
+            // Merge with local user if not present & synchronize active profile name
+            let merged = data.contestants.map((u: User) => {
+              if (localCurrent && (u.id === localCurrent.id || (localCurrent.handle && u.handle?.toLowerCase() === localCurrent.handle?.toLowerCase()))) {
+                return { ...u, name: localCurrent.name || u.name };
+              }
+              if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+                return { ...u, name: 'Abhisar' };
+              }
+              return u;
+            });
+            if (localCurrent && !merged.some((u: User) => u.id === localCurrent.id || u.handle === localCurrent.handle)) {
               merged.push(localCurrent);
             }
-            setUsers(merged.sort((a, b) => (b.elo || 1000) - (a.elo || 1000)));
+            setUsers(merged.sort((a: User, b: User) => (b.elo || 1000) - (a.elo || 1000)));
             setLoading(false);
             return;
           }
@@ -115,7 +123,15 @@ export function LeaderboardView({
 
       // Fallback to local registered users
       if (isMounted) {
-        const localList = getRegisteredUsers();
+        const localList = getRegisteredUsers().map((u: User) => {
+          if (localCurrent && (u.id === localCurrent.id || (localCurrent.handle && u.handle?.toLowerCase() === localCurrent.handle?.toLowerCase()))) {
+            return { ...u, name: localCurrent.name || u.name };
+          }
+          if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+            return { ...u, name: 'Abhisar' };
+          }
+          return u;
+        });
         setUsers(localList);
         setLoading(false);
       }

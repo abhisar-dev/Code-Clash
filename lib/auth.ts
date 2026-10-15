@@ -143,6 +143,13 @@ export function getStoredAccounts(): StoredAccount[] {
     } catch {}
   }
 
+  accounts = accounts.map((a) => {
+    if (a?.user?.handle === 'abhisarkumar70' || a?.user?.email === 'abhisarkumar70@gmail.com') {
+      return { ...a, user: { ...a.user, name: 'Abhisar' } };
+    }
+    return a;
+  });
+
   localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
   return accounts;
 }
@@ -166,6 +173,9 @@ export function getCurrentUser(): User | null {
     if (!user.handle) user.handle = 'coder';
     if (!user.email) user.email = 'guest@invertis.ac.in';
     if (!user.college) user.college = 'Invertis University';
+    if (user.handle === 'abhisarkumar70' || user.email === 'abhisarkumar70@gmail.com') {
+      user.name = 'Abhisar';
+    }
     return user;
   } catch {
     return null;
@@ -233,7 +243,12 @@ export function getRegisteredUsers(): User[] {
   }
 
   // Exclude admin/ambassador entirely
-  users = users.filter((u) => !isCampusAdminOrAmbassador(u));
+  users = users.filter((u) => !isCampusAdminOrAmbassador(u)).map((u) => {
+    if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+      return { ...u, name: 'Abhisar' };
+    }
+    return u;
+  });
 
   // Save back normalized list
   localStorage.setItem(USERS_REGISTRY_KEY, JSON.stringify(users));

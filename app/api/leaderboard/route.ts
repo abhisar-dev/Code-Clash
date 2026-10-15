@@ -17,8 +17,13 @@ export async function GET() {
       })
       .map((u) => {
         const safe = toSafeUser(u);
+        const name =
+          safe.handle === 'abhisarkumar70' || safe.email === 'abhisarkumar70@gmail.com'
+            ? 'Abhisar'
+            : safe.name;
         return {
           ...safe,
+          name,
           course: safe.course || 'B.Tech CSE',
           elo: safe.elo || 1000,
           matchesWon: safe.matchesWon || 0,

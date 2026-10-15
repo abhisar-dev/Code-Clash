@@ -13,21 +13,22 @@ const min = 60 * 1000;
 const hour = 60 * min;
 const day = 24 * hour;
 
-// Users: Abhishek, ahqaf, Rocky
-const abhishek = data.users.find((u) => u.handle?.includes('abhisar') || u.name?.toLowerCase().includes('abhishek')) || data.users[1];
+// Users: Abhisar, ahqaf, Rocky
+const abhisar = data.users.find((u) => u.handle?.includes('abhisar') || u.name?.toLowerCase().includes('abhisar')) || data.users[1];
 const ahqaf = data.users.find((u) => u.handle?.includes('ahqaf')) || data.users[0];
 const rocky = data.users.find((u) => u.handle?.includes('subhajit') || u.name?.toLowerCase().includes('rocky')) || data.users[2];
 
 // Update competitive ratings and records
-if (abhishek) {
-  abhishek.elo = 1248;
-  abhishek.matchesWon = 12;
-  abhishek.matchesPlayed = 15;
-  abhishek.totalOnlineSeconds = 18 * 3600 + 42 * 60; // 18h 42m
-  abhishek.lastActiveAt = now - 4 * min;
-  abhishek.course = 'B.Tech CSE';
-  abhishek.studentId = 'IU212234';
-  abhishek.bio = 'DSA Competitor & Full Stack Dev | Core Team Invertis';
+if (abhisar) {
+  abhisar.name = 'Abhisar';
+  abhisar.elo = 1248;
+  abhisar.matchesWon = 12;
+  abhisar.matchesPlayed = 15;
+  abhisar.totalOnlineSeconds = 18 * 3600 + 42 * 60; // 18h 42m
+  abhisar.lastActiveAt = now - 4 * min;
+  abhisar.course = 'B.Tech CSE';
+  abhisar.studentId = 'IU212234';
+  abhisar.bio = 'DSA Competitor & Full Stack Dev | Core Team Invertis';
 }
 
 if (ahqaf) {
@@ -54,12 +55,12 @@ if (rocky) {
 
 // 1. Realistic Historical User Sessions
 const userSessions = [
-  // Abhishek Sessions
+  // Abhisar Sessions
   {
     id: `sess-${now - 4 * min}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     college: 'Invertis University',
     startedAt: now - 52 * min,
     lastActiveAt: now - 4 * min,
@@ -71,9 +72,9 @@ const userSessions = [
   },
   {
     id: `sess-${now - 4 * hour}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     college: 'Invertis University',
     startedAt: now - 5 * hour - 14 * min,
     lastActiveAt: now - 4 * hour,
@@ -85,9 +86,9 @@ const userSessions = [
   },
   {
     id: `sess-${now - 1 * day}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     college: 'Invertis University',
     startedAt: now - 1 * day - 65 * min,
     lastActiveAt: now - 1 * day,
@@ -99,9 +100,9 @@ const userSessions = [
   },
   {
     id: `sess-${now - 1 * day - 4 * hour}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     college: 'Invertis University',
     startedAt: now - 1 * day - 4 * hour - 42 * min,
     lastActiveAt: now - 1 * day - 4 * hour,
@@ -113,9 +114,9 @@ const userSessions = [
   },
   {
     id: `sess-${now - 2 * day}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     college: 'Invertis University',
     startedAt: now - 2 * day - 58 * min,
     lastActiveAt: now - 2 * day,
@@ -219,9 +220,9 @@ const userSessions = [
 const submissions = [
   {
     id: `sub-${now - 12 * min}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     problemId: 1,
     problemTitle: 'Two Sum',
     language: 'python',
@@ -244,9 +245,9 @@ const submissions = [
   },
   {
     id: `sub-${now - 45 * min}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     problemId: 3,
     problemTitle: 'Longest Substring Without Repeating Characters',
     language: 'cpp',
@@ -369,9 +370,9 @@ public:
   },
   {
     id: `sub-${now - 1 * day}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     problemId: 4,
     problemTitle: 'Median of Two Sorted Arrays',
     language: 'python',
@@ -411,9 +412,9 @@ public:
 const auditLogs = [
   {
     id: `audit-${now - 12 * min}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'solve_problem',
     actionCategory: 'dsa',
     details: 'Accepted: Two Sum (PYTHON) - 5/5 Passed (18ms)',
@@ -422,9 +423,9 @@ const auditLogs = [
   },
   {
     id: `audit-${now - 18 * min}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'run_code',
     actionCategory: 'dsa',
     details: 'Ran solution on Two Sum (Python) - 5/5 Test Cases Passed',
@@ -453,9 +454,9 @@ const auditLogs = [
   },
   {
     id: `audit-${now - 45 * min}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'solve_problem',
     actionCategory: 'dsa',
     details: 'Accepted: Longest Substring (C++) - 5/5 Passed (12ms)',
@@ -496,9 +497,9 @@ const auditLogs = [
   },
   {
     id: `audit-${now - 4 * hour}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'match_win',
     actionCategory: 'battle',
     details: 'Won 1v1 Timed Duel vs @ahqafaliofficial (+28 ELO) [Room CLASH-902]',
@@ -528,9 +529,9 @@ const auditLogs = [
   },
   {
     id: `audit-${now - 8 * hour}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'login',
     actionCategory: 'auth',
     details: 'Signed in via Google OAuth (@abhisarkumar70@gmail.com)',
@@ -538,9 +539,9 @@ const auditLogs = [
   },
   {
     id: `audit-${now - 14 * hour}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'profile_update',
     actionCategory: 'profile',
     details: 'Updated campus credentials and bio: B.Tech CSE (IU212234)',
@@ -548,9 +549,9 @@ const auditLogs = [
   },
   {
     id: `audit-${now - 1 * day}`,
-    userId: abhishek.id,
-    userName: abhishek.name,
-    userHandle: abhishek.handle,
+    userId: abhisar.id,
+    userName: abhisar.name,
+    userHandle: abhisar.handle,
     action: 'solve_problem',
     actionCategory: 'dsa',
     details: 'Accepted: Median of Two Sorted Arrays (PYTHON) - 5/5 Passed (38ms)',
@@ -574,9 +575,9 @@ const matches = [
   {
     id: 'match-101',
     roomId: 'CLASH-902',
-    player1: { id: abhishek.id, name: abhishek.name, handle: abhishek.handle, elo: 1248, score: 100 },
+    player1: { id: abhisar.id, name: abhisar.name, handle: abhisar.handle, elo: 1248, score: 100 },
     player2: { id: ahqaf.id, name: ahqaf.name, handle: ahqaf.handle, elo: 1142, score: 85 },
-    winnerId: abhishek.id,
+    winnerId: abhisar.id,
     problemCount: 2,
     durationSeconds: 14 * 60,
     timestamp: now - 3 * hour,
@@ -584,9 +585,9 @@ const matches = [
   {
     id: 'match-102',
     roomId: 'CLASH-845',
-    player1: { id: abhishek.id, name: abhishek.name, handle: abhishek.handle, elo: 1220, score: 95 },
+    player1: { id: abhisar.id, name: abhisar.name, handle: abhisar.handle, elo: 1220, score: 95 },
     player2: { id: rocky.id, name: rocky.name, handle: rocky.handle, elo: 1086, score: 70 },
-    winnerId: abhishek.id,
+    winnerId: abhisar.id,
     problemCount: 2,
     durationSeconds: 16 * 60,
     timestamp: now - 14 * hour,
