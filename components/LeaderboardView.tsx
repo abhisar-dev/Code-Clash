@@ -29,7 +29,16 @@ import {
   Lock,
 } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
-import { User, getRegisteredUsers, getCurrentUser, getTier, getMatchHistory, getSubmissions } from '@/lib/auth';
+import {
+  User,
+  getRegisteredUsers,
+  getCurrentUser,
+  getStoredAccounts,
+  StoredAccount,
+  getTier,
+  getMatchHistory,
+  getSubmissions,
+} from '@/lib/auth';
 import {
   computeGamification,
   calculateStreakInfo,
@@ -43,6 +52,7 @@ type LeaderboardTab = 'global' | 'department' | 'badges' | 'achievements';
 type TimeframeFilter = 'all_time' | 'month' | 'semester';
 
 interface LeaderboardViewProps {
+  currentUser?: User | null;
   onChallengeUser: (targetUser: User) => void;
   onSelectUser?: (targetUser: User) => void;
   onOpenShareInvite?: () => void;
@@ -61,6 +71,7 @@ const DEPARTMENTS = [
 ] as const;
 
 export function LeaderboardView({
+  currentUser: propCurrentUser,
   onChallengeUser,
   onSelectUser,
   onOpenShareInvite,
@@ -77,40 +88,120 @@ export function LeaderboardView({
 
   // Users & State
   const [users, setUsers] = useState<User[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(propCurrentUser || null);
   const [loading, setLoading] = useState(true);
 
   // Gamification Data for Current User
   const [gamification, setGamification] = useState<GamificationState | null>(null);
+
+  // Sync propCurrentUser into state if updated
+  useEffect(() => {
+    if (propCurrentUser) {
+      setCurrentUser(propCurrentUser);
+      setUsers((prev) =>
+        prev.map((u) => {
+          const isMatch =
+            u.id === propCurrentUser.id ||
+            (propCurrentUser.handle && u.handle?.toLowerCase() === propCurrentUser.handle.toLowerCase()) ||
+            (propCurrentUser.email && u.email?.toLowerCase() === propCurrentUser.email.toLowerCase());
+          if (isMatch) {
+            return {
+              ...u,
+              name: propCurrentUser.name || u.name,
+              avatarUrl: propCurrentUser.avatarUrl || u.avatarUrl,
+            };
+          }
+          return u;
+        })
+      );
+    }
+  }, [propCurrentUser]);
 
   // Fetch contestants from Server API with fallback to LocalStorage
   useEffect(() => {
     let isMounted = true;
 
     async function loadContestants() {
-      const localCurrent = getCurrentUser();
+      const localCurrent = propCurrentUser || getCurrentUser();
       setCurrentUser(localCurrent);
+
+      // Create a fast lookup map of any local avatars by handle / id / email
+      const localAccounts = getStoredAccounts();
+      const localUsers = getRegisteredUsers();
+      const localAvatarMap = new Map<string, string>();
+
+      const registerAvatar = (id?: string, handle?: string, email?: string, avatar?: string) => {
+        if (!avatar) return;
+        if (id) localAvatarMap.set(id, avatar);
+        if (handle) localAvatarMap.set(handle.toLowerCase().replace('@', ''), avatar);
+        if (email) localAvatarMap.set(email.toLowerCase(), avatar);
+      };
+
+      if (localCurrent?.avatarUrl) {
+        registerAvatar(localCurrent.id, localCurrent.handle, localCurrent.email, localCurrent.avatarUrl);
+      }
+      localAccounts.forEach((acc: StoredAccount) => {
+        if (acc?.user?.avatarUrl) {
+          registerAvatar(acc.user.id, acc.user.handle, acc.user.email, acc.user.avatarUrl);
+        }
+      });
+      localUsers.forEach((u: User) => {
+        if (u?.avatarUrl) {
+          registerAvatar(u.id, u.handle, u.email, u.avatarUrl);
+        }
+      });
+
+      // Default avatar for abhisarkumar70
+      registerAvatar(undefined, 'abhisarkumar70', 'abhisarkumar70@gmail.com', 'https://avatars.githubusercontent.com/u/229573370?v=4');
 
       // Record daily activity today
       recordDailyActivity();
+
+      const enrichContestant = (u: User): User => {
+        const uHandle = (u.handle || '').toLowerCase().replace('@', '');
+        const uEmail = (u.email || '').toLowerCase();
+        const isCurrent =
+          Boolean(localCurrent && (
+            (u.id && u.id === localCurrent.id) ||
+            (uHandle && localCurrent.handle && uHandle === localCurrent.handle.toLowerCase().replace('@', '')) ||
+            (uEmail && localCurrent.email && uEmail === localCurrent.email.toLowerCase())
+          ));
+
+        const isAbhisar = uHandle === 'abhisarkumar70' || uEmail === 'abhisarkumar70@gmail.com';
+
+        const resolvedName =
+          (isCurrent && localCurrent?.name) ||
+          (isAbhisar ? 'Abhisar Kumar' : u.name);
+
+        const resolvedCourse =
+          (isCurrent && localCurrent?.course) ||
+          (isAbhisar ? 'BCA' : (u.course || 'B.Tech CSE'));
+
+        const resolvedAvatar =
+          (isCurrent && localCurrent?.avatarUrl) ||
+          u.avatarUrl ||
+          (u.id && localAvatarMap.get(u.id)) ||
+          (uHandle && localAvatarMap.get(uHandle)) ||
+          (uEmail && localAvatarMap.get(uEmail)) ||
+          (isAbhisar ? 'https://avatars.githubusercontent.com/u/229573370?v=4' : undefined);
+
+        return {
+          ...u,
+          name: resolvedName,
+          course: resolvedCourse,
+          avatarUrl: resolvedAvatar,
+        };
+      };
 
       try {
         const res = await fetch('/api/leaderboard');
         if (res.ok) {
           const data = await res.json();
           if (data.contestants && Array.isArray(data.contestants) && isMounted) {
-            // Merge with local user if not present & synchronize active profile name
-            let merged = data.contestants.map((u: User) => {
-              if (localCurrent && (u.id === localCurrent.id || (localCurrent.handle && u.handle?.toLowerCase() === localCurrent.handle?.toLowerCase()))) {
-                return { ...u, name: localCurrent.name || u.name };
-              }
-              if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
-                return { ...u, name: 'Abhisar' };
-              }
-              return u;
-            });
+            let merged = data.contestants.map(enrichContestant);
+
             if (localCurrent && !merged.some((u: User) => u.id === localCurrent.id || u.handle === localCurrent.handle)) {
-              merged.push(localCurrent);
+              merged.push(enrichContestant(localCurrent));
             }
             setUsers(merged.sort((a: User, b: User) => (b.elo || 1000) - (a.elo || 1000)));
             setLoading(false);
@@ -123,15 +214,7 @@ export function LeaderboardView({
 
       // Fallback to local registered users
       if (isMounted) {
-        const localList = getRegisteredUsers().map((u: User) => {
-          if (localCurrent && (u.id === localCurrent.id || (localCurrent.handle && u.handle?.toLowerCase() === localCurrent.handle?.toLowerCase()))) {
-            return { ...u, name: localCurrent.name || u.name };
-          }
-          if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
-            return { ...u, name: 'Abhisar' };
-          }
-          return u;
-        });
+        const localList = getRegisteredUsers().map(enrichContestant);
         setUsers(localList);
         setLoading(false);
       }
@@ -142,7 +225,7 @@ export function LeaderboardView({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [propCurrentUser]);
 
   // Compute Gamification whenever solved problems or user changes
   useEffect(() => {

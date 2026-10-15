@@ -17,14 +17,18 @@ export async function GET() {
       })
       .map((u) => {
         const safe = toSafeUser(u);
-        const name =
-          safe.handle === 'abhisarkumar70' || safe.email === 'abhisarkumar70@gmail.com'
-            ? 'Abhisar'
-            : safe.name;
+        const isAbhisar =
+          safe.handle === 'abhisarkumar70' || safe.email === 'abhisarkumar70@gmail.com';
+        const name = isAbhisar ? 'Abhisar Kumar' : safe.name;
+        const avatarUrl =
+          safe.avatarUrl ||
+          (isAbhisar ? 'https://avatars.githubusercontent.com/u/229573370?v=4' : undefined);
+        const course = isAbhisar ? 'BCA' : (safe.course || 'B.Tech CSE');
         return {
           ...safe,
           name,
-          course: safe.course || 'B.Tech CSE',
+          avatarUrl,
+          course,
           elo: safe.elo || 1000,
           matchesWon: safe.matchesWon || 0,
           matchesPlayed: safe.matchesPlayed || 0,

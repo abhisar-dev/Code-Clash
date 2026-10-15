@@ -46,20 +46,42 @@ export async function GET(req: NextRequest) {
 
     const safeUser = toSafeUser(user);
     if (safeUser.handle === 'abhisarkumar70' || safeUser.email === 'abhisarkumar70@gmail.com') {
-      safeUser.name = 'Abhisar';
+      safeUser.name = 'Abhisar Kumar';
+      safeUser.course = 'BCA';
+      if (!safeUser.avatarUrl) {
+        safeUser.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
+      }
+      if (!safeUser.githubUrl) {
+        safeUser.githubUrl = 'https://github.com/abhisar-dev';
+      }
+      if (!safeUser.linkedinUrl) {
+        safeUser.linkedinUrl = 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
+      }
+      if (!safeUser.phone) {
+        safeUser.phone = '+91-7488036476';
+      }
+      if (!safeUser.bio) {
+        safeUser.bio = 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
+      }
     }
 
     // 1. Calculate Real Student Ranking (Global & Department)
     const activeContestants = allDbUsers
       .filter((u) => u.role !== 'admin' && u.handle?.toLowerCase() !== 'admin')
+      .map((u) => {
+        if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+          return { ...u, name: 'Abhisar Kumar', course: 'BCA' };
+        }
+        return u;
+      })
       .sort((a, b) => (b.elo || 1000) - (a.elo || 1000));
 
     const globalRankIndex = activeContestants.findIndex((u) => u.id === user.id);
     const globalRank = globalRankIndex >= 0 ? globalRankIndex + 1 : activeContestants.length;
 
-    const userDept = (user.course || 'B.Tech CSE').trim();
+    const userDept = (safeUser.course || user.course || 'BCA').trim();
     const deptContestants = activeContestants.filter(
-      (u) => (u.course || 'B.Tech CSE').trim().toLowerCase() === userDept.toLowerCase()
+      (u) => (u.course || 'BCA').trim().toLowerCase() === userDept.toLowerCase()
     );
     const deptRankIndex = deptContestants.findIndex((u) => u.id === user.id);
     const departmentRank = deptRankIndex >= 0 ? deptRankIndex + 1 : deptContestants.length;

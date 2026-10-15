@@ -20,15 +20,14 @@ const rocky = data.users.find((u) => u.handle?.includes('subhajit') || u.name?.t
 
 // Update competitive ratings and records
 if (abhisar) {
-  abhisar.name = 'Abhisar';
-  abhisar.elo = 1248;
-  abhisar.matchesWon = 12;
-  abhisar.matchesPlayed = 15;
-  abhisar.totalOnlineSeconds = 18 * 3600 + 42 * 60; // 18h 42m
-  abhisar.lastActiveAt = now - 4 * min;
-  abhisar.course = 'B.Tech CSE';
-  abhisar.studentId = 'IU212234';
-  abhisar.bio = 'DSA Competitor & Full Stack Dev | Core Team Invertis';
+  abhisar.name = 'Abhisar Kumar';
+  abhisar.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
+  abhisar.githubUrl = 'https://github.com/abhisar-dev';
+  abhisar.linkedinUrl = 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
+  abhisar.phone = '+91-7488036476';
+  abhisar.course = 'BCA';
+  abhisar.bio = 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
+  delete abhisar.studentId;
 }
 
 if (ahqaf) {

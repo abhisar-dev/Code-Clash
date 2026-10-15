@@ -145,7 +145,20 @@ export function getStoredAccounts(): StoredAccount[] {
 
   accounts = accounts.map((a) => {
     if (a?.user?.handle === 'abhisarkumar70' || a?.user?.email === 'abhisarkumar70@gmail.com') {
-      return { ...a, user: { ...a.user, name: 'Abhisar' } };
+      return {
+        ...a,
+        user: {
+          ...a.user,
+          name: 'Abhisar Kumar',
+          course: 'BCA',
+          college: 'Invertis University',
+          avatarUrl: a.user.avatarUrl || 'https://avatars.githubusercontent.com/u/229573370?v=4',
+          githubUrl: a.user.githubUrl || 'https://github.com/abhisar-dev',
+          linkedinUrl: a.user.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
+          phone: a.user.phone || '+91-7488036476',
+          bio: a.user.bio || 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer',
+        },
+      };
     }
     return a;
   });
@@ -174,7 +187,24 @@ export function getCurrentUser(): User | null {
     if (!user.email) user.email = 'guest@invertis.ac.in';
     if (!user.college) user.college = 'Invertis University';
     if (user.handle === 'abhisarkumar70' || user.email === 'abhisarkumar70@gmail.com') {
-      user.name = 'Abhisar';
+      user.name = 'Abhisar Kumar';
+      user.course = 'BCA';
+      user.college = 'Invertis University';
+      if (!user.avatarUrl) {
+        user.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
+      }
+      if (!user.githubUrl) {
+        user.githubUrl = 'https://github.com/abhisar-dev';
+      }
+      if (!user.linkedinUrl) {
+        user.linkedinUrl = 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
+      }
+      if (!user.phone) {
+        user.phone = '+91-7488036476';
+      }
+      if (!user.bio) {
+        user.bio = 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
+      }
     }
     return user;
   } catch {
@@ -245,7 +275,17 @@ export function getRegisteredUsers(): User[] {
   // Exclude admin/ambassador entirely
   users = users.filter((u) => !isCampusAdminOrAmbassador(u)).map((u) => {
     if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
-      return { ...u, name: 'Abhisar' };
+      return {
+        ...u,
+        name: 'Abhisar Kumar',
+        course: 'BCA',
+        college: 'Invertis University',
+        avatarUrl: u.avatarUrl || 'https://avatars.githubusercontent.com/u/229573370?v=4',
+        githubUrl: u.githubUrl || 'https://github.com/abhisar-dev',
+        linkedinUrl: u.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
+        phone: u.phone || '+91-7488036476',
+        bio: u.bio || 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer',
+      };
     }
     return u;
   });

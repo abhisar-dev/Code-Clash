@@ -152,8 +152,31 @@ export function PublicProfileModal({
 
   if (!isOpen || !targetUser) return null;
 
-  const isSelf = currentUser && (currentUser.id === targetUser.id || currentUser.handle === targetUser.handle);
-  const user = profileData?.user || targetUser;
+  const isSelf = Boolean(
+    currentUser &&
+      (currentUser.id === targetUser.id ||
+        (currentUser.handle &&
+          targetUser.handle &&
+          currentUser.handle.toLowerCase().replace('@', '') ===
+            targetUser.handle.toLowerCase().replace('@', '')))
+  );
+
+  const uHandle = (targetUser.handle || profileData?.user?.handle || '').toLowerCase().replace('@', '');
+  const isAbhisar = uHandle === 'abhisarkumar70' || targetUser.email?.toLowerCase() === 'abhisarkumar70@gmail.com';
+  const user = {
+    ...targetUser,
+    ...(profileData?.user || {}),
+    name: (isSelf && currentUser?.name) ? currentUser.name : (profileData?.user?.name || (isAbhisar ? 'Abhisar Kumar' : targetUser.name)),
+    course: (isSelf && currentUser?.course) ? currentUser.course : (profileData?.user?.course || (isAbhisar ? 'BCA' : targetUser.course)),
+    bio: (isSelf && currentUser?.bio) ? currentUser.bio : (profileData?.user?.bio || (isAbhisar ? 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer' : targetUser.bio)),
+    githubUrl: (isSelf && currentUser?.githubUrl) ? currentUser.githubUrl : (profileData?.user?.githubUrl || (isAbhisar ? 'https://github.com/abhisar-dev' : targetUser.githubUrl)),
+    linkedinUrl: (isSelf && currentUser?.linkedinUrl) ? currentUser.linkedinUrl : (profileData?.user?.linkedinUrl || (isAbhisar ? 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0' : targetUser.linkedinUrl)),
+    avatarUrl:
+      (isSelf && currentUser?.avatarUrl) ||
+      profileData?.user?.avatarUrl ||
+      targetUser.avatarUrl ||
+      (isAbhisar ? 'https://avatars.githubusercontent.com/u/229573370?v=4' : undefined),
+  };
   const stats = profileData?.stats;
 
   return (

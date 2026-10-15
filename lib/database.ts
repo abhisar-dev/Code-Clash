@@ -326,10 +326,21 @@ class DatabaseEngine {
   }
 
   private mergeRemoteData(remote: DatabaseSchema) {
-    // Merge users by id/email
+    // Merge users by id/email preserving avatars
     const userMap = new Map<string, DbUser>();
     remote.users.forEach((u) => userMap.set(u.id, u));
-    this.data.users.forEach((u) => userMap.set(u.id, u));
+    this.data.users.forEach((u) => {
+      const existing = userMap.get(u.id);
+      if (existing) {
+        userMap.set(u.id, {
+          ...existing,
+          ...u,
+          avatarUrl: u.avatarUrl || existing.avatarUrl,
+        });
+      } else {
+        userMap.set(u.id, u);
+      }
+    });
     this.data.users = Array.from(userMap.values());
 
     // Merge array collections by id sorted by timestamp descending
@@ -569,7 +580,12 @@ class DatabaseEngine {
   }
 
   public updateUserProfile(userId: string, updates: Partial<User>): DbUser | null {
-    const user = this.data.users.find((u) => u.id === userId);
+    const user = this.data.users.find(
+      (u) =>
+        u.id === userId ||
+        (updates.handle && u.handle?.toLowerCase() === updates.handle.toLowerCase()) ||
+        (updates.email && u.email?.toLowerCase() === updates.email.toLowerCase())
+    );
     if (!user) return null;
 
     if (updates.name !== undefined) user.name = updates.name.trim();

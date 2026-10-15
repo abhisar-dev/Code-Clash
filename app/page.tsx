@@ -1254,6 +1254,7 @@ export default function Home() {
 
       {activeNavTab === 'leaderboard' && (
         <LeaderboardView
+          currentUser={currentUser}
           onChallengeUser={handleInitiateLeaderboardChallenge}
           onSelectUser={handleOpenPublicProfile}
           onOpenShareInvite={() => setIsShareModalOpen(true)}
