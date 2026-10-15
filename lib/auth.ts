@@ -190,21 +190,16 @@ export function getCurrentUser(): User | null {
       user.name = 'Abhisar Kumar';
       user.course = 'BCA';
       user.college = 'Invertis University';
-      if (!user.avatarUrl) {
-        user.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
-      }
-      if (!user.githubUrl) {
-        user.githubUrl = 'https://github.com/abhisar-dev';
-      }
-      if (!user.linkedinUrl) {
-        user.linkedinUrl = 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
-      }
-      if (!user.phone) {
-        user.phone = '+91-7488036476';
-      }
-      if (!user.bio) {
-        user.bio = 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
-      }
+      user.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
+      user.githubUrl = 'https://github.com/abhisar-dev';
+      user.linkedinUrl = 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
+      user.phone = '+91-7488036476';
+      user.bio = 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
+    }
+    const history = getMatchHistory();
+    if (history.length === 0) {
+      user.matchesPlayed = 0;
+      user.matchesWon = 0;
     }
     return user;
   } catch {
@@ -272,19 +267,26 @@ export function getRegisteredUsers(): User[] {
     }
   }
 
+  const history = getMatchHistory();
   // Exclude admin/ambassador entirely
   users = users.filter((u) => !isCampusAdminOrAmbassador(u)).map((u) => {
+    if (history.length === 0) {
+      u.matchesPlayed = 0;
+      u.matchesWon = 0;
+    }
     if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
       return {
         ...u,
         name: 'Abhisar Kumar',
         course: 'BCA',
         college: 'Invertis University',
-        avatarUrl: u.avatarUrl || 'https://avatars.githubusercontent.com/u/229573370?v=4',
-        githubUrl: u.githubUrl || 'https://github.com/abhisar-dev',
-        linkedinUrl: u.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
-        phone: u.phone || '+91-7488036476',
-        bio: u.bio || 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer',
+        avatarUrl: 'https://avatars.githubusercontent.com/u/229573370?v=4',
+        githubUrl: 'https://github.com/abhisar-dev',
+        linkedinUrl: 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
+        phone: '+91-7488036476',
+        bio: 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer',
+        matchesWon: history.length > 0 ? u.matchesWon : 0,
+        matchesPlayed: history.length > 0 ? u.matchesPlayed : 0,
       };
     }
     return u;
@@ -375,7 +377,19 @@ export function getMatchHistory(): MatchRecord[] {
   const raw = localStorage.getItem(MATCH_HISTORY_KEY);
   if (!raw) return [];
   try {
-    return JSON.parse(raw);
+    const list = JSON.parse(raw);
+    const cleaned = Array.isArray(list)
+      ? list.filter(
+          (m: any) =>
+            m &&
+            !['match-101', 'match-102', 'match-103', 'match-104'].includes(m.id) &&
+            !['CLASH-902', 'CLASH-845', 'CLASH-732', 'CLASH-619'].includes(m.roomId)
+        )
+      : [];
+    if (cleaned.length !== list.length) {
+      localStorage.setItem(MATCH_HISTORY_KEY, JSON.stringify(cleaned));
+    }
+    return cleaned;
   } catch {
     return [];
   }

@@ -6,9 +6,9 @@
       "email": "ahqafaliofficial@gmail.com",
       "handle": "ahqafaliofficial",
       "college": "Invertis University",
-      "elo": 1142,
-      "matchesWon": 7,
-      "matchesPlayed": 11,
+      "elo": 1000,
+      "matchesWon": 0,
+      "matchesPlayed": 0,
       "joinedAt": "2026-10-11T04:34:57.557Z",
       "passwordHash": "5935115f0df58558d268d31b75cb8d13de2e977a30e6a9ebdcb79bef4325fbe11d0e510a0bef2e60681af3777bc8beb6a8b3330691ed20c2f6868b5bbeffc497",
       "salt": "912886174a6f4eb9864b5004bec722d9",
@@ -20,21 +20,21 @@
     },
     {
       "id": "user-1791693341107-393",
-      "name": "Abhisar",
+      "name": "Abhisar Kumar",
       "email": "abhisarkumar70@gmail.com",
       "handle": "abhisarkumar70",
       "college": "Invertis University",
-      "elo": 1248,
-      "matchesWon": 12,
-      "matchesPlayed": 15,
+      "elo": 1200,
+      "matchesWon": 0,
+      "matchesPlayed": 0,
       "joinedAt": "2026-10-11T04:35:41.107Z",
       "passwordHash": "c06d378083ad73d0508ecd0320f2985a1dbcb8126ae9187da540d3a23babe722d034195df557b52a6d8a146e953b7f4ed611c467327224c32a3d0c208b9196b7",
       "salt": "e3b4ebc8a3b1323a484e5a02f1d63386",
-      "course": "B.Tech CSE",
-      "phone": "9876543210",
+      "course": "BCA",
+      "phone": "+91-7488036476",
       "totalOnlineSeconds": 67320,
       "lastActiveAt": 1791900255433,
-      "bio": "DSA Competitor & Full Stack Dev | Core Team Invertis",
+      "bio": "Full Stack Developer & AI/ML Enthusiast | Invertis University",
       "avatarUrl": "https://avatars.githubusercontent.com/u/229573370?v=4",
       "githubUrl": "https://github.com/abhisar-dev",
       "linkedinUrl": "https://www.linkedin.com/in/abhisar-kumar-89a2872a0",
@@ -46,9 +46,9 @@
       "email": "subhajitdas25639@gmail.com",
       "handle": "subhajitdas25639",
       "college": "Invertis University",
-      "elo": 1086,
-      "matchesWon": 5,
-      "matchesPlayed": 9,
+      "elo": 1000,
+      "matchesWon": 0,
+      "matchesPlayed": 0,
       "joinedAt": "2026-10-13T05:47:01.769Z",
       "passwordHash": "6bb5e9a2a470b6260bf6a97a5bf0173d6eeca441ee014a036b385a450fd90d41ce5d39dee94fe7dcc4a03eefc39a4bb024a670949c8d7d685506ef2c057dfaef",
       "salt": "d7f402501d2a21e6b7cc82f425235744",
@@ -59,126 +59,22 @@
       "studentId": "IU221045"
     }
   ],
-  "matches": [
-    {
-      "id": "match-101",
-      "roomId": "CLASH-902",
-      "player1": {
-        "id": "user-1791693341107-393",
-        "name": "Abhisar",
-        "handle": "abhisarkumar70",
-        "elo": 1248,
-        "score": 100
-      },
-      "player2": {
-        "id": "user-1791693297556-199",
-        "name": "ahqaf",
-        "handle": "ahqafaliofficial",
-        "elo": 1142,
-        "score": 85
-      },
-      "winnerId": "user-1791693341107-393",
-      "problemCount": 2,
-      "durationSeconds": 840,
-      "timestamp": 1791890623353
-    },
-    {
-      "id": "match-102",
-      "roomId": "CLASH-845",
-      "player1": {
-        "id": "user-1791693341107-393",
-        "name": "Abhisar",
-        "handle": "abhisarkumar70",
-        "elo": 1220,
-        "score": 95
-      },
-      "player2": {
-        "id": "user-1791870421769-216",
-        "name": "Rocky",
-        "handle": "subhajitdas25639",
-        "elo": 1086,
-        "score": 70
-      },
-      "winnerId": "user-1791693341107-393",
-      "problemCount": 2,
-      "durationSeconds": 960,
-      "timestamp": 1791851023353
-    },
-    {
-      "id": "match-103",
-      "roomId": "CLASH-732",
-      "player1": {
-        "id": "user-1791693297556-199",
-        "name": "ahqaf",
-        "handle": "ahqafaliofficial",
-        "elo": 1142,
-        "score": 90
-      },
-      "player2": {
-        "id": "user-1791870421769-216",
-        "name": "Rocky",
-        "handle": "subhajitdas25639",
-        "elo": 1060,
-        "score": 75
-      },
-      "winnerId": "user-1791693297556-199",
-      "problemCount": 1,
-      "durationSeconds": 540,
-      "timestamp": 1791807823353
-    },
-    {
-      "id": "match-104",
-      "roomId": "CLASH-619",
-      "player1": {
-        "id": "user-1791870421769-216",
-        "name": "Rocky",
-        "handle": "subhajitdas25639",
-        "elo": 1060,
-        "score": 88
-      },
-      "player2": {
-        "id": "inv-guest",
-        "name": "Ayush Sharma",
-        "handle": "ayush_cse",
-        "elo": 1020,
-        "score": 60
-      },
-      "winnerId": "user-1791870421769-216",
-      "problemCount": 1,
-      "durationSeconds": 660,
-      "timestamp": 1791728623353
-    }
-  ],
-  "activities": [
-    {
-      "type": "challenge",
-      "user1Name": "Rocky",
-      "timeAgo": "Just now",
-      "id": "act-1791870421769-310",
-      "timestamp": 1791870421769
-    },
-    {
-      "type": "challenge",
-      "user1Name": "Abhisar",
-      "timeAgo": "Just now",
-      "id": "act-1791693341107-764",
-      "timestamp": 1791693341107
-    },
-    {
-      "type": "challenge",
-      "user1Name": "ahqaf",
-      "timeAgo": "Just now",
-      "id": "act-1791693297557-984",
-      "timestamp": 1791693297557
-    }
-  ],
+  "matches": [],
+  "activities": [],
   "stats": {
-    "totalSubmissions": 13,
-    "totalMatches": 4,
-    "totalCodeLinesCompiled": 230,
-    "totalVisits": 145
+    "totalSubmissions": 7,
+    "totalMatches": 0,
+    "totalCodeLinesCompiled": 118,
+    "totalVisits": 146
   },
   "visits": [
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",
+      "ip": "54.183.149.156",
+      "id": "visit-1792062019205-984",
+      "timestamp": 1792062019205
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhisar",
@@ -1547,57 +1443,6 @@
       "timestamp": 1791973244322
     },
     {
-      "id": "sub-1791900703353",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhisar",
-      "userHandle": "abhisarkumar70",
-      "problemId": 1,
-      "problemTitle": "Two Sum",
-      "language": "python",
-      "status": "Accepted",
-      "passedCount": 5,
-      "totalCount": 5,
-      "runtimeMs": 18,
-      "memoryMb": 15.6,
-      "linesOfCode": 15,
-      "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        seen = {}\n        for i, num in enumerate(nums):\n            diff = target - num\n            if diff in seen:\n                return [seen[diff], i]\n            seen[num] = i\n        return []",
-      "timestamp": 1791900703353
-    },
-    {
-      "id": "sub-1791899775433",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhisar",
-      "userHandle": "abhisarkumar70",
-      "problemId": 1,
-      "problemTitle": "Two Sum",
-      "language": "python",
-      "status": "Accepted",
-      "passedCount": 5,
-      "totalCount": 5,
-      "runtimeMs": 18,
-      "memoryMb": 15.6,
-      "linesOfCode": 15,
-      "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        seen = {}\n        for i, num in enumerate(nums):\n            diff = target - num\n            if diff in seen:\n                return [seen[diff], i]\n            seen[num] = i\n        return []",
-      "timestamp": 1791899775433
-    },
-    {
-      "id": "sub-1791898723353",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhisar",
-      "userHandle": "abhisarkumar70",
-      "problemId": 3,
-      "problemTitle": "Longest Substring Without Repeating Characters",
-      "language": "cpp",
-      "status": "Accepted",
-      "passedCount": 5,
-      "totalCount": 5,
-      "runtimeMs": 12,
-      "memoryMb": 11.2,
-      "linesOfCode": 24,
-      "code": "#include <string>\n#include <vector>\n#include <algorithm>\n\nclass Solution {\npublic:\n    int lengthOfLongestSubstring(std::string s) {\n        std::vector<int> lastIndex(256, -1);\n        int maxLen = 0, start = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (lastIndex[(unsigned char)s[i]] >= start) {\n                start = lastIndex[(unsigned char)s[i]] + 1;\n            }\n            lastIndex[(unsigned char)s[i]] = i;\n            maxLen = std::max(maxLen, i - start + 1);\n        }\n        return maxLen;\n    }\n};",
-      "timestamp": 1791898723353
-    },
-    {
       "id": "sub-1791897795433",
       "userId": "user-1791693341107-393",
       "userName": "Abhisar",
@@ -1615,23 +1460,6 @@
       "timestamp": 1791897795433
     },
     {
-      "id": "sub-1791894223353",
-      "userId": "user-1791693297556-199",
-      "userName": "ahqaf",
-      "userHandle": "ahqafaliofficial",
-      "problemId": 1,
-      "problemTitle": "Two Sum",
-      "language": "python",
-      "status": "Accepted",
-      "passedCount": 5,
-      "totalCount": 5,
-      "runtimeMs": 24,
-      "memoryMb": 15.8,
-      "linesOfCode": 12,
-      "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        lookup = {}\n        for idx, val in enumerate(nums):\n            complement = target - val\n            if complement in lookup:\n                return [lookup[complement], idx]\n            lookup[val] = idx\n        return []",
-      "timestamp": 1791894223353
-    },
-    {
       "id": "sub-1791893295433",
       "userId": "user-1791693297556-199",
       "userName": "ahqaf",
@@ -1647,23 +1475,6 @@
       "linesOfCode": 12,
       "code": "class Solution:\n    def twoSum(self, nums: list[int], target: int) -> list[int]:\n        lookup = {}\n        for idx, val in enumerate(nums):\n            complement = target - val\n            if complement in lookup:\n                return [lookup[complement], idx]\n            lookup[val] = idx\n        return []",
       "timestamp": 1791893295433
-    },
-    {
-      "id": "sub-1791890623353",
-      "userId": "user-1791870421769-216",
-      "userName": "Rocky",
-      "userHandle": "subhajitdas25639",
-      "problemId": 1,
-      "problemTitle": "Two Sum",
-      "language": "java",
-      "status": "Accepted",
-      "passedCount": 5,
-      "totalCount": 5,
-      "runtimeMs": 32,
-      "memoryMb": 39.4,
-      "linesOfCode": 20,
-      "code": "import java.util.HashMap;\nimport java.util.Map;\n\nclass Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> map = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int complement = target - nums[i];\n            if (map.containsKey(complement)) {\n                return new int[] { map.get(complement), i };\n            }\n            map.put(nums[i], i);\n        }\n        return new int[0];\n    }\n}",
-      "timestamp": 1791890623353
     },
     {
       "id": "sub-1791889695433",
@@ -1715,23 +1526,6 @@
       "linesOfCode": 16,
       "code": "#include <stack>\n#include <string>\n\nclass Solution {\npublic:\n    bool isValid(std::string s) {\n        std::stack<char> st\n        for (char c : s) {\n            if (c == '(' || c == '{' || c == '[') st.push(c);\n            else {\n                if (st.empty()) return false;\n                char top = st.top(); st.pop();\n            }\n        }\n        return st.empty();\n    }\n};",
       "timestamp": 1791882495433
-    },
-    {
-      "id": "sub-1791815023353",
-      "userId": "user-1791693341107-393",
-      "userName": "Abhisar",
-      "userHandle": "abhisarkumar70",
-      "problemId": 4,
-      "problemTitle": "Median of Two Sorted Arrays",
-      "language": "python",
-      "status": "Accepted",
-      "passedCount": 5,
-      "totalCount": 5,
-      "runtimeMs": 38,
-      "memoryMb": 16.4,
-      "linesOfCode": 26,
-      "code": "class Solution:\n    def findMedianSortedArrays(self, nums1: list[int], nums2: list[int]) -> float:\n        if len(nums1) > len(nums2):\n            nums1, nums2 = nums2, nums1\n        m, n = len(nums1), len(nums2)\n        low, high = 0, m\n        while low <= high:\n            partitionX = (low + high) // 2\n            partitionY = (m + n + 1) // 2 - partitionX\n            maxLeftX = float('-inf') if partitionX == 0 else nums1[partitionX - 1]\n            minRightX = float('inf') if partitionX == m else nums1[partitionX]\n            maxLeftY = float('-inf') if partitionY == 0 else nums2[partitionY - 1]\n            minRightY = float('inf') if partitionY == n else nums2[partitionY]\n            if maxLeftX <= minRightY and maxLeftY <= minRightX:\n                if (m + n) % 2 == 0:\n                    return (max(maxLeftX, maxLeftY) + min(minRightX, minRightY)) / 2.0\n                return max(maxLeftX, maxLeftY)\n            elif maxLeftX > minRightY:\n                high = partitionX - 1\n            else:\n                low = partitionX + 1\n        return 0.0",
-      "timestamp": 1791815023353
     },
     {
       "id": "sub-1791814095433",
@@ -2145,6 +1939,20 @@
   ],
   "userSessions": [
     {
+      "id": "sess-1792062439656-716",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792062439656,
+      "lastActiveAt": 1792062511014,
+      "durationSeconds": 71,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1792062439656
+    },
+    {
       "id": "sess-1792058948268-615",
       "userId": "user-1791693341107-393",
       "userName": "Abhisar",
@@ -2155,7 +1963,7 @@
       "durationSeconds": 121,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1792058948268
     },
     {
@@ -2225,7 +2033,7 @@
       "durationSeconds": 117,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1792057332685
     },
     {
@@ -2267,7 +2075,7 @@
       "durationSeconds": 28,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1792056799368
     },
     {
@@ -2281,7 +2089,7 @@
       "durationSeconds": 46,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1792056054016
     },
     {
@@ -2295,7 +2103,7 @@
       "durationSeconds": 63,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1791982859233
     },
     {
@@ -2309,7 +2117,7 @@
       "durationSeconds": 734,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1791973228725
     },
     {
@@ -2337,7 +2145,7 @@
       "durationSeconds": 1,
       "currentPath": "/arena/CLASH-1001",
       "currentAction": "In 1v1 Battle (CLASH-1001)",
-      "isLive": true,
+      "isLive": false,
       "timestamp": 1791918880606
     },
     {

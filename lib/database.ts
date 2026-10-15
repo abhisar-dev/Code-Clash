@@ -220,6 +220,42 @@ class DatabaseEngine {
     if (!parsed.siteSettings) parsed.siteSettings = { ...DEFAULT_SITE_SETTINGS };
     if (!parsed.customProblems) parsed.customProblems = [];
     if (!parsed.blockedIps) parsed.blockedIps = [];
+
+    // Strip any legacy mock matches or activities
+    parsed.matches = (parsed.matches || []).filter(
+      (m: any) => !['match-101', 'match-102', 'match-103', 'match-104'].includes(m.id) &&
+                  !['CLASH-902', 'CLASH-845', 'CLASH-732', 'CLASH-619'].includes(m.roomId)
+    );
+    parsed.activities = (parsed.activities || []).filter(
+      (a: any) => !['act-1791870421769-310', 'act-1791693341107-764', 'act-1791693297557-984'].includes(a.id)
+    );
+    parsed.submissions = (parsed.submissions || []).filter(
+      (s: any) => !['sub-1791900703353', 'sub-1791899775433', 'sub-1791898723353', 'sub-1791894223353', 'sub-1791890623353', 'sub-1791815023353'].includes(s.id)
+    );
+
+    // Ensure authentic profile information for registered users
+    parsed.users = (parsed.users || []).map((u: any) => {
+      if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+        return {
+          ...u,
+          name: 'Abhisar Kumar',
+          course: 'BCA',
+          phone: '+91-7488036476',
+          bio: 'Full Stack Developer & AI/ML Enthusiast | Invertis University',
+          avatarUrl: 'https://avatars.githubusercontent.com/u/229573370?v=4',
+          githubUrl: 'https://github.com/abhisar-dev',
+          linkedinUrl: 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
+          matchesWon: parsed.matches.length > 0 ? u.matchesWon : 0,
+          matchesPlayed: parsed.matches.length > 0 ? u.matchesPlayed : 0,
+        };
+      }
+      return {
+        ...u,
+        matchesWon: parsed.matches.length > 0 ? u.matchesWon : 0,
+        matchesPlayed: parsed.matches.length > 0 ? u.matchesPlayed : 0,
+      };
+    });
+
     const totalLines = (parsed.submissions || []).reduce(
       (acc: number, s: any) => acc + (s.linesOfCode || (s.code ? s.code.split('\n').length : 0)),
       0
@@ -368,15 +404,15 @@ class DatabaseEngine {
     this.data.userSessions = mergeById(this.data.userSessions || [], remote.userSessions || [], 200);
 
     this.data.stats = {
-      totalSubmissions: Math.max(this.data.stats.totalSubmissions, remote.stats.totalSubmissions),
-      totalMatches: Math.max(this.data.stats.totalMatches, remote.stats.totalMatches),
-      totalCodeLinesCompiled: Math.max(
-        this.data.stats.totalCodeLinesCompiled,
-        remote.stats.totalCodeLinesCompiled
+      totalSubmissions: this.data.submissions.length,
+      totalMatches: this.data.matches.length,
+      totalCodeLinesCompiled: (this.data.submissions || []).reduce(
+        (acc, s) => acc + (s.linesOfCode || (s.code ? s.code.split('\n').length : 0)),
+        0
       ),
       totalVisits: Math.max(
-        this.data.stats.totalVisits,
-        remote.stats.totalVisits,
+        this.data.stats?.totalVisits || 0,
+        remote.stats?.totalVisits || 0,
         this.data.visits.length
       ),
     };
