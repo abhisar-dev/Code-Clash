@@ -221,16 +221,16 @@ class DatabaseEngine {
     if (!parsed.customProblems) parsed.customProblems = [];
     if (!parsed.blockedIps) parsed.blockedIps = [];
 
-    // Strip any legacy mock matches or activities
+    // Strip any legacy mock matches, activities, or submissions
     parsed.matches = (parsed.matches || []).filter(
-      (m: any) => !['match-101', 'match-102', 'match-103', 'match-104'].includes(m.id) &&
+      (m: any) => m && !['match-101', 'match-102', 'match-103', 'match-104'].includes(m.id) &&
                   !['CLASH-902', 'CLASH-845', 'CLASH-732', 'CLASH-619'].includes(m.roomId)
     );
     parsed.activities = (parsed.activities || []).filter(
-      (a: any) => !['act-1791870421769-310', 'act-1791693341107-764', 'act-1791693297557-984'].includes(a.id)
+      (a: any) => a && !a.id.startsWith('act-17918') && !a.id.startsWith('act-17916') && !a.id.startsWith('act-17919')
     );
     parsed.submissions = (parsed.submissions || []).filter(
-      (s: any) => !['sub-1791900703353', 'sub-1791899775433', 'sub-1791898723353', 'sub-1791894223353', 'sub-1791890623353', 'sub-1791815023353'].includes(s.id)
+      (s: any) => s && !s.id.startsWith('sub-17918') && !s.id.startsWith('sub-17919')
     );
 
     // Ensure authentic profile information for registered users
