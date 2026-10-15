@@ -28,6 +28,7 @@ interface PublicProfileData {
   stats: {
     elo: number;
     tier: string;
+    collegeRank?: number;
     globalRank: number;
     totalStudents: number;
     departmentRank: number;
@@ -188,9 +189,9 @@ export function PublicProfileModal({
                 <Avatar name={user.name} avatarUrl={user.avatarUrl} size="lg" />
                 <span
                   className="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold bg-amber-500 text-black shadow-xs"
-                  title="Campus Rank"
+                  title="College Rank"
                 >
-                  #{stats?.globalRank || 1}
+                  #{stats?.collegeRank || stats?.globalRank || 1}
                 </span>
               </div>
 
@@ -324,10 +325,10 @@ export function PublicProfileModal({
                 <div className="p-3.5 rounded-xl bg-zinc-50/70 dark:bg-zinc-900/40 border border-zinc-200/70 dark:border-zinc-800">
                   <div className="text-[11px] font-mono text-zinc-400 flex items-center gap-1.5">
                     <Trophy className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Global Rank</span>
+                    <span>College Rank</span>
                   </div>
                   <div className="text-base font-black font-mono text-zinc-900 dark:text-white mt-1">
-                    #{stats?.globalRank || 1}{' '}
+                    #{stats?.collegeRank || stats?.globalRank || 1}{' '}
                     <span className="text-[10px] font-normal text-zinc-400">/ {stats?.totalStudents || 3}</span>
                   </div>
                 </div>

@@ -173,9 +173,46 @@
     "totalSubmissions": 13,
     "totalMatches": 4,
     "totalCodeLinesCompiled": 230,
-    "totalVisits": 140
+    "totalVisits": 144
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1792057351128-509",
+      "timestamp": 1792057351128
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1792057344145-338",
+      "timestamp": 1792057344145
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "137.97.136.22",
+      "id": "visit-1792057333245-114",
+      "timestamp": 1792057333245
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",
+      "ip": "13.57.148.235",
+      "id": "visit-1792056975005-143",
+      "timestamp": 1792056975005
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",
@@ -2094,6 +2131,48 @@
     }
   ],
   "userSessions": [
+    {
+      "id": "sess-1792057332685-286",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792057332685,
+      "lastActiveAt": 1792057450062,
+      "durationSeconds": 117,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1792057332685
+    },
+    {
+      "id": "sess-1792057059026-65",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792057059026,
+      "lastActiveAt": 1792057059026,
+      "durationSeconds": 1,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": false,
+      "timestamp": 1792057059026
+    },
+    {
+      "id": "sess-1792056999005-29",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792056999004,
+      "lastActiveAt": 1792056999004,
+      "durationSeconds": 1,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": false,
+      "timestamp": 1792056999004
+    },
     {
       "id": "sess-1792056799368-368",
       "userId": "user-1791693341107-393",

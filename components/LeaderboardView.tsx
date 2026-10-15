@@ -298,11 +298,11 @@ export function LeaderboardView({
         {/* Global Summary Cards for Current User */}
         {gamification && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
-            {/* Global Rank */}
+            {/* College Rank */}
             <div className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-center shadow-xs">
-              <div className="text-[10px] font-mono text-zinc-400 uppercase font-semibold">Global Rank</div>
+              <div className="text-[10px] font-mono text-zinc-400 uppercase font-semibold">College Rank</div>
               <div className="text-sm font-bold text-zinc-900 dark:text-white font-mono mt-0.5">
-                #{gamification.globalRank.rank} <span className="text-[10px] text-zinc-400 font-normal">/ {gamification.globalRank.total}</span>
+                #{gamification.collegeRank?.rank || gamification.globalRank.rank} <span className="text-[10px] text-zinc-400 font-normal">/ {gamification.collegeRank?.total || gamification.globalRank.total}</span>
               </div>
             </div>
 
@@ -400,7 +400,7 @@ export function LeaderboardView({
           }`}
         >
           <Trophy className="w-3.5 h-3.5" />
-          <span>Global Standings</span>
+          <span>College Standings</span>
         </button>
 
         <button
@@ -615,7 +615,7 @@ export function LeaderboardView({
               <table className="w-full text-left text-xs">
                 <thead className="bg-zinc-50/70 dark:bg-zinc-950/70 border-b border-zinc-200/70 dark:border-zinc-800 text-[11px] text-zinc-400 dark:text-zinc-500 font-mono font-medium uppercase tracking-wider">
                   <tr>
-                    <th className="py-3 px-4 w-14">Rank</th>
+                    <th className="py-3 px-4 w-16">College Rank</th>
                     <th className="py-3 px-4">Contestant</th>
                     <th className="py-3 px-4">Department</th>
                     <th className="py-3 px-4">Rating</th>

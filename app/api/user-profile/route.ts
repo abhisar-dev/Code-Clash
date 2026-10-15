@@ -156,6 +156,7 @@ export async function GET(req: NextRequest) {
       stats: {
         elo: user.elo || 1000,
         tier: getTier(user.elo || 1000),
+        collegeRank: globalRank,
         globalRank,
         totalStudents: activeContestants.length,
         departmentRank,

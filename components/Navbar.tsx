@@ -117,7 +117,7 @@ export function Navbar({
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              ⚡ <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the global ELO Leaderboard!
+              ⚡ <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the College ELO Leaderboard!
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
@@ -143,7 +143,7 @@ export function Navbar({
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              ⚡ <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the global ELO Leaderboard!
+              ⚡ <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the College ELO Leaderboard!
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 

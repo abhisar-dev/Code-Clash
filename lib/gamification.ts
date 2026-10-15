@@ -59,6 +59,7 @@ export interface GamificationState {
   achievements: Achievement[];
   streak: StreakInfo;
   clashPoints: number;
+  collegeRank: { rank: number; total: number };
   globalRank: { rank: number; total: number };
   departmentRank: { rank: number; total: number; department: string; isTop3: boolean };
   unlockedBadgesCount: number;
@@ -565,6 +566,10 @@ export function computeGamification(
     achievements,
     streak,
     clashPoints,
+    collegeRank: {
+      rank: globalRankNum,
+      total: Math.max(1, allContestants.length),
+    },
     globalRank: {
       rank: globalRankNum,
       total: Math.max(1, allContestants.length),
