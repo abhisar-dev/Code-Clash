@@ -782,7 +782,15 @@ class DatabaseEngine {
   public getLiveFeed(limit = 30): ActivityEvent[] {
     const events: ActivityEvent[] = [];
 
-    // 1. Real accepted problem solves from submissions
+    // 1. Direct logged activities (from real duels and problem solves)
+    for (const act of this.data.activities || []) {
+      events.push({
+        ...act,
+        timeAgo: formatTimeAgo(act.timestamp),
+      });
+    }
+
+    // 2. Real accepted problem solves from submissions
     for (const sub of this.data.submissions || []) {
       if (sub.status === 'Accepted') {
         events.push({
@@ -796,7 +804,7 @@ class DatabaseEngine {
       }
     }
 
-    // 2. Real matches: winner defeated loser
+    // 3. Real matches: winner defeated loser
     for (const match of this.data.matches || []) {
       const winner =
         match.winnerId === match.player2?.id ? match.player2 : match.player1;
@@ -813,27 +821,6 @@ class DatabaseEngine {
         timestamp: match.timestamp,
         timeAgo: formatTimeAgo(match.timestamp),
       });
-    }
-
-    // 3. Real audit activities (solve_problem, match_win)
-    for (const audit of this.data.auditLogs || []) {
-      if (audit.action === 'solve_problem' || audit.action === 'match_win') {
-        const isMatch = audit.action === 'match_win';
-        events.push({
-          id: `feed-audit-${audit.id}`,
-          type: isMatch ? 'match_win' : 'solve',
-          user1Name: audit.userName,
-          user2Name: isMatch
-            ? (audit.details?.includes('vs @') ? audit.details.split('vs @')[1]?.split(' ')[0] : undefined)
-            : undefined,
-          problemTitle: isMatch
-            ? '1v1 Clash'
-            : (audit.metadata?.problemTitle || audit.details?.split(':')[1]?.split('(')[0]?.trim() || 'Two Sum'),
-          eloChange: isMatch ? (audit.metadata?.eloGain || 28) : undefined,
-          timestamp: audit.timestamp,
-          timeAgo: formatTimeAgo(audit.timestamp),
-        });
-      }
     }
 
     // Sort newest first

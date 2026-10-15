@@ -335,50 +335,60 @@ export function DashboardView({
       </div>
 
       {/* 2. Live Activity Marquee Feed */}
-      {activities.length > 0 && (
-        <div className="px-4 py-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/70 border border-zinc-200/80 dark:border-zinc-800 flex items-center gap-3 text-xs overflow-hidden">
+      <div className="px-4 py-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/70 border border-zinc-200/80 dark:border-zinc-800 flex items-center justify-between gap-3 text-xs overflow-hidden">
+        <div className="flex items-center gap-2 overflow-hidden flex-1">
           <div className="flex items-center gap-1.5 shrink-0 text-[11px] font-mono font-bold text-sky-600 dark:text-sky-400 uppercase">
             <Flame className="w-3.5 h-3.5 fill-current text-amber-500" />
             <span>Campus Feed:</span>
           </div>
-          <div className="flex items-center gap-6 overflow-x-auto text-[11px] font-mono text-zinc-600 dark:text-zinc-300">
-            {activities.map((act) => (
-              <span key={act.id} className="inline-flex items-center gap-1.5 shrink-0 bg-zinc-100/60 dark:bg-zinc-800/60 px-2.5 py-1 rounded-md border border-zinc-200/50 dark:border-zinc-700/50">
-                <button
-                  onClick={() => onSelectUserName?.(act.user1Name)}
-                  className="font-semibold text-zinc-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors cursor-pointer"
-                  title="View student profile"
-                >
-                  {act.user1Name}
-                </button>
-                {act.user2Name ? (
-                  <>
-                    <span className="text-zinc-400">defeated</span>
-                    <button
-                      onClick={() => onSelectUserName?.(act.user2Name!)}
-                      className="font-medium text-zinc-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors cursor-pointer"
-                      title="View student profile"
-                    >
-                      {act.user2Name}
-                    </button>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[10px]">
-                      (+{act.eloChange || 28} ELO)
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-zinc-400">solved</span>
-                    <span className="text-sky-600 dark:text-sky-400 font-medium">
-                      {act.problemTitle || 'Two Sum'}
-                    </span>
-                  </>
-                )}
-                <span className="text-zinc-400 text-[10px] font-mono">({act.timeAgo})</span>
-              </span>
-            ))}
-          </div>
+          {activities.length > 0 ? (
+            <div className="flex items-center gap-6 overflow-x-auto text-[11px] font-mono text-zinc-600 dark:text-zinc-300">
+              {activities.map((act) => (
+                <span key={act.id} className="inline-flex items-center gap-1.5 shrink-0 bg-zinc-100/60 dark:bg-zinc-800/60 px-2.5 py-1 rounded-md border border-zinc-200/50 dark:border-zinc-700/50">
+                  <button
+                    onClick={() => onSelectUserName?.(act.user1Name)}
+                    className="font-semibold text-zinc-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors cursor-pointer"
+                    title="View student profile"
+                  >
+                    {act.user1Name}
+                  </button>
+                  {act.user2Name ? (
+                    <>
+                      <span className="text-zinc-400">defeated</span>
+                      <button
+                        onClick={() => onSelectUserName?.(act.user2Name!)}
+                        className="font-medium text-zinc-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors cursor-pointer"
+                        title="View student profile"
+                      >
+                        {act.user2Name}
+                      </button>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[10px]">
+                        (+{act.eloChange || 28} ELO)
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-zinc-400">solved</span>
+                      <span className="text-sky-600 dark:text-sky-400 font-medium">
+                        {act.problemTitle || 'Problem'}
+                      </span>
+                    </>
+                  )}
+                  <span className="text-zinc-400 text-[10px] font-mono">({act.timeAgo})</span>
+                </span>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-[11px] font-mono text-zinc-500 dark:text-zinc-400 truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+              <span className="truncate">Invertis Arena Live &bull; Ready for student duels. Solve a problem or win a 1v1 match to appear on the live feed!</span>
+            </div>
+          )}
         </div>
-      )}
+        <span className="hidden sm:inline-flex items-center gap-1 shrink-0 font-mono text-[10px] text-zinc-400">
+          Real-time
+        </span>
+      </div>
 
       {/* LeetCode Daily Challenge & Contest Badges Showcase */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

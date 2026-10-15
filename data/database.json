@@ -15,8 +15,8 @@
       "totalOnlineSeconds": 44100,
       "lastActiveAt": 1791899175433,
       "course": "B.Tech CSE",
-      "studentId": "IU212089",
-      "bio": "Python & Algorithm Enthusiast | Invertis Coding Club"
+      "bio": "Python & Algorithm Enthusiast | Invertis Coding Club",
+      "studentId": "IU212089"
     },
     {
       "id": "user-1791693341107-393",
@@ -30,14 +30,15 @@
       "joinedAt": "2026-10-11T04:35:41.107Z",
       "passwordHash": "c06d378083ad73d0508ecd0320f2985a1dbcb8126ae9187da540d3a23babe722d034195df557b52a6d8a146e953b7f4ed611c467327224c32a3d0c208b9196b7",
       "salt": "e3b4ebc8a3b1323a484e5a02f1d63386",
-      "studentId": "IU212234",
       "course": "B.Tech CSE",
       "phone": "9876543210",
       "totalOnlineSeconds": 67320,
       "lastActiveAt": 1791900255433,
       "bio": "DSA Competitor & Full Stack Dev | Core Team Invertis",
       "avatarUrl": "https://avatars.githubusercontent.com/u/229573370?v=4",
-      "githubUrl": "https://github.com/abhisar-dev"
+      "githubUrl": "https://github.com/abhisar-dev",
+      "linkedinUrl": "https://www.linkedin.com/in/abhisar-kumar-89a2872a0",
+      "studentId": "IU212234"
     },
     {
       "id": "user-1791870421769-216",
@@ -54,8 +55,8 @@
       "totalOnlineSeconds": 30900,
       "lastActiveAt": 1791897015433,
       "course": "BCA",
-      "studentId": "IU221045",
-      "bio": "Java Developer & Problem Solver"
+      "bio": "Java Developer & Problem Solver",
+      "studentId": "IU221045"
     }
   ],
   "matches": [
