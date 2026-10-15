@@ -10,6 +10,7 @@ import { TestResultPanel, TestCaseResult } from '@/components/TestResultPanel';
 import { VictoryModal } from '@/components/VictoryModal';
 import { LobbyModal } from '@/components/LobbyModal';
 import { ProfileModal } from '@/components/ProfileModal';
+import { PublicProfileModal } from '@/components/PublicProfileModal';
 import { SolutionInspectorModal } from '@/components/SolutionInspectorModal';
 import { ShareInviteModal } from '@/components/ShareInviteModal';
 import { AuthView } from '@/components/AuthView';
@@ -27,7 +28,7 @@ import { Spotlight } from '@/components/ui/spotlight';
 import { LayoutTextFlip } from '@/components/ui/layout-text-flip';
 import { LoaderOne } from '@/components/ui/loader';
 import { PROBLEMS, Problem, Language, getRandomContestProblems } from '@/lib/problems';
-import { User, getCurrentUser, clearUserSession, createAccount, saveUserSession, recordMatchResult, saveMatchRecord, SubmissionRecord, saveSubmission } from '@/lib/auth';
+import { User, getCurrentUser, getRegisteredUsers, clearUserSession, createAccount, saveUserSession, recordMatchResult, saveMatchRecord, SubmissionRecord, saveSubmission } from '@/lib/auth';
 import { Player, ContestRoom } from '@/lib/room-store';
 import { ChallengeInvite } from '@/lib/presence-store';
 import { sounds } from '@/lib/sound';
@@ -98,6 +99,34 @@ export default function Home() {
   const [isAuthLoaded, setIsAuthLoaded] = useState(false);
   const [urlInviteCode, setUrlInviteCode] = useState<string | null>(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [publicProfileTarget, setPublicProfileTarget] = useState<User | null>(null);
+  const [isPublicProfileModalOpen, setIsPublicProfileModalOpen] = useState(false);
+
+  const handleOpenPublicProfile = (target: User | string) => {
+    if (typeof target === 'string') {
+      const reg = getRegisteredUsers();
+      const cleanTarget = target.trim();
+      const found = reg.find(
+        (u) =>
+          u.name.toLowerCase() === cleanTarget.toLowerCase() ||
+          u.handle.toLowerCase() === cleanTarget.toLowerCase().replace('@', '')
+      );
+      if (found) {
+        setPublicProfileTarget(found);
+      } else {
+        setPublicProfileTarget({
+          id: `lookup-${cleanTarget}`,
+          name: cleanTarget,
+          handle: cleanTarget.toLowerCase().replace(/[^a-z0-9]/g, ''),
+          college: 'Invertis University',
+          elo: 1000,
+        } as User);
+      }
+    } else {
+      setPublicProfileTarget(target);
+    }
+    setIsPublicProfileModalOpen(true);
+  };
 
   // Contest Problem Set (Dynamic Randomized 5 Problems)
   const [contestProblems, setContestProblems] = useState<Problem[]>(PROBLEMS.slice(0, 5));
@@ -1212,6 +1241,7 @@ export default function Home() {
           onSelectProblemToSolve={handleSolveProblemFromDirectory}
           onReportViolation={() => setIsViolationModalOpen(true)}
           onOpenProfile={() => setIsProfileModalOpen(true)}
+          onSelectUserName={handleOpenPublicProfile}
         />
       )}
 
@@ -1225,6 +1255,7 @@ export default function Home() {
       {activeNavTab === 'leaderboard' && (
         <LeaderboardView
           onChallengeUser={handleInitiateLeaderboardChallenge}
+          onSelectUser={handleOpenPublicProfile}
           onOpenShareInvite={() => setIsShareModalOpen(true)}
           onlineUserIds={onlineUserIds}
           solvedProblemIds={solvedProblemIds}
@@ -1410,6 +1441,14 @@ export default function Home() {
           }));
         }}
         onSignOut={handleSignOut}
+      />
+
+      <PublicProfileModal
+        isOpen={isPublicProfileModalOpen}
+        onClose={() => setIsPublicProfileModalOpen(false)}
+        targetUser={publicProfileTarget}
+        currentUser={currentUser}
+        onChallengeUser={handleInitiateLeaderboardChallenge}
       />
 
       <LobbyModal

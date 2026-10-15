@@ -43,6 +43,7 @@ interface DashboardViewProps {
   onSelectProblemToSolve?: (prob: Problem) => void;
   onReportViolation?: () => void;
   onOpenProfile?: () => void;
+  onSelectUserName?: (userName: string) => void;
 }
 
 export function DashboardView({
@@ -56,6 +57,7 @@ export function DashboardView({
   onSelectProblemToSolve,
   onReportViolation,
   onOpenProfile,
+  onSelectUserName,
 }: DashboardViewProps) {
   const [matchHistory, setMatchHistory] = useState<MatchRecord[]>([]);
   const [campusRank, setCampusRank] = useState<number>(1);
@@ -342,11 +344,23 @@ export function DashboardView({
           <div className="flex items-center gap-6 overflow-x-auto text-[11px] font-mono text-zinc-600 dark:text-zinc-300">
             {activities.map((act) => (
               <span key={act.id} className="inline-flex items-center gap-1.5 shrink-0 bg-zinc-100/60 dark:bg-zinc-800/60 px-2.5 py-1 rounded-md border border-zinc-200/50 dark:border-zinc-700/50">
-                <span className="font-semibold text-zinc-900 dark:text-white">{act.user1Name}</span>
+                <button
+                  onClick={() => onSelectUserName?.(act.user1Name)}
+                  className="font-semibold text-zinc-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors cursor-pointer"
+                  title="View student profile"
+                >
+                  {act.user1Name}
+                </button>
                 {act.user2Name ? (
                   <>
                     <span className="text-zinc-400">defeated</span>
-                    <span className="font-medium text-zinc-900 dark:text-white">{act.user2Name}</span>
+                    <button
+                      onClick={() => onSelectUserName?.(act.user2Name!)}
+                      className="font-medium text-zinc-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 hover:underline transition-colors cursor-pointer"
+                      title="View student profile"
+                    >
+                      {act.user2Name}
+                    </button>
                     <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-[10px]">
                       (+{act.eloChange || 28} ELO)
                     </span>

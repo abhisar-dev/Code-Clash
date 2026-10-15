@@ -2095,6 +2095,20 @@
   ],
   "userSessions": [
     {
+      "id": "sess-1792056054016-88",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792056054016,
+      "lastActiveAt": 1792056100454,
+      "durationSeconds": 46,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1792056054016
+    },
+    {
       "id": "sess-1791982859233-662",
       "userId": "user-1791693341107-393",
       "userName": "Abhishek",

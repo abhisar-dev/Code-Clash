@@ -44,6 +44,7 @@ type TimeframeFilter = 'all_time' | 'month' | 'semester';
 
 interface LeaderboardViewProps {
   onChallengeUser: (targetUser: User) => void;
+  onSelectUser?: (targetUser: User) => void;
   onOpenShareInvite?: () => void;
   onlineUserIds?: string[];
   solvedProblemIds?: string[];
@@ -61,6 +62,7 @@ const DEPARTMENTS = [
 
 export function LeaderboardView({
   onChallengeUser,
+  onSelectUser,
   onOpenShareInvite,
   onlineUserIds = [],
   solvedProblemIds = [],
@@ -522,12 +524,15 @@ export function LeaderboardView({
             >
               {/* 2nd Place (Silver) if 2 or more contestants */}
               {topThree.length >= 2 && (
-                <div className="order-2 md:order-1 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 flex flex-col items-center text-center relative overflow-hidden shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-all">
+                <div
+                  onClick={() => onSelectUser?.(topThree[1])}
+                  className="order-2 md:order-1 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 flex flex-col items-center text-center relative overflow-hidden shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer group"
+                >
                   <div className="w-8 h-8 rounded-full bg-zinc-200/80 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-mono font-bold text-xs flex items-center justify-center mb-3">
                     #2
                   </div>
                   <Avatar name={topThree[1].name} avatarUrl={topThree[1].avatarUrl} size="lg" />
-                  <div className="font-bold text-sm text-zinc-900 dark:text-white mt-2">
+                  <div className="font-bold text-sm text-zinc-900 dark:text-white mt-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                     {topThree[1].name}
                   </div>
                   <div className="text-[11px] text-zinc-400 font-mono">@{topThree[1].handle}</div>
@@ -545,7 +550,10 @@ export function LeaderboardView({
               )}
 
               {/* 1st Place (Gold Champion) */}
-              <div className="order-1 md:order-2 p-5 rounded-2xl bg-gradient-to-b from-amber-500/10 via-white dark:via-zinc-900 to-white dark:to-zinc-900 border-2 border-amber-500/40 dark:border-amber-500/30 flex flex-col items-center text-center relative overflow-hidden shadow-sm hover:border-amber-500/60 transition-all">
+              <div
+                onClick={() => onSelectUser?.(topThree[0])}
+                className="order-1 md:order-2 p-5 rounded-2xl bg-gradient-to-b from-amber-500/10 via-white dark:via-zinc-900 to-white dark:to-zinc-900 border-2 border-amber-500/40 dark:border-amber-500/30 flex flex-col items-center text-center relative overflow-hidden shadow-sm hover:border-amber-500/60 transition-all cursor-pointer group"
+              >
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500 text-white uppercase tracking-wider">
                     CHAMPION
@@ -555,7 +563,7 @@ export function LeaderboardView({
                   <Trophy className="w-4 h-4 fill-current" />
                 </div>
                 <Avatar name={topThree[0].name} avatarUrl={topThree[0].avatarUrl} size="lg" />
-                <div className="font-bold text-base text-zinc-900 dark:text-white mt-2 flex items-center gap-1.5">
+                <div className="font-bold text-base text-zinc-900 dark:text-white mt-2 flex items-center gap-1.5 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   <span>{topThree[0].name}</span>
                   <Medal className="w-4 h-4 text-amber-500" />
                 </div>
@@ -574,12 +582,15 @@ export function LeaderboardView({
 
               {/* 3rd Place (Bronze) if 3 or more contestants */}
               {topThree.length >= 3 && (
-                <div className="order-3 md:order-3 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 flex flex-col items-center text-center relative overflow-hidden shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-all">
+                <div
+                  onClick={() => onSelectUser?.(topThree[2])}
+                  className="order-3 md:order-3 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 flex flex-col items-center text-center relative overflow-hidden shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-all cursor-pointer group"
+                >
                   <div className="w-8 h-8 rounded-full bg-orange-700/20 text-orange-700 dark:text-orange-400 font-mono font-bold text-xs flex items-center justify-center mb-3">
                     #3
                   </div>
                   <Avatar name={topThree[2].name} avatarUrl={topThree[2].avatarUrl} size="lg" />
-                  <div className="font-bold text-sm text-zinc-900 dark:text-white mt-2">
+                  <div className="font-bold text-sm text-zinc-900 dark:text-white mt-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                     {topThree[2].name}
                   </div>
                   <div className="text-[11px] text-zinc-400 font-mono">@{topThree[2].handle}</div>
@@ -662,11 +673,15 @@ export function LeaderboardView({
                           </td>
 
                           {/* Contestant */}
-                          <td className="py-3.5 px-4">
+                          <td
+                            className="py-3.5 px-4 cursor-pointer group"
+                            onClick={() => onSelectUser?.(c)}
+                            title="View student public profile"
+                          >
                             <div className="flex items-center gap-2.5">
                               <Avatar name={c.name} avatarUrl={c.avatarUrl} size="sm" />
                               <div>
-                                <div className="font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5">
+                                <div className="font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                                   <span>{c.name}</span>
                                   {isMe && (
                                     <span className="px-1.5 py-0.2 rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400 text-[10px] font-mono font-bold">
@@ -891,11 +906,15 @@ export function LeaderboardView({
                           )}
                         </td>
 
-                        <td className="py-3.5 px-4">
+                        <td
+                          className="py-3.5 px-4 cursor-pointer group"
+                          onClick={() => onSelectUser?.(c)}
+                          title="View student public profile"
+                        >
                           <div className="flex items-center gap-2.5">
                             <Avatar name={c.name} avatarUrl={c.avatarUrl} size="sm" />
                             <div>
-                              <div className="font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5">
+                              <div className="font-semibold text-zinc-900 dark:text-white flex items-center gap-1.5 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                                 <span>{c.name}</span>
                                 {isMe && (
                                   <span className="px-1.5 py-0.2 rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400 text-[10px] font-mono font-bold">
