@@ -4,8 +4,6 @@ import { getTier } from '@/lib/auth';
 import { PROBLEMS } from '@/lib/problems';
 import { computeGamification, calculateStreakInfo } from '@/lib/gamification';
 
-export const dynamic = 'force-dynamic';
-
 function formatElapsed(timestamp: number): string {
   const diffMs = Math.max(0, Date.now() - timestamp);
   const mins = Math.floor(diffMs / 60000);
