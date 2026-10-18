@@ -20,9 +20,10 @@ export async function GET() {
         const isAbhisar =
           safe.handle === 'abhisarkumar70' || safe.email === 'abhisarkumar70@gmail.com';
         const name = isAbhisar ? 'Abhisar Kumar' : safe.name;
-        const avatarUrl =
-          safe.avatarUrl ||
-          (isAbhisar ? 'https://avatars.githubusercontent.com/u/229573370?v=4' : undefined);
+        const rawAvatar = safe.avatarUrl;
+        const avatarUrl = (rawAvatar && !rawAvatar.includes('avatars.githubusercontent.com'))
+          ? rawAvatar
+          : (isAbhisar ? '/abhisar-profile.png' : undefined);
         const course = isAbhisar ? 'BCA' : (safe.course || 'B.Tech CSE');
         return {
           ...safe,

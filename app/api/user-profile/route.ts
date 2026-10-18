@@ -48,8 +48,8 @@ export async function GET(req: NextRequest) {
     if (safeUser.handle === 'abhisarkumar70' || safeUser.email === 'abhisarkumar70@gmail.com') {
       safeUser.name = 'Abhisar Kumar';
       safeUser.course = 'BCA';
-      if (!safeUser.avatarUrl) {
-        safeUser.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
+      if (!safeUser.avatarUrl || safeUser.avatarUrl.includes('avatars.githubusercontent.com')) {
+        safeUser.avatarUrl = '/abhisar-profile.png';
       }
       if (!safeUser.githubUrl) {
         safeUser.githubUrl = 'https://github.com/abhisar-dev';

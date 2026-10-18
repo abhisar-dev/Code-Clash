@@ -145,6 +145,10 @@ export function getStoredAccounts(): StoredAccount[] {
 
   accounts = accounts.map((a) => {
     if (a?.user?.handle === 'abhisarkumar70' || a?.user?.email === 'abhisarkumar70@gmail.com') {
+      const currentAvatar = a.user.avatarUrl;
+      const avatarUrl = (!currentAvatar || currentAvatar.includes('avatars.githubusercontent.com'))
+        ? '/abhisar-profile.png'
+        : currentAvatar;
       return {
         ...a,
         user: {
@@ -152,7 +156,7 @@ export function getStoredAccounts(): StoredAccount[] {
           name: 'Abhisar Kumar',
           course: 'BCA',
           college: 'Invertis University',
-          avatarUrl: a.user.avatarUrl || 'https://avatars.githubusercontent.com/u/229573370?v=4',
+          avatarUrl,
           githubUrl: a.user.githubUrl || 'https://github.com/abhisar-dev',
           linkedinUrl: a.user.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
           phone: a.user.phone || '+91-7488036476',
@@ -190,11 +194,14 @@ export function getCurrentUser(): User | null {
       user.name = 'Abhisar Kumar';
       user.course = 'BCA';
       user.college = 'Invertis University';
-      user.avatarUrl = 'https://avatars.githubusercontent.com/u/229573370?v=4';
-      user.githubUrl = 'https://github.com/abhisar-dev';
-      user.linkedinUrl = 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
-      user.phone = '+91-7488036476';
-      user.bio = 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
+      // Preserve uploaded avatar; only default if empty or stale github URL
+      if (!user.avatarUrl || user.avatarUrl.includes('avatars.githubusercontent.com')) {
+        user.avatarUrl = '/abhisar-profile.png';
+      }
+      user.githubUrl = user.githubUrl || 'https://github.com/abhisar-dev';
+      user.linkedinUrl = user.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0';
+      user.phone = user.phone || '+91-7488036476';
+      user.bio = user.bio || 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer';
     }
     const history = getMatchHistory();
     if (history.length === 0) {
@@ -275,16 +282,20 @@ export function getRegisteredUsers(): User[] {
       u.matchesWon = 0;
     }
     if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+      const currentAvatar = u.avatarUrl;
+      const avatarUrl = (!currentAvatar || currentAvatar.includes('avatars.githubusercontent.com'))
+        ? '/abhisar-profile.png'
+        : currentAvatar;
       return {
         ...u,
         name: 'Abhisar Kumar',
         course: 'BCA',
         college: 'Invertis University',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/229573370?v=4',
-        githubUrl: 'https://github.com/abhisar-dev',
-        linkedinUrl: 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
-        phone: '+91-7488036476',
-        bio: 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer',
+        avatarUrl,
+        githubUrl: u.githubUrl || 'https://github.com/abhisar-dev',
+        linkedinUrl: u.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
+        phone: u.phone || '+91-7488036476',
+        bio: u.bio || 'BCA (AI & ML) @ Invertis University | Full-Stack & Machine Learning Developer',
         matchesWon: history.length > 0 ? u.matchesWon : 0,
         matchesPlayed: history.length > 0 ? u.matchesPlayed : 0,
       };

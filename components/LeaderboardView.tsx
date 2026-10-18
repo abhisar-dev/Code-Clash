@@ -151,8 +151,8 @@ export function LeaderboardView({
         }
       });
 
-      // Default avatar for abhisarkumar70
-      registerAvatar(undefined, 'abhisarkumar70', 'abhisarkumar70@gmail.com', 'https://avatars.githubusercontent.com/u/229573370?v=4');
+      // Default fallback avatar for abhisarkumar70
+      registerAvatar(undefined, 'abhisarkumar70', 'abhisarkumar70@gmail.com', '/abhisar-profile.png');
 
       // Record daily activity today
       recordDailyActivity();
@@ -177,13 +177,18 @@ export function LeaderboardView({
           (isCurrent && localCurrent?.course) ||
           (isAbhisar ? 'BCA' : (u.course || 'B.Tech CSE'));
 
-        const resolvedAvatar =
+        const candidateAvatar =
           (isCurrent && localCurrent?.avatarUrl) ||
           u.avatarUrl ||
           (u.id && localAvatarMap.get(u.id)) ||
           (uHandle && localAvatarMap.get(uHandle)) ||
           (uEmail && localAvatarMap.get(uEmail)) ||
-          (isAbhisar ? 'https://avatars.githubusercontent.com/u/229573370?v=4' : undefined);
+          (isAbhisar ? '/abhisar-profile.png' : undefined);
+
+        const resolvedAvatar =
+          candidateAvatar && !candidateAvatar.includes('avatars.githubusercontent.com')
+            ? candidateAvatar
+            : (isAbhisar ? '/abhisar-profile.png' : undefined);
 
         return {
           ...u,

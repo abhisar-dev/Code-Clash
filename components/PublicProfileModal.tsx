@@ -172,10 +172,16 @@ export function PublicProfileModal({
     githubUrl: (isSelf && currentUser?.githubUrl) ? currentUser.githubUrl : (profileData?.user?.githubUrl || (isAbhisar ? 'https://github.com/abhisar-dev' : targetUser.githubUrl)),
     linkedinUrl: (isSelf && currentUser?.linkedinUrl) ? currentUser.linkedinUrl : (profileData?.user?.linkedinUrl || (isAbhisar ? 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0' : targetUser.linkedinUrl)),
     avatarUrl:
-      (isSelf && currentUser?.avatarUrl) ||
-      profileData?.user?.avatarUrl ||
-      targetUser.avatarUrl ||
-      (isAbhisar ? 'https://avatars.githubusercontent.com/u/229573370?v=4' : undefined),
+      (() => {
+        const candidate =
+          (isSelf && currentUser?.avatarUrl) ||
+          profileData?.user?.avatarUrl ||
+          targetUser.avatarUrl ||
+          (isAbhisar ? '/abhisar-profile.png' : undefined);
+        return candidate && !candidate.includes('avatars.githubusercontent.com')
+          ? candidate
+          : (isAbhisar ? '/abhisar-profile.png' : undefined);
+      })(),
   };
   const stats = profileData?.stats;
 

@@ -236,15 +236,19 @@ class DatabaseEngine {
     // Ensure authentic profile information for registered users
     parsed.users = (parsed.users || []).map((u: any) => {
       if (u.handle === 'abhisarkumar70' || u.email === 'abhisarkumar70@gmail.com') {
+        const currentAvatar = u.avatarUrl;
+        const avatarUrl = (!currentAvatar || currentAvatar.includes('avatars.githubusercontent.com'))
+          ? '/abhisar-profile.png'
+          : currentAvatar;
         return {
           ...u,
           name: 'Abhisar Kumar',
           course: 'BCA',
           phone: '+91-7488036476',
           bio: 'Full Stack Developer & AI/ML Enthusiast | Invertis University',
-          avatarUrl: 'https://avatars.githubusercontent.com/u/229573370?v=4',
-          githubUrl: 'https://github.com/abhisar-dev',
-          linkedinUrl: 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
+          avatarUrl,
+          githubUrl: u.githubUrl || 'https://github.com/abhisar-dev',
+          linkedinUrl: u.linkedinUrl || 'https://www.linkedin.com/in/abhisar-kumar-89a2872a0',
           matchesWon: parsed.matches.length > 0 ? u.matchesWon : 0,
           matchesPlayed: parsed.matches.length > 0 ? u.matchesPlayed : 0,
         };
