@@ -315,14 +315,18 @@ export default function Home() {
   };
 
   // Create room with randomized contest problems
-  const createInitialRoom = async (customRoomId?: string, authUser?: User) => {
+  const createInitialRoom = async (
+    customRoomId?: string,
+    authUser?: User,
+    difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Mixed'
+  ) => {
     const usr = authUser || currentUser;
     if (!usr) return;
 
     const rid = customRoomId || `CLASH-${Math.floor(1000 + Math.random() * 9000)}`;
     setRoomId(rid);
 
-    const freshProblems = getRandomContestProblems();
+    const freshProblems = getRandomContestProblems(difficulty);
     setContestProblems(freshProblems);
     setCurrentProblemIndex(0);
 
@@ -333,6 +337,7 @@ export default function Home() {
         body: JSON.stringify({
           action: 'create',
           roomId: rid,
+          difficulty,
           player: {
             ...player,
             id: usr.id,
@@ -1119,12 +1124,16 @@ export default function Home() {
   };
 
   // 1v1 Matchmaking Queue Handler
-  const handleMatchFound = (matchedRoomId: string, opp: { name: string; handle: string; elo: number }) => {
+  const handleMatchFound = (
+    matchedRoomId: string,
+    opp: { name: string; handle: string; elo: number; avatarUrl?: string },
+    problems?: Problem[]
+  ) => {
     setRoomId(matchedRoomId);
     setOpponent({
       id: `peer-${opp.handle}`,
       name: opp.name,
-      avatar: '',
+      avatar: opp.avatarUrl || '',
       elo: opp.elo,
       isTyping: false,
       currentQuestionIndex: 0,
@@ -1135,6 +1144,10 @@ export default function Home() {
       language: 'python',
       lastActive: Date.now(),
     });
+    if (problems && problems.length > 0) {
+      setContestProblems(problems);
+      setCurrentProblemIndex(0);
+    }
     setTimeRemaining(2700);
     setIsMatchActive(true);
     setActiveNavTab('arena');
@@ -1230,8 +1243,7 @@ export default function Home() {
         <DashboardView
           user={currentUser}
           onStart1v1={() => {
-            createInitialRoom();
-            setActiveNavTab('arena');
+            setIsLobbyModalOpen(true);
           }}
           onOpenProblems={() => setActiveNavTab('problems')}
           onOpenLeaderboard={() => setActiveNavTab('leaderboard')}
@@ -1456,9 +1468,9 @@ export default function Home() {
         isOpen={isLobbyModalOpen}
         user={currentUser}
         onClose={() => setIsLobbyModalOpen(false)}
-        onStartContest={(rid) => {
+        onStartContest={(rid, diff) => {
           setRoomId(rid);
-          createInitialRoom(rid);
+          createInitialRoom(rid, currentUser, diff);
           resetContestState();
           setActiveNavTab('arena');
         }}

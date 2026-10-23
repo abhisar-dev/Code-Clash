@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
     // 1. Create Room
     if (action === 'create') {
       const generatedRoomId = roomId || `CLASH-${Math.floor(1000 + Math.random() * 9000)}`;
-      // Pick randomized 5 contest problems: 2 Easy, 2 Medium, 1 Hard across different DSA topics
-      const contestProblems = getRandomContestProblems();
+      const difficulty = body.difficulty || 'Mixed';
+      const contestProblems = getRandomContestProblems(difficulty);
 
       const room = roomManager.createRoom(generatedRoomId, player as Player, contestProblems, 2700); // 45 mins
       return NextResponse.json({ room });

@@ -7193,12 +7193,23 @@ const BASE_PROBLEMS: Problem[] = [
 
 export const PROBLEMS: Problem[] = [...BASE_PROBLEMS, ...ADDITIONAL_LEETCODE_PROBLEMS];
 
-// Utility to generate a randomized 5-problem contest set (2 Easy, 2 Medium, 1 Hard)
-export function getRandomContestProblems(): Problem[] {
+// Utility to generate a randomized 5-problem contest set based on selected difficulty
+export function getRandomContestProblems(difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Mixed' | string): Problem[] {
   const easy = PROBLEMS.filter(p => p.difficulty === 'Easy').sort(() => 0.5 - Math.random());
   const medium = PROBLEMS.filter(p => p.difficulty === 'Medium').sort(() => 0.5 - Math.random());
   const hard = PROBLEMS.filter(p => p.difficulty === 'Hard').sort(() => 0.5 - Math.random());
 
+  if (difficulty === 'Easy') {
+    return easy.slice(0, 5);
+  }
+  if (difficulty === 'Medium') {
+    return medium.slice(0, 5);
+  }
+  if (difficulty === 'Hard') {
+    return hard.slice(0, 5);
+  }
+
+  // Default Mixed standard contest (2 Easy, 2 Medium, 1 Hard)
   return [
     easy[0] || PROBLEMS[0],
     easy[1] || PROBLEMS[1],

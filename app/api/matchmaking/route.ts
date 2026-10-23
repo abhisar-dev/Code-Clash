@@ -14,11 +14,13 @@ const queue: QueueEntry[] = [];
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, user } = body as { action: string; user: User };
+    const { action, user, difficulty } = body as { action: string; user: User; difficulty?: string };
 
     if (!action || !user?.id) {
       return NextResponse.json({ error: 'Missing action or user' }, { status: 400 });
     }
+
+    const selectedDifficulty = difficulty || 'Mixed';
 
     if (action === 'join') {
       // Clean stale queue entries older than 30s
@@ -29,7 +31,7 @@ export async function POST(req: NextRequest) {
       if (validQueue.length > 0) {
         const matchedPeer = validQueue.shift()!;
         const roomId = `CLASH-1V1-${Math.floor(1000 + Math.random() * 9000)}`;
-        const contestProblems = getRandomContestProblems();
+        const contestProblems = getRandomContestProblems(selectedDifficulty);
 
         // Create the synchronized room
         const p1: Player = {
@@ -69,6 +71,8 @@ export async function POST(req: NextRequest) {
           status: 'matched',
           roomId,
           opponent: matchedPeer.user,
+          difficulty: selectedDifficulty,
+          problems: contestProblems,
         });
       }
 
@@ -86,7 +90,7 @@ export async function POST(req: NextRequest) {
           };
 
       const roomId = `CLASH-1V1-${Math.floor(1000 + Math.random() * 9000)}`;
-      const contestProblems = getRandomContestProblems();
+      const contestProblems = getRandomContestProblems(selectedDifficulty);
 
       const p1: Player = {
         id: user.id,
@@ -127,6 +131,8 @@ export async function POST(req: NextRequest) {
         status: 'matched',
         roomId,
         opponent: safeOpponent,
+        difficulty: selectedDifficulty,
+        problems: contestProblems,
       });
     }
 
