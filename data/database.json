@@ -65,9 +65,36 @@
     "totalSubmissions": 0,
     "totalMatches": 0,
     "totalCodeLinesCompiled": 0,
-    "totalVisits": 146
+    "totalVisits": 149
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792773264764-484",
+      "timestamp": 1792773264764
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+      "ip": "49.37.65.72",
+      "id": "visit-1792317221091-867",
+      "timestamp": 1792317221091
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",
+      "ip": "13.57.148.235",
+      "id": "visit-1792317138851-919",
+      "timestamp": 1792317138851
+    },
     {
       "path": "/",
       "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",
@@ -1426,7 +1453,36 @@
   "messages": [],
   "submissions": [],
   "auditLogs": [],
-  "userSessions": [],
+  "userSessions": [
+    {
+      "id": "sess-1792773267459-731",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792773267459,
+      "lastActiveAt": 1792773358923,
+      "durationSeconds": 91,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1792773267459
+    },
+    {
+      "id": "sess-1792317224482-369",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792317224482,
+      "lastActiveAt": 1792317469435,
+      "durationSeconds": 244,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": false,
+      "timestamp": 1792317224482
+    }
+  ],
   "siteSettings": {
     "platformTitle": "CodeClash - Invertis Edition",
     "collegeBranding": "Invertis University Bareilly",
