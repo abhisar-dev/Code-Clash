@@ -65,9 +65,116 @@
     "totalSubmissions": 0,
     "totalMatches": 0,
     "totalCodeLinesCompiled": 0,
-    "totalVisits": 149
+    "totalVisits": 160
   },
   "visits": [
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847531496-671",
+      "timestamp": 1792847531496
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847531144-940",
+      "timestamp": 1792847531144
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847530809-434",
+      "timestamp": 1792847530809
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847530604-604",
+      "timestamp": 1792847530604
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847530431-732",
+      "timestamp": 1792847530431
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847524966-936",
+      "timestamp": 1792847524966
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847523283-347",
+      "timestamp": 1792847523283
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847522294-62",
+      "timestamp": 1792847522294
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847521910-571",
+      "timestamp": 1792847521910
+    },
+    {
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+      "ip": "49.37.65.122",
+      "id": "visit-1792847516197-169",
+      "timestamp": 1792847516197
+    },
+    {
+      "path": "/",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/141.0.7390.0 Safari/537.36",
+      "ip": "54.183.149.156",
+      "id": "visit-1792847337904-941",
+      "timestamp": 1792847337904
+    },
     {
       "userId": "user-1791693341107-393",
       "userName": "Abhisar Kumar",
@@ -1454,6 +1561,34 @@
   "submissions": [],
   "auditLogs": [],
   "userSessions": [
+    {
+      "id": "sess-1792847519605-123",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792847519605,
+      "lastActiveAt": 1792847574432,
+      "durationSeconds": 54,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1792847519605
+    },
+    {
+      "id": "sess-1792847516805-422",
+      "userId": "user-1791693341107-393",
+      "userName": "Abhisar Kumar",
+      "userHandle": "abhisarkumar70",
+      "college": "Invertis University",
+      "startedAt": 1792847516805,
+      "lastActiveAt": 1792847521423,
+      "durationSeconds": 4,
+      "currentPath": "/arena/CLASH-1001",
+      "currentAction": "In 1v1 Battle (CLASH-1001)",
+      "isLive": true,
+      "timestamp": 1792847516805
+    },
     {
       "id": "sess-1792843125806-818",
       "userId": "user-1791693341107-393",
