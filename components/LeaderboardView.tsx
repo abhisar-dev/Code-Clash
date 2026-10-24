@@ -20,7 +20,6 @@ import {
   Globe,
   Calendar,
   Clock,
-  Sparkles,
   Medal,
   ArrowRight,
   TrendingUp,
@@ -366,7 +365,7 @@ export function LeaderboardView({
       case 'globe':
         return <Globe className={className} />;
       default:
-        return <Sparkles className={className} />;
+        return <Award className={className} />;
     }
   };
 
@@ -549,10 +548,9 @@ export function LeaderboardView({
               : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/60'
           }`}
         >
-          <Sparkles className="w-3.5 h-3.5 text-purple-500" />
           <span>Achievements &amp; Streaks</span>
           {gamification && (
-            <span className="px-1.5 py-0.2 rounded-md bg-purple-500/10 text-purple-600 dark:text-purple-400 text-[10px] font-mono font-bold">
+            <span className="px-1.5 py-0.2 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 text-[10px] font-mono font-bold">
               {gamification.unlockedAchievementsCount} / {gamification.achievements.length}
             </span>
           )}
@@ -915,9 +913,9 @@ export function LeaderboardView({
             ))}
           </div>
 
-          {/* Department Leader Spotlight Card */}
+          {/* Department Top Coder Card */}
           {deptStats && deptStats.topCoder && (
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-sky-500/10 via-white dark:via-zinc-900 to-white dark:to-zinc-900 border border-sky-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="p-5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3.5">
                 <Avatar name={deptStats.topCoder.name} avatarUrl={deptStats.topCoder.avatarUrl} size="md" />
                 <div>

@@ -23,10 +23,6 @@ import { MatchmakingModal } from '@/components/MatchmakingModal';
 import { SubmissionResultModal } from '@/components/SubmissionResultModal';
 import { ViolationReportModal } from '@/components/ViolationReportModal';
 import { SupportModals, SupportModalType } from '@/components/SupportModals';
-import { CustomCursor } from '@/components/CustomCursor';
-import { Spotlight } from '@/components/ui/spotlight';
-import { LayoutTextFlip } from '@/components/ui/layout-text-flip';
-import { LoaderOne } from '@/components/ui/loader';
 import { PROBLEMS, Problem, Language, getRandomContestProblems } from '@/lib/problems';
 import { User, getCurrentUser, getRegisteredUsers, clearUserSession, createAccount, saveUserSession, recordMatchResult, saveMatchRecord, SubmissionRecord, saveSubmission } from '@/lib/auth';
 import { Player, ContestRoom } from '@/lib/room-store';
@@ -253,11 +249,7 @@ export default function Home() {
       }));
     }
 
-    // Give user a graceful full welcome animation experience with Spotlight + LayoutTextFlip (~4.5s)
-    const splashDuration = 4500;
-    const welcomeTimer = setTimeout(() => {
-      setIsAuthLoaded(true);
-    }, splashDuration);
+    setIsAuthLoaded(true);
 
     // Check URL invite param
     if (typeof window !== 'undefined') {
@@ -273,10 +265,6 @@ export default function Home() {
         }
       }
     }
-
-    return () => {
-      if (welcomeTimer) clearTimeout(welcomeTimer);
-    };
   }, []);
 
   // Handle post-auth initialization
@@ -1155,43 +1143,8 @@ export default function Home() {
     if (soundEnabled) sounds.playMatchFound();
   };
 
-  // If Auth check still running on client mount - Aceternity Spotlight + LayoutTextFlip
   if (!isAuthLoaded) {
-    return (
-      <div className="relative h-screen w-screen flex flex-col items-center justify-center bg-black overflow-hidden antialiased px-4">
-        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
-        <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-2xl space-y-5">
-          <div className="relative mx-4 flex flex-col items-center justify-center gap-4 text-center sm:mx-0 sm:flex-row">
-            <LayoutTextFlip
-              text="Welcome to "
-              words={["Code Clash", "The Arena", "1v1 Duels", "DSA Mastery"]}
-              duration={1400}
-            />
-          </div>
-          <p className="text-center text-sm sm:text-base text-neutral-400 font-sans tracking-wide max-w-lg leading-relaxed">
-            Experience the power of modern UI components that bring your ideas to life.
-          </p>
-
-          {/* Elegant Loading Progress & Skip */}
-          <div className="pt-6 flex flex-col items-center gap-2.5">
-            <div className="w-48 h-1 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800/80">
-              <div className="h-full bg-gradient-to-r from-amber-500 via-indigo-500 to-amber-500 rounded-full animate-pulse" style={{ width: '100%' }} />
-            </div>
-            <button
-              onClick={() => {
-                setIsAuthLoaded(true);
-                if (typeof window !== 'undefined') {
-                  sessionStorage.setItem('codeclash_welcome_seen', 'true');
-                }
-              }}
-              className="text-[11px] font-mono text-neutral-500 hover:text-neutral-300 transition-colors cursor-pointer pt-1"
-            >
-              Skip &rarr;
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // If User is not signed in, show Auth View
@@ -1529,8 +1482,6 @@ export default function Home() {
         onClose={() => setActiveSupportModal(null)}
         userEmail={currentUser?.email}
       />
-
-      <CustomCursor />
     </div>
   );
 }

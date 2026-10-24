@@ -58,7 +58,7 @@ export function ShareInviteModal({ isOpen, onClose, roomId }: ShareInviteModalPr
   const supportsNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4 select-none">
+    <div className="fixed inset-0 z-50 bg-zinc-950/60  flex items-center justify-center p-4 select-none">
       <div className="w-full max-w-sm bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-xl shadow-2xl overflow-hidden flex flex-col transition-colors">
         {/* Header */}
         <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/60 dark:bg-zinc-950/50">

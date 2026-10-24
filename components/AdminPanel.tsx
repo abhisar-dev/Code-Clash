@@ -23,8 +23,8 @@ import {
   TrendingUp,
   Cpu,
   Database,
-  Terminal,
   Globe,
+  FileText,
   Award,
   Swords,
   ChevronRight,
@@ -34,7 +34,6 @@ import {
   Code,
   FileCode,
   History,
-  Sparkles,
   Laptop,
   Smartphone,
   Play,
@@ -256,7 +255,7 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
   const monitoringItems = [
     { id: 'online_users', label: '8. Live Online Students', icon: <Radio className="w-4 h-4 text-emerald-500" />, badge: data?.stats?.onlineCount },
     { id: 'session_durations', label: '9. Online Time & Durations', icon: <Clock className="w-4 h-4 text-sky-500" /> },
-    { id: 'user_audit', label: '10. User Activity Audit Trail', icon: <Terminal className="w-4 h-4 text-amber-500" />, count: data?.auditLogs?.length },
+    { id: 'user_audit', label: '10. User Activity Audit Trail', icon: <FileText className="w-4 h-4 text-amber-500" />, count: data?.auditLogs?.length },
     { id: 'submissions_inspect', label: '11. Student Code Inspector', icon: <Code className="w-4 h-4 text-indigo-500" />, count: data?.submissions?.length },
     { id: 'all_users', label: '12. Student Directory & Profiles', icon: <Users className="w-4 h-4 text-zinc-400" />, count: data?.stats?.totalUsers },
     { id: 'graphs', label: '13. Visual Growth Graphs', icon: <BarChart3 className="w-4 h-4 text-zinc-400" /> },
@@ -984,7 +983,7 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 font-sans flex items-center gap-2">
-                    <Terminal className="w-5 h-5 text-amber-500" />
+                    <FileText className="w-5 h-5 text-amber-500" />
                     <span>User Activity Audit Trail &amp; Journey</span>
                   </h2>
                   <p className="text-xs text-zinc-500 mt-1">
@@ -1403,7 +1402,7 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                           : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                       }`}
                     >
-                      <Terminal className="w-3.5 h-3.5 text-amber-500" />
+                      <FileText className="w-3.5 h-3.5 text-amber-500" />
                       <span>3. Activity Trail</span>
                     </button>
                     <button
@@ -2174,7 +2173,7 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
                   </label>
                   <input
                     type="text"
-                    placeholder="Subject: Invitation to Inter-Department 1v1 DSA Arena Round..."
+                    placeholder="Subject: Invitation to Campus 1v1 DSA Arena Round..."
                     value={mailSubject}
                     onChange={(e) => setMailSubject(e.target.value)}
                     className="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 text-xs text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-zinc-400"
@@ -2243,7 +2242,7 @@ export function AdminPanel({ currentUser, onClose, onSelectUserProfile }: AdminP
 
       {/* Inspect Code Modal Popup */}
       {inspectCodeModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60  flex items-center justify-center p-4">
           <div className="w-full max-w-3xl bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in fade-in zoom-in-95">
             {/* Modal Header */}
             <div className="p-4 sm:p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">

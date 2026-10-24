@@ -12,7 +12,6 @@ import {
   BarChart3,
   Calendar,
   Layers,
-  Sparkles,
 } from 'lucide-react';
 import { AdminData } from './types';
 

@@ -11,7 +11,6 @@ import {
   ArrowRight,
   RotateCcw,
   X,
-  Sparkles,
   Zap,
 } from 'lucide-react';
 import { SubmissionRecord } from '@/lib/auth';
@@ -64,7 +63,7 @@ export function SubmissionResultModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4 select-none animate-in fade-in">
+    <div className="fixed inset-0 z-50 bg-zinc-950/60  flex items-center justify-center p-4 select-none animate-in fade-in">
       <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-colors">
         {/* Modal Header */}
         <div className="p-4 px-5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between bg-zinc-50/60 dark:bg-zinc-950/50">

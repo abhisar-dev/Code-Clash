@@ -27,7 +27,7 @@ export function ViolationReportModal({ isOpen, onClose, reportedUser }: Violatio
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60  animate-in fade-in">
       <div className="w-full max-w-md bg-[#fdfcf9] dark:bg-[#1f1c19] border border-[#e3ded4] dark:border-[#38332c] rounded-2xl shadow-xl overflow-hidden p-6 text-stone-900 dark:text-stone-100">
         <div className="flex items-center justify-between pb-3 border-b border-stone-200/80 dark:border-stone-800">
           <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-semibold text-sm">

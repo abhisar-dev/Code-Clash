@@ -18,7 +18,7 @@ export function OutgoingChallengeModal({
   if (!invite) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in select-none">
+    <div className="fixed inset-0 z-50 bg-zinc-950/60  flex items-center justify-center p-4 animate-in fade-in select-none">
       <div className="w-full max-w-xs bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-xl shadow-2xl overflow-hidden text-center p-5 space-y-3.5 transition-colors">
         {/* Animated Icon */}
         <div className="w-10 h-10 mx-auto rounded-lg bg-sky-50 dark:bg-sky-950/50 border border-sky-100 dark:border-sky-800/60 flex items-center justify-center text-sky-600 dark:text-sky-400">

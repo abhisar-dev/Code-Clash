@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Editor from '@monaco-editor/react';
-import { Play, RotateCcw, Loader2, Sparkles } from 'lucide-react';
+import { Play, RotateCcw, Loader2 } from 'lucide-react';
 import { Language } from '@/lib/problems';
 
 interface CodeEditorProps {
@@ -64,7 +64,7 @@ export function CodeEditor({
           <button
             onClick={onRunCode}
             disabled={isExecuting || isSubmitting}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 rounded-md transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 rounded-md transition-all  disabled:opacity-50 cursor-pointer"
             title="Run on sample testcases"
           >
             {isExecuting ? (
@@ -86,7 +86,7 @@ export function CodeEditor({
             <button
               onClick={onSubmitCode}
               disabled={isExecuting || isSubmitting}
-              className="flex items-center gap-1.5 px-3.5 py-1 text-xs font-semibold text-white bg-[#00b8a3] hover:bg-[#009e8c] active:scale-95 rounded-md transition-all shadow-xs shadow-[#00b8a3]/20 disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1 text-xs font-semibold text-white bg-[#00b8a3] hover:bg-[#009e8c]  rounded-md transition-all shadow-xs shadow-[#00b8a3]/20 disabled:opacity-50 cursor-pointer"
               title="Submit code against all comprehensive test cases"
             >
               {isSubmitting ? (
@@ -95,10 +95,7 @@ export function CodeEditor({
                   <span>Submitting...</span>
                 </>
               ) : (
-                <>
-                  <Sparkles className="w-3 h-3 fill-current" />
-                  <span>Submit</span>
-                </>
+                <span>Submit</span>
               )}
             </button>
           )}

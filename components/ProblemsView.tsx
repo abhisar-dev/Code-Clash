@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { PROBLEMS, Problem, getProblemCompanies, getProblemTags } from '@/lib/problems';
-import { GooeyInput } from '@/components/ui/gooey-input';
 import {
   Search,
   ArrowUpRight,
@@ -112,16 +111,14 @@ export function ProblemsView({ onSelectProblemToSolve, solvedProblemIds }: Probl
             Free department-wise previous year placement coding papers for B.Tech, BCA, MCA and more &bull; select your technical domain to view company-wise, semester-wise and algorithm-wise practice questions.
           </p>
 
-          {/* Centered GooeyInput Search Bar (Aceternity Liquid Control) */}
-          <div className="pt-4 flex items-center justify-center">
-            <GooeyInput
+          {/* Search Bar */}
+          <div className="pt-4 flex items-center justify-center max-w-lg mx-auto w-full">
+            <input
+              type="text"
               placeholder="Search departments, algorithms (DP, Two Sum, Graphs)..."
               value={search}
-              onValueChange={(val) => setSearch(val)}
-              onClear={() => setSearch('')}
-              expandedWidth={460}
-              collapsedWidth={46}
-              gooeyBlur={4}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-white dark:bg-zinc-900 border border-stone-200 dark:border-stone-800 rounded-xl px-4 py-2.5 text-xs text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-amber-600 shadow-xs"
             />
           </div>
         </div>
@@ -157,7 +154,7 @@ export function ProblemsView({ onSelectProblemToSolve, solvedProblemIds }: Probl
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePickRandom}
-                className="px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-95 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-xs  cursor-pointer"
               >
                 <Shuffle className="w-3.5 h-3.5" />
                 <span>Random Question</span>
@@ -292,7 +289,7 @@ export function ProblemsView({ onSelectProblemToSolve, solvedProblemIds }: Probl
                   subtitle: 'BCA &bull; Foundations of Code',
                   desc: 'Palindrome verification, anagram checking, regular expressions and pattern matching.',
                   category: 'String',
-                  accent: 'bg-purple-500/15 text-purple-800 dark:text-purple-400 border-purple-500/30',
+                  accent: 'bg-stone-500/15 text-stone-800 dark:text-stone-300 border-stone-500/30',
                   badge: 'BCA Core',
                 },
                 {

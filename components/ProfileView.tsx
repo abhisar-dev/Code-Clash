@@ -15,7 +15,6 @@ import {
   Trash2,
   Calendar,
   Building,
-  Sparkles,
   ShieldCheck,
   Globe,
   LogOut,
@@ -177,7 +176,7 @@ export function ProfileView({
             ANNOUNCEMENT
           </span>
           <span className="truncate text-center font-medium">
-            New mid-term papers are being added by our team across departments — thank you for your patience while they go live.
+            New mid-term papers are being added by our team across departments - thank you for your patience while they go live.
           </span>
         </div>
         <span className="hidden shrink-0 cursor-default rounded-md bg-[#ff5c5c] px-2 py-1 text-[10px] font-black text-white sm:inline-flex">
@@ -185,7 +184,7 @@ export function ProfileView({
         </span>
       </div>
 
-      <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-sm">
+      <header className="border-b border-zinc-200 bg-white/95 ">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             <div className="text-[29px] font-black tracking-[-0.08em]">

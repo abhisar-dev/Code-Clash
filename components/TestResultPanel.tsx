@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Terminal, Clock, Lock, CheckCircle2, XCircle, Code2, Play } from 'lucide-react';
+import { Clock, Lock, CheckCircle2, XCircle, Code2, Play } from 'lucide-react';
 import { TestCase } from '@/lib/problems';
 
 export interface TestCaseResult {
@@ -50,7 +50,6 @@ export function TestResultPanel({
       <div className="h-48 bg-white dark:bg-zinc-950 border-t border-zinc-200/80 dark:border-zinc-800 p-4 flex flex-col font-mono text-xs overflow-y-auto transition-colors">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-semibold">
-            <Terminal className="w-3.5 h-3.5" />
             <span>Compile / Runtime Error</span>
           </div>
           <span className="text-[11px] text-zinc-400">Exit Code 1</span>

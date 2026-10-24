@@ -15,7 +15,6 @@ import {
   RefreshCw,
   Plus,
   Trash2,
-  Terminal,
   Clock,
   Layers,
 } from 'lucide-react';
@@ -338,7 +337,7 @@ export function SecurityAccessView({ data, onRefresh }: SecurityAccessViewProps)
       {/* System Diagnostics & Health */}
       <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
         <div className="flex items-center gap-2 font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200">
-          <Terminal className="w-4 h-4 text-zinc-500" />
+          <Activity className="w-4 h-4 text-zinc-500" />
           <span>Server Diagnostics &amp; Runtime Metrics</span>
         </div>
 

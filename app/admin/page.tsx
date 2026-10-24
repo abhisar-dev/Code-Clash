@@ -211,7 +211,7 @@ export default function AdminPage() {
 
         .title-2 span::before,
         .title-2 span::after {
-          content: "—";
+          content: "-";
         }
 
         @keyframes flickering {

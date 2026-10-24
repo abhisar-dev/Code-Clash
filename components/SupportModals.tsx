@@ -31,7 +31,7 @@ export function SupportModals({ type, onClose, userEmail }: SupportModalsProps) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60  animate-in fade-in duration-200">
       <div
         className="w-full max-w-lg bg-white dark:bg-[#181614] border border-[#e5e0d8] dark:border-[#38332c] rounded-2xl shadow-2xl overflow-hidden text-stone-900 dark:text-stone-100"
         onClick={(e) => e.stopPropagation()}
@@ -57,7 +57,7 @@ export function SupportModals({ type, onClose, userEmail }: SupportModalsProps) 
             onClick={onClose}
             className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-sm p-1 rounded-md"
           >
-            ✕
+            x
           </button>
         </div>
 

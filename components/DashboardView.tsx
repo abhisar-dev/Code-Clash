@@ -17,17 +17,12 @@ import {
   Trophy,
   Award,
   CheckCircle2,
-  Sparkles,
   Clock,
   Target,
   GraduationCap,
   BookOpen,
   ChevronRight,
   Compass,
-  Layers,
-  Brain,
-  Terminal,
-  FileCheck,
 } from 'lucide-react';
 import { PROBLEMS, Problem, getProblemCompanies, getProblemTags } from '@/lib/problems';
 import { calculateStreakInfo, computeGamification } from '@/lib/gamification';
@@ -261,7 +256,7 @@ export function DashboardView({
               {onFindMatch && (
                 <button
                   onClick={onFindMatch}
-                  className="px-6 py-3 rounded-xl bg-amber-700 hover:bg-amber-800 active:scale-98 text-white font-semibold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-amber-700 hover:bg-amber-800  text-white font-semibold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                 >
                   <Zap className="w-4 h-4 fill-current" />
                   <span>Match with Classmate</span>
@@ -271,7 +266,7 @@ export function DashboardView({
 
               <button
                 onClick={onStart1v1}
-                className="px-5 py-3 rounded-xl bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer active:scale-98"
+                className="px-5 py-3 rounded-xl bg-stone-900 hover:bg-stone-800 dark:bg-stone-100 dark:hover:bg-white text-white dark:text-stone-900 font-semibold text-xs flex items-center gap-2 transition-all cursor-pointer "
               >
                 <Swords className="w-4 h-4" />
                 <span>Host Private Duel</span>
@@ -303,7 +298,7 @@ export function DashboardView({
               </div>
               <h3 className="text-xs font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1">
                 <span>Placement Question Bank</span>
-                <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100  transition-all" />
               </h3>
               <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1 leading-snug">
                 TCS, Infosys, Wipro & FAANG frequent DSA problems with editorial breakdowns.
@@ -324,7 +319,7 @@ export function DashboardView({
               </div>
               <h3 className="text-xs font-bold text-stone-900 dark:text-stone-100 flex items-center gap-1">
                 <span>Invertis Live Leaderboard</span>
-                <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight className="w-3.5 h-3.5 opacity-40 group-hover:opacity-100  transition-all" />
               </h3>
               <p className="text-[11px] text-stone-500 dark:text-stone-400 mt-1 leading-snug">
                 Real-time rating ladder. Compare your solves with departmental peers.
@@ -403,7 +398,6 @@ export function DashboardView({
                 <span>{formattedDate}</span>
               </div>
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[11px] font-mono font-semibold">
-                <Sparkles className="w-3 h-3" />
                 <span>Bonus Challenge</span>
               </div>
             </div>
@@ -474,7 +468,7 @@ export function DashboardView({
                     onOpenProblems();
                   }
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 text-xs font-semibold transition-all cursor-pointer shadow-xs active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 text-xs font-semibold transition-all cursor-pointer shadow-xs "
               >
                 <span>Solve Daily Challenge</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -707,100 +701,6 @@ export function DashboardView({
           </div>
         </div>
       </div>
-
-      {/* InvertisPrep Style Methodology Section */}
-      <section className="pt-8 pb-4 space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#e3ded4] dark:border-[#2d2925] pb-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 font-mono text-[11px] font-semibold tracking-wider uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
-              Competitive Methodology
-            </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 dark:text-stone-100 tracking-tight">
-              Solving Alone Doesn't Build Speed. 1v1 Duels Reveal Your Limits.
-            </h2>
-            <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 max-w-2xl">
-              Engineered for Invertis CSE, BCA, and MCA students to simulate high-pressure campus placement tests and technical interviews.
-            </p>
-          </div>
-          <button
-            onClick={onOpenProblems}
-            className="self-start sm:self-auto px-4 py-2 rounded-xl text-xs font-semibold bg-stone-900 text-stone-50 dark:bg-stone-100 dark:text-stone-950 hover:bg-stone-800 dark:hover:bg-white transition-colors"
-          >
-            Explore Question Bank &rarr;
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 rounded-2xl bg-[#fdfcf9] dark:bg-[#1a1714] border border-[#e3ded4] dark:border-[#2d2925] hover:border-amber-600/40 transition-colors space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-2xl font-bold text-amber-700 dark:text-amber-400">01</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 dark:text-amber-400">
-                <Brain className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
-                Discover Interview Patterns
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
-                Break past rote memorization. Master two-pointer, sliding window, and graph traversals frequently tested by top recruiters.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-[#fdfcf9] dark:bg-[#1a1714] border border-[#e3ded4] dark:border-[#2d2925] hover:border-amber-600/40 transition-colors space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-2xl font-bold text-amber-700 dark:text-amber-400">02</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 dark:text-amber-400">
-                <Terminal className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
-                1v1 Real-Time Pressure
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
-                Simulate actual placement OA clocks. Compete head-to-head with batchmates with live progress and synchronized test suites.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-[#fdfcf9] dark:bg-[#1a1714] border border-[#e3ded4] dark:border-[#2d2925] hover:border-amber-600/40 transition-colors space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-2xl font-bold text-amber-700 dark:text-amber-400">03</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 dark:text-amber-400">
-                <FileCheck className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
-                Verified Editorials
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
-                Comprehensive step-by-step complexity breakdowns in Python, JavaScript, C++, and Java with clean edge-case explanations.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-[#fdfcf9] dark:bg-[#1a1714] border border-[#e3ded4] dark:border-[#2d2925] hover:border-amber-600/40 transition-colors space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-2xl font-bold text-amber-700 dark:text-amber-400">04</span>
-              <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-700 dark:text-amber-400">
-                <Layers className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-semibold text-sm text-stone-900 dark:text-stone-100">
-                Placement Readiness ELO
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
-                Track your rating from Novice to Grandmaster. Gain faculty-recognized credibility for on-campus pool drives.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Editorial University Footer */}
       <footer className="pt-8 pb-4 border-t border-[#e3ded4] dark:border-[#2d2925] space-y-6 text-stone-600 dark:text-stone-400">

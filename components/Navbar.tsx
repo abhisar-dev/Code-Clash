@@ -9,7 +9,6 @@ import {
   Share2,
   LayoutDashboard,
   Code2,
-  Sparkles,
   Moon,
   Sun,
   Zap,
@@ -112,53 +111,53 @@ export function Navbar({
           <div className="flex items-center gap-14 whitespace-nowrap animate-marquee hover:[animation-play-state:paused] cursor-default text-stone-950 tracking-tight">
             {/* Announcement List */}
             <span className="text-xs sm:text-[13px] font-medium">
-              📢 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 1:</strong> New <strong>DSA Placement Series &amp; 1v1 Arena Duels</strong> are live across CSE, BCA, and MCA semester question banks!
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 1:</strong> New <strong>DSA Placement Series &amp; 1v1 Arena Duels</strong> are live across CSE, BCA, and MCA semester question banks!
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              ⚡ <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the College ELO Leaderboard!
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the College ELO Leaderboard!
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              🏆 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 3:</strong> Weekly University Coding Championship scheduled &bull; Compete 1v1 against top batchmates.
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 3:</strong> Weekly University Coding Championship scheduled &bull; Compete 1v1 against top batchmates.
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              💼 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 4:</strong> FAANG &amp; MNC placement questions added: Amazon, Google, Microsoft, TCS, Infosys &amp; Wipro papers ready.
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 4:</strong> FAANG &amp; MNC placement questions added: Amazon, Google, Microsoft, TCS, Infosys &amp; Wipro papers ready.
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              🚀 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 5:</strong> Multi-language Monaco Compiler upgraded &bull; Run and test in Python, JavaScript, Java &amp; C++.
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 5:</strong> Multi-language Monaco Compiler upgraded &bull; Run and test in Python, JavaScript, Java &amp; C++.
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             {/* Duplicate for Infinite Seamless Loop */}
             <span className="text-xs sm:text-[13px] font-medium">
-              📢 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 1:</strong> New <strong>DSA Placement Series &amp; 1v1 Arena Duels</strong> are live across CSE, BCA, and MCA semester question banks!
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 1:</strong> New <strong>DSA Placement Series &amp; 1v1 Arena Duels</strong> are live across CSE, BCA, and MCA semester question banks!
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              ⚡ <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the College ELO Leaderboard!
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 2:</strong> <strong>Daily Clash Challenge:</strong> Solve today&apos;s campus problem to climb the College ELO Leaderboard!
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              🏆 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 3:</strong> Weekly University Coding Championship scheduled &bull; Compete 1v1 against top batchmates.
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 3:</strong> Weekly University Coding Championship scheduled &bull; Compete 1v1 against top batchmates.
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              💼 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 4:</strong> FAANG &amp; MNC placement questions added: Amazon, Google, Microsoft, TCS, Infosys &amp; Wipro papers ready.
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 4:</strong> FAANG &amp; MNC placement questions added: Amazon, Google, Microsoft, TCS, Infosys &amp; Wipro papers ready.
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
 
             <span className="text-xs sm:text-[13px] font-medium">
-              🚀 <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 5:</strong> Multi-language Monaco Compiler upgraded &bull; Run and test in Python, JavaScript, Java &amp; C++.
+              <strong className="font-bold underline decoration-stone-900/40 underline-offset-2">Announcement 5:</strong> Multi-language Monaco Compiler upgraded &bull; Run and test in Python, JavaScript, Java &amp; C++.
             </span>
             <span className="text-stone-900 font-black text-sm">&bull;</span>
           </div>
@@ -172,7 +171,7 @@ export function Navbar({
       </div>
 
       {/* Main InvertisPrep-Style Header */}
-      <header className="h-14 sm:h-16 border-b border-[#e5e0d8] dark:border-[#2d2925] bg-[#faf8f5]/95 dark:bg-[#151311]/95 backdrop-blur-md px-2.5 sm:px-6 lg:px-8 flex items-center justify-between z-30 select-none transition-colors duration-200">
+      <header className="h-14 sm:h-16 border-b border-[#e5e0d8] dark:border-[#2d2925] bg-[#faf8f5] dark:bg-[#151311] px-2.5 sm:px-6 lg:px-8 flex items-center justify-between z-30 select-none transition-colors duration-200">
         {/* Left: Brand Logo */}
         <div className="flex items-center gap-2 sm:gap-4">
           <div
@@ -214,7 +213,7 @@ export function Navbar({
                   </span>
                 )}
                 {tab.id === 'leaderboard' && (
-                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-purple-500/20 text-purple-700 dark:text-purple-400">
+                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-stone-200 dark:bg-stone-800 text-stone-700 dark:text-stone-300">
                     RANKS
                   </span>
                 )}
@@ -411,7 +410,7 @@ export function Navbar({
             )}
           </button>
 
-          {/* User Profile Pill: [Avatar] [Name] [v] — opens quick profile modal */}
+          {/* User Profile Pill: [Avatar] [Name] [v] - opens quick profile modal */}
           <button
             onClick={() => onOpenProfile?.()}
             className="flex items-center gap-1.5 sm:gap-2 pl-1 pr-2 sm:pr-2.5 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 hover:border-amber-500 hover:shadow-xs transition-all cursor-pointer group"
@@ -427,7 +426,7 @@ export function Navbar({
       </header>
 
       {/* Mobile Bottom Navigation Bar (iOS / Android Native App Experience) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#faf8f5]/95 dark:bg-[#151311]/95 backdrop-blur-md border-t border-[#e5e0d8] dark:border-[#2d2925] px-1.5 py-1 flex items-center justify-around select-none shadow-lg safe-area-bottom">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#faf8f5] dark:bg-[#151311] border-t border-[#e5e0d8] dark:border-[#2d2925] px-1.5 py-1 flex items-center justify-around select-none shadow-lg safe-area-bottom">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
           return (

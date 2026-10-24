@@ -159,10 +159,10 @@ export function ProfileModal({ isOpen, user, onClose, onUpdate, onSignOut }: Pro
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/60 p-3 sm:p-6 backdrop-blur-sm select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/60 p-3 sm:p-6  select-none">
       <div className="w-full max-w-[1100px] max-h-[94vh] overflow-y-auto rounded-[24px] border border-zinc-200 dark:border-zinc-800 bg-[#f6f3f0] dark:bg-zinc-950 shadow-[0_35px_90px_rgba(15,23,42,0.25)]">
         {/* Header Bar */}
-        <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#e5dfd8] dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md px-5 py-3.5 sm:px-7">
+        <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-[#e5dfd8] dark:border-zinc-800 bg-white/90 dark:bg-zinc-900/90  px-5 py-3.5 sm:px-7">
           <div className="flex items-center gap-2.5">
             <span className="text-lg font-black tracking-tight text-[#4f46e5] dark:text-indigo-400 font-sans">
               CODE<span className="text-zinc-900 dark:text-zinc-100">CLASH</span>

@@ -46,7 +46,7 @@ export function SolutionInspectorModal({
   const isDark = theme === 'dark';
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4 select-none">
+    <div className="fixed inset-0 z-50 bg-zinc-950/60  flex items-center justify-center p-4 select-none">
       <div className="w-full max-w-5xl h-[88vh] bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-xl shadow-2xl flex flex-col overflow-hidden transition-colors">
         {/* Header */}
         <div className="p-3.5 px-4 border-b border-zinc-200/80 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/50 flex items-center justify-between">

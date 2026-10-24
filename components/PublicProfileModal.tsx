@@ -15,7 +15,6 @@ import {
   Clock,
   ExternalLink,
   Code2,
-  Sparkles,
   Layers,
   ChevronRight,
   Shield,
@@ -186,7 +185,7 @@ export function PublicProfileModal({
   const stats = profileData?.stats;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 select-none animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 bg-black/60  flex items-center justify-center p-3 sm:p-4 select-none animate-in fade-in duration-200">
       <div
         className="w-full max-w-2xl bg-white dark:bg-[#141210] border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all"
         onClick={(e) => e.stopPropagation()}

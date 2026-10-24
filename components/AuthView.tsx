@@ -2,17 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, signUp, signIn, saveUserSession } from '@/lib/auth';
-import { PROBLEMS } from '@/lib/problems';
-import {
-  Swords,
-  ArrowRight,
-  ShieldCheck,
-  Zap,
-  Code,
-  AlertCircle,
-  KeyRound,
-  GraduationCap,
-} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -204,27 +193,26 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
 
   return (
     <div
-      className="min-h-screen w-screen flex flex-col items-center justify-center p-4 relative select-none bg-cover bg-center bg-no-repeat transition-all"
+      className="min-h-screen w-screen flex flex-col items-center justify-center p-4 relative select-none bg-cover bg-center bg-no-repeat bg-[#151311]"
       style={{
         backgroundImage: "url('/invertis-campus.jpg')",
       }}
     >
-      {/* Cinematic Invertis Dark Vignette Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/65 to-black/85 backdrop-blur-[3px] pointer-events-none" />
+      {/* Dark Vignette Overlay */}
+      <div className="absolute inset-0 bg-black/75 pointer-events-none" />
 
       {/* Campus Academic Ticker */}
-      <div className="mb-4 relative z-10 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 backdrop-blur-md border border-white/15 text-[11px] font-mono text-white/90 shadow-lg">
-        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-        <span className="font-semibold tracking-wide flex items-center gap-1.5">
-          <GraduationCap className="w-3.5 h-3.5 text-amber-400" />
-          <span>INVERTIS UNIVERSITY &bull; PEER CODING ARENA</span>
+      <div className="mb-4 relative z-10 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/80 border border-white/10 text-[11px] font-mono text-white/90">
+        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+        <span className="font-semibold tracking-wide">
+          INVERTIS UNIVERSITY &bull; PEER CODING ARENA
         </span>
       </div>
 
       {/* Invite Notice banner if joined via link */}
       {initialInviteCode && (
-        <div className="mb-4 relative z-10 px-4 py-2 rounded-xl bg-amber-950/80 backdrop-blur-md border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2 animate-in fade-in shadow-lg">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        <div className="mb-4 relative z-10 px-4 py-2 rounded-lg bg-amber-950 border border-amber-500/30 text-xs text-amber-200 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
           <span>
             Invited to match room:{' '}
             <strong className="font-mono text-white">{initialInviteCode}</strong>
@@ -232,13 +220,13 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
         </div>
       )}
 
-      {/* Card Container with Invertis Campus Backdrop */}
-      <div className="shadow-2xl mx-auto w-full max-w-md rounded-3xl bg-white/95 p-5 md:p-8 dark:bg-[#121110]/95 backdrop-blur-xl border border-white/20 dark:border-white/10 relative z-10 transition-all">
+      {/* Card Container */}
+      <div className="mx-auto w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 dark:bg-[#1a1715] border border-stone-200 dark:border-stone-800 relative z-10 shadow-lg">
         {/* Brand Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#ece7dc] dark:border-[#2d2925]">
+        <div className="flex items-center justify-between pb-3 border-b border-stone-200 dark:border-stone-800">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-xl tracking-tight text-[#4f46e5] dark:text-[#818cf8] font-sans">
-              CODE<span className="text-stone-900 dark:text-stone-100">CLASH</span>
+            <span className="font-bold text-lg tracking-tight text-stone-900 dark:text-stone-100">
+              CODECLASH
             </span>
             <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-500/10 text-amber-800 dark:text-amber-400 border border-amber-500/20">
               INVERTIS
@@ -253,17 +241,17 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
         {/* Title and subtitle */}
         <div className="pt-4">
           <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200 tracking-tight">
-            {tab === 'signup' ? 'Join the Invertis Arena' : 'Welcome Back, Coder'}
+            {tab === 'signup' ? 'Join the Invertis Arena' : 'Welcome Back'}
           </h2>
-          <p className="mt-1.5 max-w-sm text-xs text-neutral-600 dark:text-neutral-400">
+          <p className="mt-1 max-w-sm text-xs text-neutral-600 dark:text-neutral-400">
             {tab === 'signup'
-              ? 'Create your university competitive account to solve placement PYQs and challenge classmates in 1v1 duels.'
+              ? 'Create your university competitive account to solve placement problems and challenge classmates in 1v1 duels.'
               : 'Sign in to access real-time 1v1 multiplayer matchmaking and track your placement ELO rating.'}
           </p>
         </div>
 
         {/* 2-Way Tab Switcher (Sign In vs Create Account) */}
-        <div className="grid grid-cols-2 p-1 mt-4 bg-stone-100 dark:bg-[#1a1715] rounded-xl border border-stone-200 dark:border-stone-800 text-xs">
+        <div className="grid grid-cols-2 p-1 mt-4 bg-stone-100 dark:bg-[#25211e] rounded-xl border border-stone-200 dark:border-stone-800 text-xs">
           <button
             type="button"
             onClick={() => {
@@ -271,9 +259,9 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
               setError('');
             }}
             className={cn(
-              'py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
+              'py-1.5 rounded-lg text-xs font-semibold cursor-pointer',
               tab === 'signin'
-                ? 'bg-white dark:bg-[#282420] text-stone-900 dark:text-stone-100 shadow-xs'
+                ? 'bg-white dark:bg-[#1a1715] text-stone-900 dark:text-stone-100 shadow-xs'
                 : 'text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
             )}
           >
@@ -286,9 +274,9 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
               setError('');
             }}
             className={cn(
-              'py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer',
+              'py-1.5 rounded-lg text-xs font-semibold cursor-pointer',
               tab === 'signup'
-                ? 'bg-white dark:bg-[#282420] text-stone-900 dark:text-stone-100 shadow-xs'
+                ? 'bg-white dark:bg-[#1a1715] text-stone-900 dark:text-stone-100 shadow-xs'
                 : 'text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
             )}
           >
@@ -298,8 +286,8 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
 
         {/* Error Alert */}
         {error && (
-          <div className="mt-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2 animate-in fade-in">
-            <AlertCircle className="w-4 h-4 shrink-0" />
+          <div className="mt-4 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
             <span>{error}</span>
           </div>
         )}
@@ -393,18 +381,15 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
 
           {/* Submit Button */}
           <button
-            className="group/btn relative block h-10 w-full rounded-xl bg-gradient-to-br from-stone-900 to-stone-700 font-semibold text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-stone-800 dark:from-stone-900 dark:to-stone-800 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] cursor-pointer transition-all active:scale-98 disabled:opacity-60"
+            className="block h-10 w-full rounded-xl bg-stone-900 dark:bg-stone-100 font-semibold text-white dark:text-stone-900 text-xs cursor-pointer disabled:opacity-60"
             type="submit"
             disabled={loading}
           >
-            <span className="flex items-center justify-center gap-1.5 text-xs">
-              {loading
-                ? 'Authenticating...'
-                : tab === 'signup'
-                ? 'Sign up for CodeClash →'
-                : 'Sign in to Arena →'}
-            </span>
-            <BottomGradient />
+            {loading
+              ? 'Authenticating...'
+              : tab === 'signup'
+              ? 'Sign up for CodeClash →'
+              : 'Sign in to Arena →'}
           </button>
 
           {/* Social Auth Divider */}
@@ -412,7 +397,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-stone-200 dark:border-stone-800" />
             </div>
-            <div className="relative px-3 bg-white/95 dark:bg-[#121110]/95 text-[10px] font-mono uppercase tracking-wider text-stone-400">
+            <div className="relative px-3 bg-white dark:bg-[#1a1715] text-[10px] font-mono uppercase tracking-wider text-stone-400">
               Or continue with
             </div>
           </div>
@@ -421,7 +406,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
           <div className="grid grid-cols-2 gap-2.5">
             <a
               href="/api/auth/oauth/google"
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#1a1715] hover:bg-stone-100 dark:hover:bg-[#25211e] hover:border-stone-300 dark:hover:border-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs active:scale-98"
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#25211e] hover:bg-stone-100 dark:hover:bg-[#2d2925] text-stone-800 dark:text-stone-200 text-xs font-semibold cursor-pointer"
             >
               <GoogleIcon className="w-4 h-4 shrink-0" />
               <span>Google</span>
@@ -429,7 +414,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
 
             <a
               href="/api/auth/oauth/github"
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#1a1715] hover:bg-stone-100 dark:hover:bg-[#25211e] hover:border-stone-300 dark:hover:border-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs active:scale-98"
+              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-stone-200 dark:border-stone-800 bg-[#fbfaf7] dark:bg-[#25211e] hover:bg-stone-100 dark:hover:bg-[#2d2925] text-stone-800 dark:text-stone-200 text-xs font-semibold cursor-pointer"
             >
               <GithubIcon className="w-4 h-4 shrink-0" />
               <span>GitHub</span>
@@ -438,24 +423,8 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
         </form>
       </div>
 
-      {/* Feature Badges */}
-      <div className="mt-5 relative z-10 flex flex-wrap items-center justify-center gap-3 text-[11px] font-mono">
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white/90">
-          <Code className="w-3.5 h-3.5 text-amber-400" />
-          <span>{PROBLEMS.length} DSA Problems</span>
-        </div>
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white/90">
-          <Zap className="w-3.5 h-3.5 text-amber-400" />
-          <span>1v1 Peer Sockets</span>
-        </div>
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white/90">
-          <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-          <span>Multi-Lang Sandbox</span>
-        </div>
-      </div>
-
       {/* Legal Footer */}
-      <div className="mt-3 relative z-10 flex items-center justify-center gap-3 text-[11px] text-white/60">
+      <div className="mt-4 relative z-10 flex items-center justify-center gap-3 text-[11px] text-white/60">
         <Link href="/privacy" className="hover:text-white transition-colors">
           Privacy Policy
         </Link>
@@ -464,20 +433,11 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
           Terms of Service
         </Link>
         <span className="text-white/30">&bull;</span>
-        <span className="font-mono text-[10px] text-amber-400/90 font-medium">Invertis Bareilly</span>
+        <span className="font-mono text-[10px] text-amber-400 font-medium">Invertis Bareilly</span>
       </div>
     </div>
   );
 }
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
-      <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
-    </>
-  );
-};
 
 const LabelInputContainer = ({
   children,
@@ -505,7 +465,7 @@ const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => {
     <input
       {...props}
       className={cn(
-        'w-full bg-[#fbfaf7] dark:bg-[#1a1715] border border-[#dcd6cc] dark:border-[#38332c] rounded-xl px-3 py-2 text-xs text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-amber-600 focus:bg-white dark:focus:bg-[#1f1c19] transition-all shadow-2xs',
+        'w-full bg-[#fbfaf7] dark:bg-[#25211e] border border-[#dcd6cc] dark:border-[#38332c] rounded-xl px-3 py-2 text-xs text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:border-amber-600 focus:bg-white dark:focus:bg-[#1f1c19]',
         props.className
       )}
     />

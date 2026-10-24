@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Swords, Check, X, Sparkles, Clock } from 'lucide-react';
+import { Swords, Check, X, Clock } from 'lucide-react';
 import { Avatar } from '@/components/Avatar';
 import { ChallengeInvite } from '@/lib/presence-store';
 
@@ -40,7 +40,7 @@ export function IncomingChallengeModal({
   if (!invite) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-zinc-950/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in select-none">
+    <div className="fixed inset-0 z-50 bg-zinc-950/70 flex items-center justify-center p-4 animate-in fade-in select-none">
       <div className="w-full max-w-sm bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 rounded-xl shadow-2xl overflow-hidden text-center transition-colors">
         {/* Header */}
         <div className="p-5 pb-4 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-950/50">
