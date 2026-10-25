@@ -4,7 +4,7 @@ import { db } from '@/lib/database';
 import { User } from '@/lib/auth';
 
 export async function GET() {
-  const onlineUserIds = presenceManager.getOnlineUserIds();
+  const onlineUserIds = await presenceManager.getOnlineUserIds();
   return NextResponse.json({ onlineUserIds });
 }
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       if (!user?.id) {
         return NextResponse.json({ error: 'Missing user' }, { status: 400 });
       }
-      const data = presenceManager.heartbeat(user as User, telemetry);
+      const data = await presenceManager.heartbeat(user as User, telemetry);
       try {
         db.heartbeatUserSession(user, telemetry);
       } catch {}
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       if (!fromUser?.id || !toUser?.id || !roomId) {
         return NextResponse.json({ error: 'Missing challenge payload' }, { status: 400 });
       }
-      const challenge = presenceManager.createChallenge(fromUser, toUser, roomId);
+      const challenge = await presenceManager.createChallenge(fromUser, toUser, roomId);
       return NextResponse.json({ challenge });
     }
 
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
       if (!challengeId || !response) {
         return NextResponse.json({ error: 'Missing challengeId or response' }, { status: 400 });
       }
-      const challenge = presenceManager.respondChallenge(challengeId, response);
+      const challenge = await presenceManager.respondChallenge(challengeId, response);
       if (!challenge) {
         return NextResponse.json({ error: 'Challenge not found or expired' }, { status: 404 });
       }
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       if (!challengeId) {
         return NextResponse.json({ error: 'Missing challengeId' }, { status: 400 });
       }
-      const success = presenceManager.cancelChallenge(challengeId);
+      const success = await presenceManager.cancelChallenge(challengeId);
       return NextResponse.json({ success });
     }
 

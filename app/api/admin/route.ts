@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   try {
     await db.ensureSynced();
     const stats = db.getStats();
-    const onlineUsers = presenceManager.getOnlineUsers();
+    const onlineUsers = await presenceManager.getOnlineUsers();
     const allUsers = db.getUsers().map(toSafeUser);
     const visits = db.getVisits(100);
     const activities = db.getLiveFeed(30);

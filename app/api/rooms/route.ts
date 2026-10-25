@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       const difficulty = body.difficulty || 'Mixed';
       const contestProblems = getRandomContestProblems(difficulty);
 
-      const room = roomManager.createRoom(generatedRoomId, player as Player, contestProblems, 2700); // 45 mins
+      const room = await roomManager.createRoom(generatedRoomId, player as Player, contestProblems, 2700); // 45 mins
       return NextResponse.json({ room });
     }
 
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Missing roomId or player' }, { status: 400 });
       }
 
-      const room = roomManager.joinRoom(roomId, player as Player);
+      const room = await roomManager.joinRoom(roomId, player as Player);
       if (!room) {
         return NextResponse.json({ error: 'Room is full or does not exist' }, { status: 404 });
       }
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Missing roomId or player id' }, { status: 400 });
       }
 
-      const room = roomManager.updatePlayerPresence(roomId, player.id, updates || {});
+      const room = await roomManager.updatePlayerPresence(roomId, player.id, updates || {});
       if (!room) {
         return NextResponse.json({ error: 'Room not found' }, { status: 404 });
       }
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Missing required submission fields' }, { status: 400 });
       }
 
-      const room = roomManager.submitSolution(
+      const room = await roomManager.submitSolution(
         roomId,
         player.id,
         problemId,
@@ -86,20 +86,20 @@ export async function POST(req: NextRequest) {
 
     // 5. Request Rematch
     if (action === 'rematch-request') {
-      const room = roomManager.requestRematch(roomId, player.id);
+      const room = await roomManager.requestRematch(roomId, player.id);
       return NextResponse.json({ room });
     }
 
     // 6. Accept Rematch
     if (action === 'rematch-accept') {
       const newProblems = getRandomContestProblems();
-      const room = roomManager.acceptRematch(roomId, newProblems);
+      const room = await roomManager.acceptRematch(roomId, newProblems);
       return NextResponse.json({ room });
     }
 
     // 7. End Match
     if (action === 'end') {
-      const room = roomManager.endRoom(roomId, body.winnerId || null);
+      const room = await roomManager.endRoom(roomId, body.winnerId || null);
       if (room) {
         try {
           const { db } = await import('@/lib/database');

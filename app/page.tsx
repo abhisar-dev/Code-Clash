@@ -355,9 +355,13 @@ export default function Home() {
   };
 
   // Join room API call
-  const joinExistingRoom = async (rid: string, authUser?: User) => {
+  const joinExistingRoom = async (rid: string, authUser?: User, isRetry: boolean = false) => {
     const usr = authUser || currentUser;
     if (!usr) return;
+
+    setRoomId(rid);
+    setIsMatchActive(true);
+    setActiveNavTab('arena');
 
     try {
       const res = await fetch('/api/rooms', {
@@ -377,13 +381,27 @@ export default function Home() {
       });
       const data = await res.json();
       if (data.room) {
-        setContestProblems(data.room.problems);
-        if (data.room.host && data.room.host.id !== usr.id) {
-          setOpponent(data.room.host);
+        setRoomId(data.room.id);
+        if (data.room.problems && data.room.problems.length > 0) {
+          setContestProblems(data.room.problems);
+          setCurrentProblemIndex(0);
         }
+        if (data.room.durationSeconds) {
+          setTimeRemaining(data.room.timeRemainingSeconds || data.room.durationSeconds);
+        }
+        const opp = data.room.host?.id === usr.id ? data.room.guest : data.room.host;
+        if (opp) {
+          setOpponent(opp);
+        }
+        if (soundEnabled) sounds.playMatchFound();
+      } else if (!isRetry) {
+        // Fast retry after 700ms in case host room persistence was in-flight
+        setTimeout(() => {
+          joinExistingRoom(rid, authUser, true);
+        }, 700);
       }
     } catch (err) {
-      console.error(err);
+      console.error('joinExistingRoom error:', err);
     }
   };
 

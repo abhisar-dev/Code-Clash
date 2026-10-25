@@ -7,7 +7,7 @@ export async function GET() {
     await db.ensureSynced();
     const stats = db.getStats();
     const activities = db.getLiveFeed(10);
-    const onlineUserIds = presenceManager.getOnlineUserIds();
+    const onlineUserIds = await presenceManager.getOnlineUserIds();
 
     const telemetry = {
       status: 'operational',

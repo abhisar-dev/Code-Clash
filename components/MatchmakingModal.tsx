@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Avatar } from '@/components/Avatar';
 import { User } from '@/lib/auth';
 import { Problem } from '@/lib/problems';
@@ -13,7 +13,7 @@ interface MatchmakingModalProps {
   onClose: () => void;
   onMatchFound: (
     roomId: string,
-    opponent: { name: string; handle: string; elo: number },
+    opponent: { name: string; handle: string; elo: number; avatarUrl?: string },
     problems?: Problem[]
   ) => void;
 }
@@ -28,24 +28,61 @@ export function MatchmakingModal({ isOpen, user, onClose, onMatchFound }: Matchm
     avatarUrl?: string;
   } | null>(null);
   const [secondsWaiting, setSecondsWaiting] = useState(0);
+  const isCancelledRef = useRef(false);
+  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMatched = (data: {
+    roomId: string;
+    opponent: { name: string; handle: string; elo: number; avatarUrl?: string };
+    problems?: Problem[];
+  }) => {
+    if (isCancelledRef.current) return;
+    if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+
+    setStatus('found');
+    setMatchedOpponent(data.opponent);
+
+    setTimeout(() => {
+      if (isCancelledRef.current) return;
+      onMatchFound(data.roomId, data.opponent, data.problems);
+    }, 1500);
+  };
+
+  const triggerBotFallback = async () => {
+    try {
+      const res = await fetch('/api/matchmaking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fallback_bot', user, difficulty }),
+      });
+      const data = await res.json();
+      if (data.status === 'matched') {
+        handleMatched(data);
+      }
+    } catch (e) {
+      console.error('Fallback bot match error:', e);
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) {
       setStatus('searching');
       setMatchedOpponent(null);
       setSecondsWaiting(0);
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
       return;
     }
 
+    isCancelledRef.current = false;
     setStatus('searching');
     setSecondsWaiting(0);
 
-    const timer = setInterval(() => {
+    const secondTimer = setInterval(() => {
       setSecondsWaiting((s) => s + 1);
     }, 1000);
 
-    let isCancelled = false;
-    const findPeer = async () => {
+    // Initial Join
+    const startMatchmaking = async () => {
       try {
         const res = await fetch('/api/matchmaking', {
           method: 'POST',
@@ -54,35 +91,48 @@ export function MatchmakingModal({ isOpen, user, onClose, onMatchFound }: Matchm
         });
         const data = await res.json();
 
-        if (data.status === 'matched' && !isCancelled) {
-          setTimeout(() => {
-            if (isCancelled) return;
-            setStatus('found');
-            setMatchedOpponent(data.opponent);
+        if (isCancelledRef.current) return;
 
-            setTimeout(() => {
-              if (isCancelled) return;
-              onMatchFound(data.roomId, data.opponent, data.problems);
-            }, 1800);
-          }, 1800);
+        if (data.status === 'matched') {
+          handleMatched(data);
+          return;
         }
+
+        // Start polling queue
+        pollTimerRef.current = setInterval(async () => {
+          if (isCancelledRef.current) return;
+          try {
+            const pollRes = await fetch('/api/matchmaking', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'poll', user }),
+            });
+            const pollData = await pollRes.json();
+            if (pollData.status === 'matched') {
+              handleMatched(pollData);
+            }
+          } catch (err) {
+            console.error('Poll error:', err);
+          }
+        }, 1200);
       } catch (err) {
         console.error('Matchmaking error:', err);
       }
     };
 
-    findPeer();
+    startMatchmaking();
 
     return () => {
-      isCancelled = true;
-      clearInterval(timer);
+      isCancelledRef.current = true;
+      clearInterval(secondTimer);
+      if (pollTimerRef.current) clearInterval(pollTimerRef.current);
       fetch('/api/matchmaking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'cancel', user }),
       }).catch(() => {});
     };
-  }, [isOpen, user, difficulty, onMatchFound]);
+  }, [isOpen, user, difficulty]);
 
   if (!isOpen) return null;
 
@@ -105,7 +155,7 @@ export function MatchmakingModal({ isOpen, user, onClose, onMatchFound }: Matchm
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
             {status === 'searching'
-              ? `Scanning campus queue for ${difficulty} duel in ${user.elo} ELO tier`
+              ? `Scanning campus queue for ${difficulty} duel in ${user.elo || 1000} ELO tier`
               : `Connected with ${matchedOpponent?.name} for ${difficulty} duel. Loading arena...`}
           </p>
         </div>
@@ -135,7 +185,7 @@ export function MatchmakingModal({ isOpen, user, onClose, onMatchFound }: Matchm
                 }}
                 className={`py-2 px-1 rounded-lg text-xs font-medium cursor-pointer flex flex-col items-center justify-center ${
                   difficulty === tier.id
-                    ? 'bg-white dark:bg-zinc-900 text-sky-600 dark:text-sky-400 font-bold shadow-xs border border-zinc-200 dark:border-zinc-700'
+                    ? 'bg-white dark:bg-zinc-900 text-amber-600 dark:text-amber-400 font-bold shadow-xs border border-zinc-200 dark:border-zinc-700'
                     : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                 } ${status === 'found' ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
@@ -153,7 +203,7 @@ export function MatchmakingModal({ isOpen, user, onClose, onMatchFound }: Matchm
               <Avatar name={matchedOpponent.name} avatarUrl={matchedOpponent.avatarUrl} size="md" />
               <div className="text-left">
                 <div className="text-xs font-bold text-zinc-900 dark:text-white">{matchedOpponent.name}</div>
-                <div className="text-[11px] font-mono text-sky-600 dark:text-sky-400">@{matchedOpponent.handle}</div>
+                <div className="text-[11px] font-mono text-amber-600 dark:text-amber-400">@{matchedOpponent.handle}</div>
               </div>
             </div>
             <div className="text-right">
@@ -164,8 +214,19 @@ export function MatchmakingModal({ isOpen, user, onClose, onMatchFound }: Matchm
         )}
 
         {status === 'searching' && (
-          <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center gap-2 text-xs text-zinc-600 dark:text-zinc-300 font-mono">
-            <span>Searching peers in {difficulty} tier...</span>
+          <div className="space-y-2">
+            <div className="p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center gap-2 text-xs text-zinc-600 dark:text-zinc-300 font-mono">
+              <span>Waiting for campus peer in {difficulty} tier...</span>
+            </div>
+            {secondsWaiting >= 20 && (
+              <button
+                type="button"
+                onClick={triggerBotFallback}
+                className="w-full py-2 px-3 rounded-lg bg-amber-500 hover:bg-amber-600 text-black font-semibold text-xs transition-colors cursor-pointer"
+              >
+                Match with AI Practice Rival Now
+              </button>
+            )}
           </div>
         )}
 
