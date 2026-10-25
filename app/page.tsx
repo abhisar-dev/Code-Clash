@@ -1209,7 +1209,7 @@ export default function Home() {
 
   return (
     <div
-      className={`h-screen w-screen flex flex-col ${
+      className={`min-h-[100dvh] h-[100dvh] w-full flex flex-col ${
         bgClassMap[bgStyle] || 'bg-minimal-dots'
       } ${theme === 'dark' ? 'text-zinc-100' : 'text-zinc-900'} overflow-hidden select-none transition-colors duration-300`}
     >
@@ -1236,46 +1236,53 @@ export default function Home() {
         onOpenSupportModal={(type) => setActiveSupportModal(type)}
       />
 
-      {/* Main Tab View Routing */}
-      {activeNavTab === 'dashboard' && (
-        <DashboardView
-          user={currentUser}
-          onStart1v1={() => {
-            setIsLobbyModalOpen(true);
-          }}
-          onOpenProblems={() => setActiveNavTab('problems')}
-          onOpenLeaderboard={() => setActiveNavTab('leaderboard')}
-          onDirectShare={() => setIsShareModalOpen(true)}
-          onFindMatch={() => setIsMatchmakingModalOpen(true)}
-          solvedProblemIds={solvedProblemIds}
-          onSelectProblemToSolve={handleSolveProblemFromDirectory}
-          onReportViolation={() => setIsViolationModalOpen(true)}
-          onOpenProfile={() => setIsProfileModalOpen(true)}
-          onSelectUserName={handleOpenPublicProfile}
-        />
-      )}
+      {/* Main Tab View Routing (Flex-1 Min-H-0 for perfect mobile viewport responsiveness) */}
+      <main className="flex-1 min-h-0 w-full overflow-hidden flex flex-col relative">
+        {activeNavTab === 'dashboard' && (
+          <div className="flex-1 min-h-0 h-full overflow-y-auto w-full">
+            <DashboardView
+              user={currentUser}
+              onStart1v1={() => {
+                setIsLobbyModalOpen(true);
+              }}
+              onOpenProblems={() => setActiveNavTab('problems')}
+              onOpenLeaderboard={() => setActiveNavTab('leaderboard')}
+              onDirectShare={() => setIsShareModalOpen(true)}
+              onFindMatch={() => setIsMatchmakingModalOpen(true)}
+              solvedProblemIds={solvedProblemIds}
+              onSelectProblemToSolve={handleSolveProblemFromDirectory}
+              onReportViolation={() => setIsViolationModalOpen(true)}
+              onOpenProfile={() => setIsProfileModalOpen(true)}
+              onSelectUserName={handleOpenPublicProfile}
+            />
+          </div>
+        )}
 
-      {activeNavTab === 'problems' && (
-        <ProblemsView
-          onSelectProblemToSolve={handleSolveProblemFromDirectory}
-          solvedProblemIds={solvedProblemIds}
-        />
-      )}
+        {activeNavTab === 'problems' && (
+          <div className="flex-1 min-h-0 h-full overflow-y-auto w-full">
+            <ProblemsView
+              onSelectProblemToSolve={handleSolveProblemFromDirectory}
+              solvedProblemIds={solvedProblemIds}
+            />
+          </div>
+        )}
 
-      {activeNavTab === 'leaderboard' && (
-        <LeaderboardView
-          currentUser={currentUser}
-          onChallengeUser={handleInitiateLeaderboardChallenge}
-          onSelectUser={handleOpenPublicProfile}
-          onOpenShareInvite={() => setIsShareModalOpen(true)}
-          onlineUserIds={onlineUserIds}
-          solvedProblemIds={solvedProblemIds}
-          onNavigateToDaily={() => setActiveNavTab('arena')}
-        />
-      )}
+        {activeNavTab === 'leaderboard' && (
+          <div className="flex-1 min-h-0 h-full overflow-y-auto w-full">
+            <LeaderboardView
+              currentUser={currentUser}
+              onChallengeUser={handleInitiateLeaderboardChallenge}
+              onSelectUser={handleOpenPublicProfile}
+              onOpenShareInvite={() => setIsShareModalOpen(true)}
+              onlineUserIds={onlineUserIds}
+              solvedProblemIds={solvedProblemIds}
+              onNavigateToDaily={() => setActiveNavTab('arena')}
+            />
+          </div>
+        )}
 
-      {activeNavTab === 'arena' && (
-        <div className="flex-1 flex flex-col overflow-hidden">
+        {activeNavTab === 'arena' && (
+          <div className="flex-1 min-h-0 h-full flex flex-col overflow-hidden w-full pb-14 lg:pb-0">
           {/* 5-Question Contest Switcher & Live Scoreboard */}
           <ContestBar
             problems={contestProblems}
@@ -1411,6 +1418,7 @@ export default function Home() {
           </main>
         </div>
       )}
+      </main>
 
       {/* Modals */}
       <VictoryModal

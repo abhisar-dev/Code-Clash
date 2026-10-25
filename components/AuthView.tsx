@@ -193,7 +193,7 @@ export function AuthView({ onAuthenticated, initialInviteCode }: AuthViewProps) 
 
   return (
     <div
-      className="min-h-screen w-screen flex flex-col items-center justify-center p-4 relative select-none bg-cover bg-center bg-no-repeat bg-[#151311]"
+      className="min-h-[100dvh] w-full flex flex-col items-center justify-center p-4 relative select-none bg-cover bg-center bg-no-repeat bg-[#151311] overflow-y-auto"
       style={{
         backgroundImage: "url('/invertis-campus.jpg')",
       }}

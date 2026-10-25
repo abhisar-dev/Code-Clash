@@ -3,6 +3,7 @@ import { db, toSafeUser } from '@/lib/database';
 import { presenceManager } from '@/lib/presence-store';
 import { query } from '@/lib/postgres';
 import { verifyAdminSession } from '@/lib/security';
+import { sendCustomMail } from '@/lib/mailer';
 
 function checkAdminAuth(req: NextRequest): boolean {
   const authHeader = req.headers.get('authorization') || req.headers.get('x-admin-key');
@@ -345,6 +346,16 @@ export async function POST(req: NextRequest) {
         status: 'sent',
       });
       await db.flushCloud();
+
+      // Dispatch real email to user via SMTP
+      sendCustomMail({
+        toEmail,
+        toName: toName || toEmail,
+        subject,
+        body: msgBody,
+        category,
+      }).catch((e) => console.error('Admin custom mail error:', e));
+
       return NextResponse.json({ success: true, message: msg });
     }
 

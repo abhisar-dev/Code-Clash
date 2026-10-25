@@ -154,7 +154,7 @@ export function DashboardView({
   const gamificationState = computeGamification(user, solvedProblemIds, userSubmissions, matchHistory, getRegisteredUsers());
 
   return (
-    <div className="h-full overflow-y-auto p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-5xl mx-auto space-y-6">
+    <div className="w-full min-h-full p-3 sm:p-6 lg:p-8 pb-32 lg:pb-12 max-w-5xl mx-auto space-y-6">
       {/* Student Profile & Email Status Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-white dark:bg-[#1a1714] border border-[#e3ded4] dark:border-[#2d2925] shadow-xs">
         <div className="flex items-center gap-3">

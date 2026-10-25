@@ -377,7 +377,7 @@ export function LeaderboardView({
   }, [gamification, selectedBadgeCategory]);
 
   return (
-    <div className="h-full overflow-y-auto p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 max-w-6xl mx-auto space-y-6">
+    <div className="w-full min-h-full p-3 sm:p-6 lg:p-8 pb-32 lg:pb-12 max-w-6xl mx-auto space-y-6">
       {/* 1. Header & Live Campus Telemetry Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200/80 dark:border-zinc-800 pb-5">
         <div>

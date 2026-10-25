@@ -93,8 +93,8 @@ export function ProblemsView({ onSelectProblemToSolve, solvedProblemIds }: Probl
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   return (
-    <div className="h-full overflow-y-auto bg-[#faf8f5] dark:bg-[#151311] transition-colors">
-      <div className="p-3 sm:p-8 lg:p-12 pb-24 lg:pb-12 max-w-6xl mx-auto space-y-8 sm:space-y-10">
+    <div className="w-full min-h-full bg-[#faf8f5] dark:bg-[#151311] transition-colors">
+      <div className="p-3 sm:p-8 lg:p-12 pb-32 lg:pb-12 max-w-6xl mx-auto space-y-8 sm:space-y-10">
         {/* InvertisPrep Exact Format Editorial Hero Header */}
         <div className="text-center space-y-4 max-w-3xl mx-auto pt-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-800 dark:text-amber-400 font-mono text-[11px] font-semibold border border-amber-500/20">

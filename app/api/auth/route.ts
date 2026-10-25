@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, toSafeUser } from '@/lib/database';
 import { checkRateLimit, getClientIp, signAdminToken } from '@/lib/security';
+import { sendWelcomeEmail } from '@/lib/mailer';
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,6 +49,14 @@ export async function POST(req: NextRequest) {
       const { user } = db.registerUser(name, identifier, password, college || 'Invertis University');
       await db.flushCloud();
       const { passwordHash, salt, ...safeUser } = user;
+
+      // Dispatch automated professional welcome email asynchronously
+      sendWelcomeEmail({
+        toEmail: user.email,
+        toName: user.name,
+        handle: user.handle,
+        college: user.college,
+      }).catch((e) => console.error('Automated welcome email error:', e));
 
       return NextResponse.json({ success: true, user: safeUser });
     }
@@ -130,6 +139,16 @@ export async function POST(req: NextRequest) {
 
       await db.flushCloud();
       const { passwordHash, salt, ...safeUser } = user;
+
+      if (isNew) {
+        sendWelcomeEmail({
+          toEmail: user.email,
+          toName: user.name,
+          handle: user.handle,
+          college: user.college,
+        }).catch((e) => console.error('Automated welcome email error:', e));
+      }
+
       return NextResponse.json({ success: true, user: safeUser, isNew });
     }
 
