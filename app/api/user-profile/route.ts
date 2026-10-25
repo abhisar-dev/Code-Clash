@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, connection } from 'next/server';
 import { db, toSafeUser } from '@/lib/database';
 import { getTier } from '@/lib/auth';
 import { PROBLEMS } from '@/lib/problems';
@@ -22,8 +22,9 @@ function formatElapsed(timestamp: number): string {
 
 export async function GET(req: NextRequest) {
   try {
+    await connection();
     await db.ensureSynced();
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams;
     const id = searchParams.get('id');
     const handle = searchParams.get('handle');
     const name = searchParams.get('name');

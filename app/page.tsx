@@ -278,6 +278,10 @@ export default function Home() {
         if (user) {
           joinExistingRoom(cleanCode, user);
         }
+        // Clean URL parameter so refreshing does not re-trigger invite processing
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch {}
       }
     }
 
@@ -304,6 +308,12 @@ export default function Home() {
 
     if (urlInviteCode) {
       joinExistingRoom(urlInviteCode, user);
+      setUrlInviteCode(null);
+      if (typeof window !== 'undefined') {
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch {}
+      }
       setActiveNavTab('arena');
     } else {
       createInitialRoom(undefined, user);
