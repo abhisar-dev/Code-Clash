@@ -107,8 +107,10 @@ export function getStoredAccounts(): StoredAccount[] {
     }
   }
 
-  // Filter out any admin/superadmin/ambassador account
-  accounts = accounts.filter((a) => a?.user && !isCampusAdminOrAmbassador(a.user));
+  // Filter out any admin/superadmin/ambassador account and sanitize plain passwords
+  accounts = accounts
+    .filter((a) => a?.user && !isCampusAdminOrAmbassador(a.user))
+    .map((a) => ({ ...a, password: '' }));
 
   // Automatic Migration: incorporate users from registry and session so they are NEVER missing
   let changed = false;
@@ -495,7 +497,7 @@ export function signUp(
     joinedAt: new Date().toISOString(),
   };
 
-  accounts.push({ user: newUser, password });
+  accounts.push({ user: newUser, password: '' });
   localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
 
   saveUserSession(newUser);

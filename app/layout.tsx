@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://codeclash.dev'),
+  metadataBase: new URL('https://codeclash-in.vercel.app'),
   title: {
     default: 'CodeClash - Real-Time 1v1 Competitive Coding',
     template: '%s | CodeClash',
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'CodeClash - Real-Time 1v1 Competitive Coding',
     description: 'Challenge peers to real-time 1v1 DSA coding duels. Automated test case evaluation in Python, JavaScript, C++, and Java.',
-    url: 'https://codeclash.dev',
+    url: 'https://codeclash-in.vercel.app',
     siteName: 'CodeClash',
     locale: 'en_US',
     type: 'website',

@@ -47,6 +47,10 @@ export default function AdminPage() {
           role: 'admin',
           isAdmin: true,
         };
+        if (data.adminToken && typeof window !== 'undefined') {
+          sessionStorage.setItem('codeclash_admin_token', data.adminToken);
+          document.cookie = `codeclash_admin_token=${data.adminToken}; path=/; max-age=86400; SameSite=Lax`;
+        }
         // Keep in component state for this active session only so opening /admin afresh asks for login
         setAdminUser(fullAdmin);
         setIsAuthenticated(true);
@@ -56,30 +60,6 @@ export default function AdminPage() {
 
       setError(data.error || 'Invalid Administrative Credentials. Access Denied.');
     } catch {
-      // Local fallback for admin
-      const cleanIdent = identifier.trim().toLowerCase();
-      if (
-        (cleanIdent === 'admin' || cleanIdent === 'admin@invertis.ac.in' || cleanIdent === 'superadmin') &&
-        (password === 'admin123' || password === 'invertisadmin')
-      ) {
-        const fallbackAdmin: User = {
-          id: 'user-invertis-admin',
-          name: 'Campus SuperAdmin',
-          email: 'admin@invertis.ac.in',
-          handle: 'admin',
-          college: 'Invertis University Administration',
-          elo: 2400,
-          matchesWon: 0,
-          matchesPlayed: 0,
-          joinedAt: '2026-08-01T00:00:00.000Z',
-          role: 'admin',
-          isAdmin: true,
-        };
-        setAdminUser(fallbackAdmin);
-        setIsAuthenticated(true);
-        setLoading(false);
-        return;
-      }
       setError('Connection failed. Please check your credentials.');
     } finally {
       setLoading(false);
@@ -89,6 +69,10 @@ export default function AdminPage() {
   const handleSignOutAdmin = () => {
     setIsAuthenticated(false);
     setAdminUser(null);
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('codeclash_admin_token');
+      document.cookie = 'codeclash_admin_token=; path=/; max-age=0; SameSite=Lax';
+    }
   };
 
   // If authenticated as admin, show full dedicated Admin Panel

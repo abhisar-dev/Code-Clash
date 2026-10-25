@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing roomId' }, { status: 400 });
   }
 
-  const room = roomManager.getRoom(roomId);
+  const room = await roomManager.getRoom(roomId);
   if (!room) {
     return NextResponse.json({ error: 'Room not found' }, { status: 404 });
   }

@@ -2,8 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db, toSafeUser } from '@/lib/database';
 import { presenceManager } from '@/lib/presence-store';
 import { query } from '@/lib/postgres';
+import { verifyAdminSession } from '@/lib/security';
+
+function checkAdminAuth(req: NextRequest): boolean {
+  const authHeader = req.headers.get('authorization') || req.headers.get('x-admin-key');
+  const cookieToken = req.cookies.get('codeclash_admin_token')?.value;
+  return verifyAdminSession(authHeader || cookieToken);
+}
 
 export async function GET(req: NextRequest) {
+  if (!checkAdminAuth(req)) {
+    return NextResponse.json(
+      { error: 'Unauthorized. Administrative credentials or active session required.' },
+      { status: 401 }
+    );
+  }
+
   try {
     await db.ensureSynced();
     const stats = db.getStats();
@@ -155,7 +169,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { action } = body;
 
-    // 1. Visit Tracking
+    // 1. Telemetry & Visit Tracking (Allowed for client analytics)
     if (action === 'record_visit') {
       const { userId, userName, userHandle, path } = body;
       const visit = db.recordVisit({
@@ -168,6 +182,28 @@ export async function POST(req: NextRequest) {
       });
       await db.flushCloud();
       return NextResponse.json({ success: true, visit });
+    }
+
+    if (action === 'record_audit') {
+      const { userId, userName, userHandle, action: act, actionCategory, details, metadata } = body;
+      const log = db.recordUserAudit({
+        userId,
+        userName,
+        userHandle,
+        action: act || 'navigation',
+        actionCategory: actionCategory || 'navigation',
+        details: details || '',
+        metadata,
+      });
+      return NextResponse.json({ success: true, log });
+    }
+
+    // STRICT ACCESS CONTROL: All administrative actions below require valid Admin Session
+    if (!checkAdminAuth(req)) {
+      return NextResponse.json(
+        { error: 'Unauthorized. Administrative credentials or valid session token required.' },
+        { status: 401 }
+      );
     }
 
     // 2. User Management
@@ -312,19 +348,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, message: msg });
     }
 
-    if (action === 'record_audit') {
-      const { userId, userName, userHandle, action: act, actionCategory, details, metadata } = body;
-      const log = db.recordUserAudit({
-        userId,
-        userName,
-        userHandle,
-        action: act || 'navigation',
-        actionCategory: actionCategory || 'navigation',
-        details: details || '',
-        metadata,
-      });
-      return NextResponse.json({ success: true, log });
-    }
 
     if (action === 'execute_sql') {
       const { sqlQuery } = body;

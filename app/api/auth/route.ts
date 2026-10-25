@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, toSafeUser } from '@/lib/database';
-import { checkRateLimit, getClientIp } from '@/lib/security';
+import { checkRateLimit, getClientIp, signAdminToken } from '@/lib/security';
 
 export async function POST(req: NextRequest) {
   try {
@@ -84,7 +84,16 @@ export async function POST(req: NextRequest) {
               role: 'admin' as const,
               isAdmin: true,
             };
-        return NextResponse.json({ success: true, user: adminUser });
+
+        const adminToken = signAdminToken(cleanIdent);
+        const res = NextResponse.json({ success: true, user: adminUser, adminToken });
+        res.cookies.set('codeclash_admin_token', adminToken, {
+          path: '/',
+          httpOnly: false,
+          sameSite: 'lax',
+          maxAge: 60 * 60 * 24, // 24 hours
+        });
+        return res;
       }
 
       const user = db.verifyCredentials(identifier, password);
@@ -124,14 +133,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, user: safeUser, isNew });
     }
 
-    // 3. Update Profile
+    // 3. Update Profile (Protected: sanitized field allowlist)
     if (action === 'update_profile') {
       const { userId, updates } = body;
       if (!userId || !updates) {
         return NextResponse.json({ error: 'User ID and updates are required' }, { status: 400 });
       }
 
-      const updated = db.updateUserProfile(userId, updates);
+      // Restrict permitted profile update fields to prevent privilege escalation
+      const ALLOWED_PROFILE_KEYS = new Set([
+        'name', 'college', 'avatarUrl', 'studentId', 'course',
+        'phone', 'bio', 'yearSemester', 'githubUrl', 'linkedinUrl'
+      ]);
+
+      const sanitizedUpdates: Record<string, any> = {};
+      for (const [key, val] of Object.entries(updates)) {
+        if (ALLOWED_PROFILE_KEYS.has(key)) {
+          sanitizedUpdates[key] = typeof val === 'string' ? val.trim() : val;
+        }
+      }
+
+      const updated = db.updateUserProfile(userId, sanitizedUpdates);
       if (!updated) {
         return NextResponse.json({ error: 'User not found in system' }, { status: 404 });
       }

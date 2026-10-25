@@ -5,7 +5,9 @@ export async function GET(
   context: { params: Promise<{ provider: string }> }
 ) {
   const { provider } = await context.params;
-  const origin = 'https://codeclash-in.vercel.app';
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'codeclash-in.vercel.app';
+  const proto = req.headers.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https');
+  const origin = `${proto}://${host}`;
   const redirectUri = `${origin}/api/auth/callback/${provider}`;
 
   if (provider === 'google') {

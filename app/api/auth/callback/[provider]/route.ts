@@ -10,7 +10,9 @@ export async function GET(
   const code = searchParams.get('code');
   const error = searchParams.get('error');
 
-  const origin = 'https://codeclash-in.vercel.app';
+  const host = req.headers.get('x-forwarded-host') || req.headers.get('host') || 'codeclash-in.vercel.app';
+  const proto = req.headers.get('x-forwarded-proto') || (host.includes('localhost') ? 'http' : 'https');
+  const origin = `${proto}://${host}`;
 
   if (error || !code) {
     return NextResponse.redirect(

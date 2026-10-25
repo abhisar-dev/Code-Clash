@@ -137,8 +137,9 @@ async function runOnCloudCompiler(
     payload['compiler-option-raw'] = cfg.options;
   }
 
+  const timeoutMs = language === 'java' ? 22000 : 12000;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const res = await fetch('https://wandbox.org/api/compile.json', {

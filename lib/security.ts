@@ -9,8 +9,50 @@ export function hashPassword(password: string, existingSalt?: string): { hash: s
 }
 
 export function verifyPassword(password: string, hash: string, salt: string): boolean {
-  const computed = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha256').toString('hex');
-  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(hash));
+  if (!password || !hash || !salt) return false;
+  try {
+    const computed = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha256').toString('hex');
+    const b1 = Buffer.from(computed);
+    const b2 = Buffer.from(hash);
+    if (b1.length !== b2.length) return false;
+    return crypto.timingSafeEqual(b1, b2);
+  } catch {
+    return false;
+  }
+}
+
+// 1.5 Secure Admin Authentication & Token Verification
+const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'codeclash_invertis_admin_secure_vault_2026';
+
+export function signAdminToken(adminHandle: string): string {
+  const payload = `${adminHandle}:${Date.now()}`;
+  const sig = crypto.createHmac('sha256', ADMIN_SECRET).update(payload).digest('hex');
+  return Buffer.from(`${payload}:${sig}`).toString('base64');
+}
+
+export function verifyAdminSession(tokenOrHeader?: string | null): boolean {
+  if (!tokenOrHeader) return false;
+  try {
+    const cleanToken = tokenOrHeader.replace('Bearer ', '').trim();
+    // Allow master secret directly if provided in X-Admin-Key header
+    if (cleanToken === ADMIN_SECRET) return true;
+
+    const decoded = Buffer.from(cleanToken, 'base64').toString('utf8');
+    const [handle, timestampStr, sig] = decoded.split(':');
+    if (!handle || !timestampStr || !sig) return false;
+
+    // Check expiration (24 hours)
+    const ts = parseInt(timestampStr, 10);
+    if (isNaN(ts) || Date.now() - ts > 24 * 60 * 60 * 1000) return false;
+
+    const expectedSig = crypto.createHmac('sha256', ADMIN_SECRET).update(`${handle}:${timestampStr}`).digest('hex');
+    const b1 = Buffer.from(sig);
+    const b2 = Buffer.from(expectedSig);
+    if (b1.length !== b2.length) return false;
+    return crypto.timingSafeEqual(b1, b2);
+  } catch {
+    return false;
+  }
 }
 
 // 2. Token Bucket Rate Limiter (Per IP / User Token)

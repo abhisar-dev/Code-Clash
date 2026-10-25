@@ -1,4 +1,5 @@
 import { Problem } from './problems';
+import { query, queryOne } from './postgres';
 
 export interface Player {
   id: string;
@@ -28,9 +29,21 @@ export interface ContestRoom {
   winnerId: string | null;
 }
 
-// In-memory room store for real-time synchronization
+// In-memory + Neon PostgreSQL hybrid room store for real-time synchronization across serverless containers
 class RoomManager {
   private rooms: Map<string, ContestRoom> = new Map();
+
+  private async persistRoom(room: ContestRoom) {
+    try {
+      await query(
+        `INSERT INTO active_rooms (id, data, updated_at) VALUES ($1, $2, NOW())
+         ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,
+        [room.id, JSON.stringify(room)]
+      );
+    } catch {
+      // In-memory fallback
+    }
+  }
 
   createRoom(roomId: string, hostPlayer: Player, problems: Problem[], durationSeconds: number = 2700): ContestRoom {
     const room: ContestRoom = {
@@ -46,11 +59,21 @@ class RoomManager {
       winnerId: null,
     };
     this.rooms.set(roomId, room);
+    this.persistRoom(room);
     return room;
   }
 
-  getRoom(roomId: string): ContestRoom | undefined {
-    return this.rooms.get(roomId);
+  async getRoom(roomId: string): Promise<ContestRoom | undefined> {
+    const memory = this.rooms.get(roomId);
+    if (memory) return memory;
+    try {
+      const row = await queryOne<{ data: ContestRoom }>('SELECT data FROM active_rooms WHERE id = $1', [roomId]);
+      if (row?.data) {
+        this.rooms.set(roomId, row.data);
+        return row.data;
+      }
+    } catch {}
+    return undefined;
   }
 
   joinRoom(roomId: string, guestPlayer: Player): ContestRoom | null {
@@ -60,6 +83,7 @@ class RoomManager {
     if (!room.guest || room.guest.id === guestPlayer.id) {
       room.guest = guestPlayer;
       room.status = 'active';
+      this.persistRoom(room);
       return room;
     }
 
@@ -80,6 +104,7 @@ class RoomManager {
       room.guest = { ...room.guest, ...updates, lastActive: Date.now() };
     }
 
+    this.persistRoom(room);
     return room;
   }
 
@@ -103,7 +128,7 @@ class RoomManager {
     player.totalTests[problemId] = totalTests;
     player.code[problemId] = code;
 
-    // Check if match ended (all problems solved by someone or timer expired)
+    this.persistRoom(room);
     return room;
   }
 
@@ -112,6 +137,7 @@ class RoomManager {
     if (!room) return null;
     room.status = 'ended';
     room.winnerId = winnerId;
+    this.persistRoom(room);
     return room;
   }
 
@@ -119,6 +145,7 @@ class RoomManager {
     const room = this.rooms.get(roomId);
     if (!room) return null;
     room.rematchRequestedBy = playerId;
+    this.persistRoom(room);
     return room;
   }
 
@@ -143,6 +170,7 @@ class RoomManager {
       room.guest.code = {};
     }
 
+    this.persistRoom(room);
     return room;
   }
 }
@@ -150,4 +178,4 @@ class RoomManager {
 // Global singleton instance across API routes
 const globalForRoom = globalThis as unknown as { roomManager: RoomManager };
 export const roomManager = globalForRoom.roomManager || new RoomManager();
-if (process.env.NODE_ENV !== 'production') globalForRoom.roomManager = roomManager;
+globalForRoom.roomManager = roomManager;
