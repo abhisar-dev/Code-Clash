@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, toSafeUser } from '@/lib/database';
+import { sendWelcomeEmail } from '@/lib/mailer';
 
 export async function GET(
   req: NextRequest,
@@ -68,13 +69,22 @@ export async function GET(
         return NextResponse.redirect(`${origin}/?oauth_error=google_email_missing`);
       }
 
-      const { user } = db.registerOrGetOAuthUser({
+      const { user, isNew } = db.registerOrGetOAuthUser({
         provider: 'google',
         name: gUser.name || gUser.email.split('@')[0],
         email: gUser.email,
         avatarUrl: gUser.picture,
         college: 'Invertis University',
       });
+
+      if (isNew) {
+        sendWelcomeEmail({
+          toEmail: user.email,
+          toName: user.name,
+          handle: user.handle,
+          college: user.college,
+        }).catch((e) => console.error('Google OAuth welcome email error:', e));
+      }
 
       await db.flushCloud();
       const safeUser = toSafeUser(user);
@@ -157,7 +167,7 @@ export async function GET(
         email = `${ghUser.login}@github.users`;
       }
 
-      const { user } = db.registerOrGetOAuthUser({
+      const { user, isNew } = db.registerOrGetOAuthUser({
         provider: 'github',
         name: ghUser.name || ghUser.login,
         email,
@@ -166,6 +176,15 @@ export async function GET(
         githubUrl: ghUser.html_url || `https://github.com/${ghUser.login}`,
         college: 'Invertis University',
       });
+
+      if (isNew && !user.email.endsWith('@github.users')) {
+        sendWelcomeEmail({
+          toEmail: user.email,
+          toName: user.name,
+          handle: user.handle,
+          college: user.college,
+        }).catch((e) => console.error('GitHub OAuth welcome email error:', e));
+      }
 
       await db.flushCloud();
       const safeUser = toSafeUser(user);

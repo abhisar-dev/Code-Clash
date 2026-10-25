@@ -193,7 +193,7 @@ export async function sendWelcomeEmail(data: WelcomeEmailData): Promise<{ succes
     </div>
 
     <div class="content">
-      <h1>Welcome aboard, ${displayName}! 🎉</h1>
+      <h1>Welcome aboard, ${displayName}!</h1>
       <p>
         Thank you for joining <strong>CodeClash</strong> — the official peer-to-peer real-time competitive coding platform at ${collegeName}. Your student duel profile has been successfully activated.
       </p>
