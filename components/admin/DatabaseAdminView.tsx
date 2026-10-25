@@ -15,6 +15,10 @@ import {
   FileText,
   Clock,
   Layers,
+  Terminal,
+  Play,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { AdminData } from './types';
 
@@ -29,6 +33,43 @@ export function DatabaseAdminView({ data, onRefresh }: DatabaseAdminViewProps) {
   const [restoreModalOpen, setRestoreModalOpen] = useState(false);
   const [restoreJson, setRestoreJson] = useState('');
   const [restoreFileSummary, setRestoreFileSummary] = useState<string | null>(null);
+
+  // Neon Cloud SQL Terminal State
+  const [sqlQuery, setSqlQuery] = useState('SELECT id, name, handle, course, elo, matches_won, role FROM users ORDER BY elo DESC;');
+  const [sqlRunning, setSqlRunning] = useState(false);
+  const [sqlResult, setSqlResult] = useState<{ rows: any[]; rowCount: number; executionTimeMs: number } | null>(null);
+  const [sqlError, setSqlError] = useState<string | null>(null);
+  const [copiedQuery, setCopiedQuery] = useState(false);
+
+  const executeSql = async (overrideQuery?: string) => {
+    const q = (overrideQuery || sqlQuery).trim();
+    if (!q) return;
+    setSqlRunning(true);
+    setSqlError(null);
+    try {
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'execute_sql', sqlQuery: q }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSqlResult({
+          rows: data.rows,
+          rowCount: data.rowCount,
+          executionTimeMs: data.executionTimeMs,
+        });
+      } else {
+        setSqlError(data.error || 'Failed to execute query');
+        setSqlResult(null);
+      }
+    } catch (err: any) {
+      setSqlError(err.message || 'Network error connecting to Neon Cloud');
+      setSqlResult(null);
+    } finally {
+      setSqlRunning(false);
+    }
+  };
 
   const showFeedback = (text: string, type: 'success' | 'error' = 'success') => {
     setFeedbackMsg({ text, type });
@@ -233,13 +274,13 @@ export function DatabaseAdminView({ data, onRefresh }: DatabaseAdminViewProps) {
         <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-1">
           <div className="flex items-center justify-between text-zinc-400 font-mono text-[11px]">
             <span>PERSISTENCE ENGINE</span>
-            <Server className="w-4 h-4 text-zinc-500" />
+            <Server className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="text-lg font-bold text-zinc-900 dark:text-zinc-100 font-sans">
-            Dual Layer
+            Neon PostgreSQL
           </div>
           <div className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
-            Local Disk + GitHub Gist Cloud
+            AWS us-east-2 • SSL Active
           </div>
         </div>
 
@@ -345,6 +386,159 @@ export function DatabaseAdminView({ data, onRefresh }: DatabaseAdminViewProps) {
             <div className="text-[10px] text-zinc-500">Conduct Alerts</div>
           </div>
         </div>
+      </div>
+
+      {/* Neon Cloud SQL Interactive Terminal */}
+      <div className="p-6 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-md space-y-4 text-zinc-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-zinc-800">
+          <div className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <Terminal className="w-4 h-4 text-emerald-400" />
+            <span className="font-mono text-xs font-bold text-zinc-200">
+              Neon Cloud PostgreSQL Terminal
+            </span>
+          </div>
+          <div className="flex items-center gap-2 font-mono text-[11px] text-zinc-400">
+            <span className="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-emerald-400">
+              ep-bitter-tree...pooler
+            </span>
+            <span>SSL Active</span>
+          </div>
+        </div>
+
+        {/* Quick Query Pills */}
+        <div className="space-y-1.5">
+          <div className="text-[11px] font-mono text-zinc-400">Quick SQL Queries:</div>
+          <div className="flex flex-wrap gap-1.5 text-xs font-mono">
+            {[
+              { label: '\\users', q: 'SELECT id, name, handle, course, elo, matches_won FROM users ORDER BY elo DESC;' },
+              { label: '\\tables', q: "SELECT tablename, tableowner FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename;" },
+              { label: '\\matches', q: 'SELECT id, room_id, player1_score, player2_score, winner_id, created_at FROM matches ORDER BY created_at DESC LIMIT 5;' },
+              { label: '\\submissions', q: 'SELECT id, user_id, problem_id, language, status, runtime_ms FROM submissions ORDER BY created_at DESC LIMIT 5;' },
+              { label: '\\visits', q: 'SELECT path, ip, created_at FROM visits ORDER BY created_at DESC LIMIT 5;' },
+            ].map((chip) => (
+              <button
+                key={chip.label}
+                type="button"
+                onClick={() => {
+                  setSqlQuery(chip.q);
+                  executeSql(chip.q);
+                }}
+                className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-emerald-400 cursor-pointer transition-colors"
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* SQL Input Area */}
+        <div className="space-y-2">
+          <div className="relative">
+            <textarea
+              value={sqlQuery}
+              onChange={(e) => setSqlQuery(e.target.value)}
+              rows={3}
+              placeholder="Enter SQL (e.g. SELECT * FROM users;)"
+              className="w-full bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 font-mono text-xs text-emerald-300 focus:outline-hidden focus:border-emerald-500/50 resize-y"
+              onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                  e.preventDefault();
+                  executeSql();
+                }
+              }}
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-mono text-zinc-400">
+              Press <kbd className="px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-300">Ctrl + Enter</kbd> to execute
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setSqlQuery('');
+                  setSqlResult(null);
+                  setSqlError(null);
+                }}
+                className="px-3 py-1.5 rounded-xl border border-zinc-800 text-xs font-mono text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 cursor-pointer"
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                onClick={() => executeSql()}
+                disabled={sqlRunning || !sqlQuery.trim()}
+                className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-mono text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>{sqlRunning ? 'Executing...' : 'Run Query'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Error Display */}
+        {sqlError && (
+          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 font-mono text-xs">
+            ✗ {sqlError}
+          </div>
+        )}
+
+        {/* Results Area */}
+        {sqlResult && (
+          <div className="space-y-2 pt-2 border-t border-zinc-800">
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+              <span className="text-emerald-400 font-semibold">
+                ✓ {sqlResult.rowCount} row(s) returned ({sqlResult.executionTimeMs}ms)
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(JSON.stringify(sqlResult.rows, null, 2));
+                  setCopiedQuery(true);
+                  setTimeout(() => setCopiedQuery(false), 2000);
+                }}
+                className="flex items-center gap-1 text-[11px] text-zinc-400 hover:text-zinc-200 cursor-pointer"
+              >
+                {copiedQuery ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                <span>{copiedQuery ? 'Copied' : 'Copy JSON'}</span>
+              </button>
+            </div>
+
+            <div className="max-h-72 overflow-auto rounded-xl border border-zinc-800 bg-zinc-900/50">
+              {sqlResult.rows.length === 0 ? (
+                <div className="p-4 text-center text-xs font-mono text-zinc-400">
+                  Query executed successfully with 0 rows returned.
+                </div>
+              ) : (
+                <table className="w-full text-left font-mono text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-zinc-800 bg-zinc-900 text-zinc-300">
+                      {Object.keys(sqlResult.rows[0]).map((col) => (
+                        <th key={col} className="p-2.5 font-semibold text-zinc-300 whitespace-nowrap">
+                          {col}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sqlResult.rows.map((row, idx) => (
+                      <tr key={idx} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
+                        {Object.values(row).map((val: any, cIdx) => (
+                          <td key={cIdx} className="p-2.5 text-zinc-300 whitespace-nowrap max-w-xs truncate">
+                            {typeof val === 'object' && val !== null ? JSON.stringify(val) : String(val ?? 'NULL')}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Administrative Operations Bar */}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db, toSafeUser } from '@/lib/database';
 import { presenceManager } from '@/lib/presence-store';
+import { query } from '@/lib/postgres';
 
 export async function GET(req: NextRequest) {
   try {
@@ -323,6 +324,29 @@ export async function POST(req: NextRequest) {
         metadata,
       });
       return NextResponse.json({ success: true, log });
+    }
+
+    if (action === 'execute_sql') {
+      const { sqlQuery } = body;
+      if (!sqlQuery || typeof sqlQuery !== 'string') {
+        return NextResponse.json({ success: false, error: 'SQL query string required' }, { status: 400 });
+      }
+      try {
+        const start = Date.now();
+        const rows = await query(sqlQuery.trim());
+        const executionTimeMs = Date.now() - start;
+        return NextResponse.json({
+          success: true,
+          rows,
+          rowCount: rows.length,
+          executionTimeMs,
+        });
+      } catch (sqlErr: any) {
+        return NextResponse.json({
+          success: false,
+          error: sqlErr.message || 'Database error executing query',
+        }, { status: 400 });
+      }
     }
 
     return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
