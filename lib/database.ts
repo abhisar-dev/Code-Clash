@@ -4,6 +4,7 @@ import * as path from 'path';
 import { hashPassword, verifyPassword } from './security';
 import { User } from './auth';
 import { Problem } from './problems';
+import { query, queryOne } from './postgres';
 
 export interface DbUser extends User {
   passwordHash: string;
@@ -329,107 +330,313 @@ class DatabaseEngine {
     return initialDb;
   }
 
-  public async ensureSynced(force = false): Promise<void> {
-    const gistId = process.env.CLOUD_DB_GIST_ID;
-    const token = process.env.CLOUD_DB_TOKEN;
-    if (!gistId || !token) return;
+  private pendingWrites: Promise<any>[] = [];
 
-    const now = Date.now();
-    if (!force && now - this.lastCloudSync < 4000) return;
-    this.lastCloudSync = now;
-
+  public async syncUserToPostgres(u: DbUser): Promise<void> {
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3000);
-      const res = await fetch(`https://api.github.com/gists/${gistId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github+json',
-          'User-Agent': 'CodeClash-Cloud-DB',
-        },
-        cache: 'no-store',
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-
-      if (!res.ok) return;
-      const gist = await res.json();
-      const fileContent = gist?.files?.['codeclash_cloud_db.json']?.content;
-      if (!fileContent) return;
-
-      const remoteData = this.normalizeSchema(JSON.parse(fileContent));
-      this.mergeRemoteData(remoteData);
-      this.writeLocalDisk(this.data);
-    } catch {
-      // Cloud sync gracefully falls back to local/tmp state
+      await query(`
+        INSERT INTO users (
+          id, name, email, handle, college, course, elo,
+          matches_won, matches_played, avatar_url, phone, bio,
+          student_id, github_url, linkedin_url, password_hash, salt,
+          total_online_seconds, last_active_at, role, account_status,
+          year_semester, clash_points, created_at, updated_at
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, NOW()
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          name = EXCLUDED.name,
+          email = EXCLUDED.email,
+          handle = EXCLUDED.handle,
+          college = EXCLUDED.college,
+          course = EXCLUDED.course,
+          elo = EXCLUDED.elo,
+          matches_won = EXCLUDED.matches_won,
+          matches_played = EXCLUDED.matches_played,
+          avatar_url = EXCLUDED.avatar_url,
+          phone = EXCLUDED.phone,
+          bio = EXCLUDED.bio,
+          student_id = EXCLUDED.student_id,
+          github_url = EXCLUDED.github_url,
+          linkedin_url = EXCLUDED.linkedin_url,
+          password_hash = EXCLUDED.password_hash,
+          salt = EXCLUDED.salt,
+          total_online_seconds = EXCLUDED.total_online_seconds,
+          last_active_at = EXCLUDED.last_active_at,
+          role = EXCLUDED.role,
+          account_status = EXCLUDED.account_status,
+          year_semester = EXCLUDED.year_semester,
+          clash_points = EXCLUDED.clash_points,
+          updated_at = NOW();
+      `, [
+        u.id, u.name, u.email, u.handle, u.college || 'Invertis University',
+        u.course || 'BCA', u.elo || 1000, u.matchesWon || 0, u.matchesPlayed || 0,
+        u.avatarUrl || '', u.phone || '', u.bio || '', u.studentId || '',
+        u.githubUrl || '', u.linkedinUrl || '', u.passwordHash, u.salt,
+        u.totalOnlineSeconds || 0, u.lastActiveAt || Date.now(), u.role || 'student',
+        u.accountStatus || 'Active', u.yearSemester || '', u.clashPoints || 0,
+        u.joinedAt ? new Date(u.joinedAt) : new Date()
+      ]);
+    } catch (err) {
+      console.warn('Neon user sync warning:', err);
     }
   }
 
-  private mergeRemoteData(remote: DatabaseSchema) {
-    // Merge users by id/email preserving avatars
-    const userMap = new Map<string, DbUser>();
-    remote.users.forEach((u) => userMap.set(u.id, u));
-    this.data.users.forEach((u) => {
-      const existing = userMap.get(u.id);
-      if (existing) {
-        userMap.set(u.id, {
-          ...existing,
-          ...u,
-          avatarUrl: u.avatarUrl || existing.avatarUrl,
+  public async syncMatchToPostgres(m: DbMatch): Promise<void> {
+    try {
+      await query(`
+        INSERT INTO matches (
+          id, room_id, player1_id, player2_id, winner_id,
+          player1_score, player2_score, difficulty, problems, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT (id) DO NOTHING;
+      `, [
+        m.id, m.roomId, m.player1.id, m.player2.id, m.winnerId,
+        m.player1.score || 0, m.player2.score || 0, 'Mixed',
+        JSON.stringify([]), new Date(m.timestamp || Date.now())
+      ]);
+    } catch (err) {
+      console.warn('Neon match sync warning:', err);
+    }
+  }
+
+  public async syncSubmissionToPostgres(s: DbSubmission): Promise<void> {
+    try {
+      await query(`
+        INSERT INTO submissions (
+          id, user_id, problem_id, code, language, status,
+          passed_count, total_tests, runtime_ms, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT (id) DO NOTHING;
+      `, [
+        s.id, s.userId, String(s.problemId), s.code, s.language,
+        s.status, s.passedCount || 0, s.totalCount || 0, s.runtimeMs || 0,
+        new Date(s.timestamp || Date.now())
+      ]);
+    } catch (err) {
+      console.warn('Neon submission sync warning:', err);
+    }
+  }
+
+  public async syncVisitToPostgres(v: DbVisit): Promise<void> {
+    try {
+      await query(`
+        INSERT INTO visits (
+          id, user_id, user_name, user_handle, path, user_agent, ip, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        ON CONFLICT (id) DO NOTHING;
+      `, [
+        v.id, v.userId || null, v.userName || null, v.userHandle || null,
+        v.path, v.userAgent || null, v.ip || null, new Date(v.timestamp || Date.now())
+      ]);
+    } catch (err) {
+      console.warn('Neon visit sync warning:', err);
+    }
+  }
+
+  public async syncAuditToPostgres(a: UserAuditLog): Promise<void> {
+    try {
+      await query(`
+        INSERT INTO audit_logs (
+          id, user_id, action, details, ip_address, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6)
+        ON CONFLICT (id) DO NOTHING;
+      `, [
+        a.id, a.userId, a.action, JSON.stringify(a),
+        a.metadata?.ip || null, new Date(a.timestamp || Date.now())
+      ]);
+    } catch (err) {
+      console.warn('Neon audit sync warning:', err);
+    }
+  }
+
+  public async syncMetaToPostgres(key: string, data: any): Promise<void> {
+    try {
+      await query(`
+        INSERT INTO system_meta (key, data, updated_at)
+        VALUES ($1, $2, NOW())
+        ON CONFLICT (key) DO UPDATE SET
+          data = EXCLUDED.data,
+          updated_at = NOW();
+      `, [key, JSON.stringify(data)]);
+    } catch (err) {
+      console.warn(`Neon meta sync warning (${key}):`, err);
+    }
+  }
+
+  public async ensureSynced(force = false): Promise<void> {
+    const now = Date.now();
+    if (!force && now - this.lastCloudSync < 2000) return;
+    this.lastCloudSync = now;
+
+    try {
+      // 1. Fetch users from Neon PostgreSQL
+      const neonUsers = await query<any>(`
+        SELECT id, name, email, handle, college, course, elo,
+               matches_won as "matchesWon", matches_played as "matchesPlayed",
+               avatar_url as "avatarUrl", phone, bio, student_id as "studentId",
+               github_url as "githubUrl", linkedin_url as "linkedinUrl",
+               password_hash as "passwordHash", salt,
+               total_online_seconds as "totalOnlineSeconds",
+               last_active_at as "lastActiveAt", role, account_status as "accountStatus",
+               year_semester as "yearSemester", clash_points as "clashPoints",
+               created_at as "joinedAt"
+        FROM users;
+      `);
+
+      if (neonUsers && neonUsers.length > 0) {
+        const userMap = new Map<string, DbUser>();
+        neonUsers.forEach((u) => {
+          userMap.set(u.id, {
+            ...u,
+            elo: Number(u.elo) || 1000,
+            matchesWon: Number(u.matchesWon) || 0,
+            matchesPlayed: Number(u.matchesPlayed) || 0,
+            totalOnlineSeconds: Number(u.totalOnlineSeconds) || 0,
+            lastActiveAt: Number(u.lastActiveAt) || Date.now(),
+            clashPoints: Number(u.clashPoints) || 0,
+            joinedAt: u.joinedAt ? new Date(u.joinedAt).toISOString() : new Date().toISOString(),
+            isAdmin: u.role === 'admin',
+          });
         });
-      } else {
-        userMap.set(u.id, u);
+        // Preserve any in-memory user
+        this.data.users.forEach((u) => {
+          if (!userMap.has(u.id)) {
+            userMap.set(u.id, u);
+            this.syncUserToPostgres(u).catch(() => {});
+          }
+        });
+        this.data.users = Array.from(userMap.values());
       }
-    });
-    this.data.users = Array.from(userMap.values());
 
-    // Merge array collections by id sorted by timestamp descending
-    const mergeById = <T extends { id: string; timestamp?: number }>(
-      localArr: T[],
-      remoteArr: T[],
-      maxLen: number
-    ): T[] => {
-      const map = new Map<string, T>();
-      remoteArr.forEach((item) => map.set(item.id, item));
-      localArr.forEach((item) => map.set(item.id, item));
-      return Array.from(map.values())
-        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-        .slice(0, maxLen);
-    };
+      // 2. Fetch matches from Neon PostgreSQL
+      const neonMatches = await query<any>(`
+        SELECT id, room_id as "roomId", player1_id, player2_id, winner_id as "winnerId",
+               player1_score as "player1Score", player2_score as "player2Score",
+               difficulty, problems, created_at as "createdAt"
+        FROM matches
+        ORDER BY created_at DESC
+        LIMIT 100;
+      `);
 
-    this.data.matches = mergeById(this.data.matches, remote.matches, 100);
-    this.data.activities = mergeById(this.data.activities, remote.activities, 30);
-    this.data.visits = mergeById(this.data.visits, remote.visits, 500);
-    this.data.violations = mergeById(this.data.violations, remote.violations, 200);
-    this.data.announcements = mergeById(this.data.announcements, remote.announcements, 50);
-    this.data.messages = mergeById(this.data.messages, remote.messages, 200);
-    this.data.submissions = mergeById(this.data.submissions || [], remote.submissions || [], 500);
-    this.data.auditLogs = mergeById(this.data.auditLogs || [], remote.auditLogs || [], 500);
-    this.data.userSessions = mergeById(this.data.userSessions || [], remote.userSessions || [], 200);
+      if (neonMatches && neonMatches.length > 0) {
+        const matchMap = new Map<string, DbMatch>();
+        neonMatches.forEach((m) => {
+          const p1 = this.getUserById(m.player1_id);
+          const p2 = this.getUserById(m.player2_id);
+          matchMap.set(m.id, {
+            id: m.id,
+            roomId: m.roomId,
+            player1: {
+              id: m.player1_id,
+              name: p1?.name || 'Player 1',
+              handle: p1?.handle || 'player1',
+              elo: p1?.elo || 1000,
+              score: Number(m.player1Score) || 0,
+            },
+            player2: {
+              id: m.player2_id,
+              name: p2?.name || 'Player 2',
+              handle: p2?.handle || 'player2',
+              elo: p2?.elo || 1000,
+              score: Number(m.player2Score) || 0,
+            },
+            winnerId: m.winnerId,
+            problemCount: 3,
+            durationSeconds: 300,
+            timestamp: m.createdAt ? new Date(m.createdAt).getTime() : Date.now(),
+          });
+        });
+        this.data.matches.forEach((m) => {
+          if (!matchMap.has(m.id)) matchMap.set(m.id, m);
+        });
+        this.data.matches = Array.from(matchMap.values())
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .slice(0, 100);
+      }
 
-    this.data.stats = {
-      totalSubmissions: this.data.submissions.length,
-      totalMatches: this.data.matches.length,
-      totalCodeLinesCompiled: (this.data.submissions || []).reduce(
-        (acc, s) => acc + (s.linesOfCode || (s.code ? s.code.split('\n').length : 0)),
-        0
-      ),
-      totalVisits: Math.max(
-        this.data.stats?.totalVisits || 0,
-        remote.stats?.totalVisits || 0,
-        this.data.visits.length
-      ),
-    };
+      // 3. Fetch submissions from Neon PostgreSQL
+      const neonSubmissions = await query<any>(`
+        SELECT id, user_id as "userId", problem_id as "problemId", code, language,
+               status, passed_count as "passedCount", total_tests as "totalCount",
+               runtime_ms as "runtimeMs", created_at as "createdAt"
+        FROM submissions
+        ORDER BY created_at DESC
+        LIMIT 100;
+      `);
+
+      if (neonSubmissions && neonSubmissions.length > 0) {
+        const subMap = new Map<string, DbSubmission>();
+        neonSubmissions.forEach((s) => {
+          const u = this.getUserById(s.userId);
+          subMap.set(s.id, {
+            id: s.id,
+            userId: s.userId,
+            userName: u?.name || 'Coder',
+            userHandle: u?.handle || 'coder',
+            problemId: Number(s.problemId) || 1,
+            problemTitle: `Problem #${s.problemId}`,
+            language: s.language || 'javascript',
+            status: s.status || 'Accepted',
+            passedCount: Number(s.passedCount) || 0,
+            totalCount: Number(s.totalCount) || 0,
+            runtimeMs: Number(s.runtimeMs) || 0,
+            memoryMb: 12.4,
+            code: s.code || '',
+            linesOfCode: s.code ? s.code.split('\n').length : 0,
+            timestamp: s.createdAt ? new Date(s.createdAt).getTime() : Date.now(),
+          });
+        });
+        this.data.submissions.forEach((s) => {
+          if (!subMap.has(s.id)) subMap.set(s.id, s);
+        });
+        this.data.submissions = Array.from(subMap.values())
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .slice(0, 300);
+      }
+
+      // 4. Fetch system meta from Neon
+      const metaRows = await query<any>(`SELECT key, data FROM system_meta;`);
+      if (metaRows && metaRows.length > 0) {
+        for (const row of metaRows) {
+          if (row.key === 'siteSettings' && row.data) {
+            this.data.siteSettings = { ...DEFAULT_SITE_SETTINGS, ...row.data };
+          } else if (row.key === 'announcements' && Array.isArray(row.data)) {
+            this.data.announcements = row.data;
+          } else if (row.key === 'customProblems' && Array.isArray(row.data)) {
+            this.data.customProblems = row.data;
+          } else if (row.key === 'blockedIps' && Array.isArray(row.data)) {
+            this.data.blockedIps = row.data;
+          } else if (row.key === 'violations' && Array.isArray(row.data)) {
+            this.data.violations = row.data;
+          }
+        }
+      }
+
+      this.data.stats = {
+        totalSubmissions: Math.max(this.data.stats?.totalSubmissions || 0, this.data.submissions.length),
+        totalMatches: Math.max(this.data.stats?.totalMatches || 0, this.data.matches.length),
+        totalCodeLinesCompiled: (this.data.submissions || []).reduce(
+          (acc, s) => acc + (s.linesOfCode || (s.code ? s.code.split('\n').length : 0)),
+          0
+        ),
+        totalVisits: Math.max(this.data.stats?.totalVisits || 0, this.data.visits.length),
+      };
+
+      this.writeLocalDisk(this.data);
+    } catch {
+      // Graceful fallback to cached state if database query is temporarily uncontactable
+    }
   }
 
   private writeLocalDisk(data: DatabaseSchema) {
     const serialized = JSON.stringify(data, null, 2);
-    // Always write to serverless /tmp cache
+    // Write to serverless /tmp cache
     try {
       fs.writeFileSync(TMP_DB_FILE, serialized, 'utf-8');
     } catch {}
 
-    // Also write to data/database.json if writable (local dev)
+    // Write to local repo data/database.json if writable
     try {
       if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -438,52 +645,21 @@ class DatabaseEngine {
       fs.writeFileSync(tmpFile, serialized, 'utf-8');
       fs.renameSync(tmpFile, DB_FILE);
     } catch {
-      // Expected on Vercel read-only deployment directory
-    }
-  }
-
-  private async pushToCloud(data: DatabaseSchema): Promise<void> {
-    const gistId = process.env.CLOUD_DB_GIST_ID;
-    const token = process.env.CLOUD_DB_TOKEN;
-    if (!gistId || !token) return;
-
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 3500);
-      await fetch(`https://api.github.com/gists/${gistId}`, {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/vnd.github+json',
-          'User-Agent': 'CodeClash-Cloud-DB',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          files: {
-            'codeclash_cloud_db.json': {
-              content: JSON.stringify(data, null, 2),
-            },
-          },
-        }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-      this.lastCloudSync = Date.now();
-    } catch {
-      // Ignore transient network errors
+      // Read-only filesystem in Vercel
     }
   }
 
   public async flushCloud(): Promise<void> {
-    if (this.pendingPush) {
-      await this.pendingPush;
+    if (this.pendingWrites.length > 0) {
+      const writes = [...this.pendingWrites];
+      this.pendingWrites = [];
+      await Promise.allSettled(writes);
     }
   }
 
   private persist(dataToSave?: DatabaseSchema) {
     const data = dataToSave || this.data;
     this.writeLocalDisk(data);
-    this.pendingPush = this.pushToCloud(data);
   }
 
   // --- User Operations ---
@@ -525,6 +701,7 @@ class DatabaseEngine {
     };
 
     this.data.users.push(newUser);
+    this.pendingWrites.push(this.syncUserToPostgres(newUser));
     this.addActivity({
       type: 'challenge',
       user1Name: newUser.name,
@@ -552,6 +729,7 @@ class DatabaseEngine {
       if (params.githubUrl && !existing.githubUrl) {
         existing.githubUrl = params.githubUrl;
       }
+      this.pendingWrites.push(this.syncUserToPostgres(existing));
       this.persist();
       return { user: existing, isNew: false };
     }
@@ -590,6 +768,7 @@ class DatabaseEngine {
     };
 
     this.data.users.push(newUser);
+    this.pendingWrites.push(this.syncUserToPostgres(newUser));
     this.addActivity({
       type: 'challenge',
       user1Name: newUser.name,
@@ -615,6 +794,7 @@ class DatabaseEngine {
     if (won) user.matchesWon += 1;
     user.elo = Math.max(100, user.elo + eloDelta);
 
+    this.pendingWrites.push(this.syncUserToPostgres(user));
     this.persist();
     return user;
   }
@@ -643,6 +823,7 @@ class DatabaseEngine {
     if (updates.followersCount !== undefined) user.followersCount = updates.followersCount;
     if (updates.followingCount !== undefined) user.followingCount = updates.followingCount;
 
+    this.pendingWrites.push(this.syncUserToPostgres(user));
     this.persist();
     return user;
   }
@@ -684,6 +865,7 @@ class DatabaseEngine {
     };
 
     this.data.users.push(newUser);
+    this.pendingWrites.push(this.syncUserToPostgres(newUser));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -723,6 +905,7 @@ class DatabaseEngine {
       user.salt = salt;
     }
 
+    this.pendingWrites.push(this.syncUserToPostgres(user));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -741,6 +924,7 @@ class DatabaseEngine {
     if (idx === -1) return false;
     const deleted = this.data.users[idx];
     this.data.users.splice(idx, 1);
+    this.pendingWrites.push(query('DELETE FROM users WHERE id = $1', [userId]).catch(() => {}));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -757,6 +941,7 @@ class DatabaseEngine {
     const user = this.data.users.find((u) => u.id === userId);
     if (!user) return null;
     user.accountStatus = status;
+    this.pendingWrites.push(this.syncUserToPostgres(user));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -782,6 +967,7 @@ class DatabaseEngine {
     if (this.data.matches.length > 100) this.data.matches.pop();
 
     this.data.stats.totalMatches += 1;
+    this.pendingWrites.push(this.syncMatchToPostgres(fullMatch));
 
     // Record activity event
     const winner = fullMatch.winnerId === fullMatch.player1.id ? fullMatch.player1 : fullMatch.player2;
@@ -900,6 +1086,7 @@ class DatabaseEngine {
     if (this.data.visits.length > 500) this.data.visits.pop();
     if (!this.data.stats.totalVisits) this.data.stats.totalVisits = 0;
     this.data.stats.totalVisits += 1;
+    this.pendingWrites.push(this.syncVisitToPostgres(fullVisit));
     this.persist();
     return fullVisit;
   }
@@ -941,6 +1128,7 @@ class DatabaseEngine {
     };
     if (!this.data.announcements) this.data.announcements = [];
     this.data.announcements.unshift(fullAnn);
+    this.pendingWrites.push(this.syncMetaToPostgres('announcements', this.data.announcements));
     this.persist();
     return fullAnn;
   }
@@ -953,6 +1141,7 @@ class DatabaseEngine {
     const a = (this.data.announcements || []).find((x) => x.id === id);
     if (!a) return false;
     a.active = !a.active;
+    this.pendingWrites.push(this.syncMetaToPostgres('announcements', this.data.announcements));
     this.persist();
     return true;
   }
@@ -1052,6 +1241,7 @@ class DatabaseEngine {
     };
     this.data.auditLogs.unshift(fullLog);
     if (this.data.auditLogs.length > 500) this.data.auditLogs.pop();
+    this.pendingWrites.push(this.syncAuditToPostgres(fullLog));
     this.persist();
     return fullLog;
   }
@@ -1079,6 +1269,7 @@ class DatabaseEngine {
 
     this.data.stats.totalSubmissions = (this.data.stats.totalSubmissions || 0) + 1;
     this.data.stats.totalCodeLinesCompiled = (this.data.stats.totalCodeLinesCompiled || 0) + (sub.linesOfCode || 10);
+    this.pendingWrites.push(this.syncSubmissionToPostgres(fullSub));
 
     // Auto-record audit log for this submission
     this.recordUserAudit({
@@ -1146,6 +1337,7 @@ class DatabaseEngine {
       slug: problem.slug || problem.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
     };
     this.data.customProblems.unshift(newProblem);
+    this.pendingWrites.push(this.syncMetaToPostgres('customProblems', this.data.customProblems));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -1163,6 +1355,7 @@ class DatabaseEngine {
     const prob = this.data.customProblems.find((p) => p.id === id);
     if (!prob) return null;
     Object.assign(prob, updates);
+    this.pendingWrites.push(this.syncMetaToPostgres('customProblems', this.data.customProblems));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -1181,6 +1374,7 @@ class DatabaseEngine {
     if (idx === -1) return false;
     const deleted = this.data.customProblems[idx];
     this.data.customProblems.splice(idx, 1);
+    this.pendingWrites.push(this.syncMetaToPostgres('customProblems', this.data.customProblems));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -1210,6 +1404,7 @@ class DatabaseEngine {
       ...this.data.siteSettings,
       ...settings,
     };
+    this.pendingWrites.push(this.syncMetaToPostgres('siteSettings', this.data.siteSettings));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
@@ -1264,6 +1459,7 @@ class DatabaseEngine {
     const cleanIp = ip.trim();
     if (cleanIp && !this.data.blockedIps.includes(cleanIp)) {
       this.data.blockedIps.push(cleanIp);
+      this.pendingWrites.push(this.syncMetaToPostgres('blockedIps', this.data.blockedIps));
       this.recordUserAudit({
         userId: 'admin',
         userName: 'Administrator',
@@ -1280,6 +1476,7 @@ class DatabaseEngine {
   public unblockIp(ip: string): string[] {
     if (!this.data.blockedIps) return [];
     this.data.blockedIps = this.data.blockedIps.filter((i) => i !== ip.trim());
+    this.pendingWrites.push(this.syncMetaToPostgres('blockedIps', this.data.blockedIps));
     this.recordUserAudit({
       userId: 'admin',
       userName: 'Administrator',
