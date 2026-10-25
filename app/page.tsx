@@ -215,6 +215,15 @@ export default function Home() {
     });
     setCodes(initialCodes);
 
+    // Generate fresh unique room ID on client mount if no invite in URL
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlInvite = params.get('invite') || params.get('room');
+      if (!urlInvite) {
+        setRoomId(`CLASH-${Math.floor(1000 + Math.random() * 9000)}`);
+      }
+    }
+
     // Load persisted solved problems
     if (typeof window !== 'undefined') {
       const savedSolved = localStorage.getItem('codeclash_solved_ids');
@@ -405,9 +414,38 @@ export default function Home() {
     }
   };
 
-  // Room presence & sync polling (every 2 seconds in arena)
+  // Open Share Invite modal with freshly generated unique room ID
+  const handleOpenShareInvite = async (diff: 'Easy' | 'Medium' | 'Hard' | 'Mixed' = 'Mixed') => {
+    const usr = currentUser;
+    if (!usr) return;
+
+    const freshRoomId = `CLASH-${Math.floor(1000 + Math.random() * 9000)}`;
+    setRoomId(freshRoomId);
+
+    setOpponent({
+      id: 'opp-waiting',
+      name: 'Waiting for friend to join...',
+      avatar: '',
+      elo: 1000,
+      isTyping: false,
+      currentQuestionIndex: 0,
+      scores: {},
+      passedCount: {},
+      totalTests: {},
+      code: {},
+      language: selectedLanguage,
+      lastActive: 0,
+    });
+
+    await createInitialRoom(freshRoomId, usr, diff);
+    resetContestState();
+    setIsShareModalOpen(true);
+  };
+
+  // Room presence & sync polling (every 1.4s in arena or while share invite modal is open)
   useEffect(() => {
-    if (!roomId || !currentUser || activeNavTab !== 'arena') return;
+    if (!roomId || !currentUser) return;
+    if (activeNavTab !== 'arena' && !isShareModalOpen) return;
 
     const interval = setInterval(async () => {
       try {
@@ -419,6 +457,9 @@ export default function Home() {
             roomId,
             player: { id: currentUser.id },
             updates: {
+              name: currentUser.name,
+              avatar: currentUser.avatarUrl || '',
+              elo: currentUser.elo || 1000,
               isTyping: player.isTyping,
               currentQuestionIndex: currentProblemIndex,
               language: selectedLanguage,
@@ -429,8 +470,13 @@ export default function Home() {
         if (data.room) {
           const room: ContestRoom = data.room;
           const opp = room.host.id === currentUser.id ? room.guest : room.host;
-          if (opp) {
-            setOpponent(opp);
+          if (opp && opp.name) {
+            setOpponent((prev) => {
+              if (prev.id !== opp.id || prev.name !== opp.name) {
+                if (soundEnabled) sounds.playMatchFound();
+              }
+              return opp;
+            });
           }
 
           if (room.rematchRequestedBy) {
@@ -444,10 +490,10 @@ export default function Home() {
       } catch {
         // Silently continue
       }
-    }, 2000);
+    }, 1400);
 
     return () => clearInterval(interval);
-  }, [roomId, currentUser, player.isTyping, currentProblemIndex, selectedLanguage, isMatchActive, activeNavTab]);
+  }, [roomId, currentUser, player.isTyping, currentProblemIndex, selectedLanguage, isMatchActive, activeNavTab, isShareModalOpen]);
 
   // Presence & 1v1 Challenge Heartbeat Polling
   useEffect(() => {
@@ -1243,7 +1289,7 @@ export default function Home() {
         }}
         onOpenLobby={() => setIsLobbyModalOpen(true)}
         onOpenProfile={() => setIsProfileModalOpen(true)}
-        onOpenShare={() => setIsShareModalOpen(true)}
+        onOpenShare={() => handleOpenShareInvite()}
         roomId={roomId}
         bgStyle={bgStyle}
         onCycleBgStyle={handleCycleBgStyle}
@@ -1265,7 +1311,7 @@ export default function Home() {
               }}
               onOpenProblems={() => setActiveNavTab('problems')}
               onOpenLeaderboard={() => setActiveNavTab('leaderboard')}
-              onDirectShare={() => setIsShareModalOpen(true)}
+              onDirectShare={() => handleOpenShareInvite()}
               onFindMatch={() => setIsMatchmakingModalOpen(true)}
               solvedProblemIds={solvedProblemIds}
               onSelectProblemToSolve={handleSolveProblemFromDirectory}
@@ -1291,7 +1337,7 @@ export default function Home() {
               currentUser={currentUser}
               onChallengeUser={handleInitiateLeaderboardChallenge}
               onSelectUser={handleOpenPublicProfile}
-              onOpenShareInvite={() => setIsShareModalOpen(true)}
+              onOpenShareInvite={() => handleOpenShareInvite()}
               onlineUserIds={onlineUserIds}
               solvedProblemIds={solvedProblemIds}
               onNavigateToDaily={() => setActiveNavTab('arena')}
@@ -1327,7 +1373,7 @@ export default function Home() {
             timeRemainingSeconds={timeRemaining}
             player={player}
             opponent={opponent}
-            onInviteFriend={() => setIsShareModalOpen(true)}
+            onInviteFriend={() => handleOpenShareInvite()}
           />
 
           {/* Mobile Arena Tab Switcher (Visible on mobile/small screens) */}
@@ -1504,6 +1550,14 @@ export default function Home() {
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         roomId={roomId}
+        onGenerateNewCode={() => handleOpenShareInvite()}
+        isFriendJoined={
+          opponent.id !== 'opp-waiting' &&
+          !!opponent.name &&
+          opponent.name !== 'Friend (Invite to Join)' &&
+          opponent.name !== 'Waiting for friend to join...'
+        }
+        opponentName={opponent.name}
       />
 
       {/* Instant 1v1 Matchmaking Queue Radar Modal */}

@@ -73,40 +73,30 @@ class RoomManager {
     return room;
   }
 
-  async getRoom(roomId: string, forceFresh: boolean = false): Promise<ContestRoom | undefined> {
-    const cached = this.rooms.get(roomId);
-    const now = Date.now();
-    // Cache valid for 800ms unless fresh query requested
-    if (!forceFresh && cached && now - cached.cachedAt < 800) {
-      return cached.room;
-    }
-
+  // Always query authoritative PostgreSQL data to prevent multi-container cache clobbering
+  async getRoom(roomId: string): Promise<ContestRoom | undefined> {
     try {
       const row = await queryOne<{ data: ContestRoom }>('SELECT data FROM active_rooms WHERE id = $1', [roomId]);
       if (row?.data) {
-        this.rooms.set(roomId, { room: row.data, cachedAt: now });
+        this.rooms.set(roomId, { room: row.data, cachedAt: Date.now() });
         return row.data;
       }
     } catch (e) {
       console.error('[RoomManager] getRoom database error:', e);
     }
 
+    const cached = this.rooms.get(roomId);
     return cached?.room;
   }
 
   async joinRoom(roomId: string, guestPlayer: Player): Promise<ContestRoom | null> {
-    const room = await this.getRoom(roomId, true);
+    const room = await this.getRoom(roomId);
     if (!room) return null;
 
-    if (!room.guest || room.guest.id === guestPlayer.id) {
-      room.guest = guestPlayer;
-      room.status = 'active';
-      await this.persistRoom(room);
-      return room;
-    }
-
-    // Room already has 2 different players
-    return null;
+    room.guest = guestPlayer;
+    room.status = 'active';
+    await this.persistRoom(room);
+    return room;
   }
 
   async updatePlayerPresence(
@@ -121,6 +111,23 @@ class RoomManager {
       room.host = { ...room.host, ...updates, lastActive: Date.now() };
     } else if (room.guest && room.guest.id === playerId) {
       room.guest = { ...room.guest, ...updates, lastActive: Date.now() };
+    } else if (!room.guest && updates.name && updates.name !== room.host.name) {
+      // Auto-attach guest if in-flight join was concurrent
+      room.guest = {
+        id: playerId,
+        name: updates.name || 'Guest',
+        avatar: updates.avatar || '',
+        elo: updates.elo || 1000,
+        isTyping: !!updates.isTyping,
+        currentQuestionIndex: updates.currentQuestionIndex || 0,
+        scores: {},
+        passedCount: {},
+        totalTests: {},
+        code: {},
+        language: updates.language || 'python',
+        lastActive: Date.now(),
+      };
+      room.status = 'active';
     }
 
     await this.persistRoom(room);
@@ -136,7 +143,7 @@ class RoomManager {
     passedCount: number,
     totalTests: number
   ): Promise<ContestRoom | null> {
-    const room = await this.getRoom(roomId, true);
+    const room = await this.getRoom(roomId);
     if (!room) return null;
 
     const player = room.host.id === playerId ? room.host : room.guest?.id === playerId ? room.guest : null;
@@ -152,7 +159,7 @@ class RoomManager {
   }
 
   async endRoom(roomId: string, winnerId: string | null): Promise<ContestRoom | null> {
-    const room = await this.getRoom(roomId, true);
+    const room = await this.getRoom(roomId);
     if (!room) return null;
     room.status = 'ended';
     room.winnerId = winnerId;
@@ -161,7 +168,7 @@ class RoomManager {
   }
 
   async requestRematch(roomId: string, playerId: string): Promise<ContestRoom | null> {
-    const room = await this.getRoom(roomId, true);
+    const room = await this.getRoom(roomId);
     if (!room) return null;
     room.rematchRequestedBy = playerId;
     await this.persistRoom(room);
@@ -169,7 +176,7 @@ class RoomManager {
   }
 
   async acceptRematch(roomId: string, newProblems: Problem[]): Promise<ContestRoom | null> {
-    const room = await this.getRoom(roomId, true);
+    const room = await this.getRoom(roomId);
     if (!room) return null;
 
     room.status = 'active';

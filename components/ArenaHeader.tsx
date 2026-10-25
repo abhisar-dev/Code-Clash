@@ -73,13 +73,15 @@ export function ArenaHeader({
       </div>
 
       {/* Players & Countdown Timer */}
-      <div className="flex items-center gap-2 sm:gap-5 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-4 shrink-0">
         {/* You */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           <Avatar name={player.name} avatarUrl={player.avatar} size="xs" />
-          <div className="text-xs">
-            <span className="font-medium text-zinc-800 dark:text-zinc-200 hidden sm:inline">{player.name}</span>
-            <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 sm:ml-1.5">
+          <div className="text-xs flex items-center gap-1">
+            <span className="font-semibold text-zinc-900 dark:text-zinc-100 max-w-[60px] sm:max-w-[120px] truncate inline-block">
+              {player.name}
+            </span>
+            <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
               {playerPass}/{currentTotalTests}
             </span>
           </div>
@@ -98,18 +100,20 @@ export function ArenaHeader({
         </div>
 
         {/* Opponent */}
-        <div className="flex items-center gap-1.5">
-          <div className="text-right text-xs">
-            <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 sm:mr-1.5">
+        <div className="flex items-center gap-1 sm:gap-1.5">
+          <div className="text-right text-xs flex items-center gap-1">
+            <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500">
               {oppPass}/{currentTotalTests}
             </span>
-            <span className="font-medium text-zinc-800 dark:text-zinc-200 hidden sm:inline">{opponent.name}</span>
+            <span className="font-semibold text-zinc-900 dark:text-zinc-100 max-w-[60px] sm:max-w-[120px] truncate inline-block">
+              {opponent.id === 'opp-waiting' ? 'Waiting...' : opponent.name}
+            </span>
           </div>
           <Avatar name={opponent.name} avatarUrl={opponent.avatar} size="xs" />
           {opponent.id === 'opp-waiting' && onInviteFriend && (
             <button
               onClick={onInviteFriend}
-              className="flex items-center gap-1 ml-1 px-1.5 sm:px-2 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-300/40 dark:border-sky-500/30 text-[10px] sm:text-[11px] font-semibold transition-colors cursor-pointer shrink-0"
+              className="flex items-center gap-1 ml-0.5 px-1.5 sm:px-2 py-0.5 rounded-md bg-amber-500/15 hover:bg-amber-500/25 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-[10px] sm:text-[11px] font-semibold transition-colors cursor-pointer shrink-0"
               title="Share a duel invite link with your friend"
             >
               <UserPlus className="w-3 h-3" />
