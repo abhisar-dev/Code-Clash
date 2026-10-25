@@ -398,11 +398,32 @@ export default function Home() {
         if (data.room.durationSeconds) {
           setTimeRemaining(data.room.timeRemainingSeconds || data.room.durationSeconds);
         }
-        const opp = data.room.host?.id === usr.id ? data.room.guest : data.room.host;
-        if (opp) {
-          setOpponent(opp);
+        if (data.room.host?.id === usr.id) {
+          // Current user is the host
+          if (data.room.guest && data.room.guest.id !== usr.id) {
+            setOpponent(data.room.guest);
+            if (soundEnabled) sounds.playMatchFound();
+          } else {
+            setOpponent({
+              id: 'opp-waiting',
+              name: 'Waiting for friend to join...',
+              avatar: '',
+              elo: 1000,
+              isTyping: false,
+              currentQuestionIndex: 0,
+              scores: {},
+              passedCount: {},
+              totalTests: {},
+              code: {},
+              language: selectedLanguage,
+              lastActive: 0,
+            });
+          }
+        } else {
+          // Current user is a distinct guest joining
+          setOpponent(data.room.host);
+          if (soundEnabled) sounds.playMatchFound();
         }
-        if (soundEnabled) sounds.playMatchFound();
       } else if (!isRetry) {
         // Fast retry after 700ms in case host room persistence was in-flight
         setTimeout(() => {
@@ -469,14 +490,46 @@ export default function Home() {
         const data = await res.json();
         if (data.room) {
           const room: ContestRoom = data.room;
-          const opp = room.host.id === currentUser.id ? room.guest : room.host;
-          if (opp && opp.name) {
-            setOpponent((prev) => {
-              if (prev.id !== opp.id || prev.name !== opp.name) {
-                if (soundEnabled) sounds.playMatchFound();
-              }
-              return opp;
-            });
+          if (room.host?.id === currentUser.id) {
+            // Current user is the host: opponent is guest ONLY if a different user joined
+            if (room.guest && room.guest.id !== currentUser.id && room.guest.name) {
+              setOpponent((prev) => {
+                if (prev.id !== room.guest!.id || prev.name !== room.guest!.name) {
+                  if (soundEnabled) sounds.playMatchFound();
+                }
+                return room.guest!;
+              });
+            } else if (!room.guest) {
+              setOpponent((prev) => {
+                if (prev.id !== 'opp-waiting') {
+                  return {
+                    id: 'opp-waiting',
+                    name: 'Waiting for friend to join...',
+                    avatar: '',
+                    elo: 1000,
+                    isTyping: false,
+                    currentQuestionIndex: 0,
+                    scores: {},
+                    passedCount: {},
+                    totalTests: {},
+                    code: {},
+                    language: selectedLanguage,
+                    lastActive: 0,
+                  };
+                }
+                return prev;
+              });
+            }
+          } else {
+            // Current user is guest: opponent is host
+            if (room.host && room.host.name) {
+              setOpponent((prev) => {
+                if (prev.id !== room.host.id || prev.name !== room.host.name) {
+                  if (soundEnabled) sounds.playMatchFound();
+                }
+                return room.host;
+              });
+            }
           }
 
           if (room.rematchRequestedBy) {

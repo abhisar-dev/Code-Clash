@@ -93,6 +93,11 @@ class RoomManager {
     const room = await this.getRoom(roomId);
     if (!room) return null;
 
+    // Prevent the host from joining as their own guest opponent
+    if (room.host.id === guestPlayer.id) {
+      return room;
+    }
+
     room.guest = guestPlayer;
     room.status = 'active';
     await this.persistRoom(room);
@@ -111,8 +116,8 @@ class RoomManager {
       room.host = { ...room.host, ...updates, lastActive: Date.now() };
     } else if (room.guest && room.guest.id === playerId) {
       room.guest = { ...room.guest, ...updates, lastActive: Date.now() };
-    } else if (!room.guest && updates.name && updates.name !== room.host.name) {
-      // Auto-attach guest if in-flight join was concurrent
+    } else if (!room.guest && playerId !== room.host.id && updates.name && updates.name !== room.host.name) {
+      // Auto-attach guest if in-flight join was concurrent and is a different player
       room.guest = {
         id: playerId,
         name: updates.name || 'Guest',
