@@ -1,233 +1,201 @@
-# CodeClash — Real-Time 1v1 Competitive Coding & Campus Placement Arena
+# CodeClash
 
 <div align="center">
-  <img src="public/codeclash-dashboard.png" alt="CodeClash Campus Platform — Real-Time 1v1 Coding Arena and Placement Leaderboard" width="100%" />
+  <p align="center">
+    <strong>Real-Time 1v1 Competitive Coding & DSA Battle Arena</strong>
+  </p>
+  <p align="center">
+    Built for students and developers to practice Data Structures & Algorithms under actual placement exam pressure.
+  </p>
+  
+  <p align="center">
+    <a href="https://codeclash-in.vercel.app" target="_blank">
+      <img src="https://img.shields.io/badge/Live%20Demo-codeclash--in.vercel.app-blue?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />
+    </a>
+    <img src="https://img.shields.io/badge/Next.js-16.4-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
+    <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
+    <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Neon-PostgreSQL-00E699?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License" />
+  </p>
 </div>
+
+<br />
 
 <div align="center">
-
-[![Live Production](https://img.shields.io/badge/Vercel-Deployed_Live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://codeclash-in.vercel.app)
-[![Next.js 16](https://img.shields.io/badge/Next.js-16.4.3-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript 5](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![PostgreSQL](https://img.shields.io/badge/Neon-PostgreSQL-00E699?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
-
+  <a href="https://codeclash-in.vercel.app">
+    <img src="./public/codeclash-dashboard.png" alt="CodeClash Platform Dashboard" width="100%" />
+  </a>
 </div>
-
-**CodeClash** is a full-stack, real-time 1v1 competitive coding platform built for **Invertis University** students to practice Data Structures & Algorithms under actual placement exam pressure. It matches students head-to-head in timed coding duels, executes submissions across 4 programming languages inside an isolated runner, and maintains campus-wide ELO ratings, streaks, and department leaderboards.
 
 ---
 
-## 🌐 Live Production Deployment
+## ⚡ Try It Live
 
-| Portal / Route | Public URL | Description |
+> **Live Website**: [**https://codeclash-in.vercel.app**](https://codeclash-in.vercel.app)
+
+| Section | What it does | Direct Access |
 | :--- | :--- | :--- |
-| **Live Web App & Dashboard** | [codeclash-in.vercel.app](https://codeclash-in.vercel.app) | Real-time student hub with contest feeds, quick matchmaking, and stats |
-| **1v1 Battle Arena** | [codeclash-in.vercel.app](https://codeclash-in.vercel.app) *(1v1 Arena Tab)* | Split-screen Monaco editor with live opponent timer and testcase runner |
-| **Placement Problem Bank** | [codeclash-in.vercel.app](https://codeclash-in.vercel.app) *(Problems Tab)* | 150+ categorized DSA challenges with hints, test cases, and company tags |
-| **Campus ELO Leaderboard** | [codeclash-in.vercel.app](https://codeclash-in.vercel.app) *(Leaderboard Tab)* | Real-time department rankings across CSE, BCA, and MCA cohorts |
-| **Admin Audit Terminal** | [codeclash-in.vercel.app/admin](https://codeclash-in.vercel.app/admin) | Real-time duel traffic telemetry, active room monitor, and system metrics |
+| **1v1 Arena** | Real-time duel with live opponent timer and test runner | [Launch Arena](https://codeclash-in.vercel.app) *(1v1 Arena tab)* |
+| **Practice Bank** | 150+ curated placement questions with hints and test cases | [Browse Problems](https://codeclash-in.vercel.app) *(Problems tab)* |
+| **Leaderboard** | Live ELO rankings and department standings | [View Standings](https://codeclash-in.vercel.app) *(Leaderboard tab)* |
+| **System Status** | Live platform telemetry and database connection health | [Check Status](https://codeclash-in.vercel.app/api/system) |
 
 ---
 
-## 💡 Why I Built This
+## 💡 The Story: Why I Built CodeClash
 
-Grinding LeetCode alone at 2 AM is fine for picking up algorithmic patterns, but it misses the actual reality of campus recruitment drives: tight clocks, adrenaline, competing against peers, and needing to write clean, working code without unlimited second chances.
+Solving DSA problems on LeetCode or HackerRank at your own pace is great for learning patterns, but campus placement drives are a completely different ballgame. 
 
-At **Invertis University**, students across CSE, BCA, and MCA regularly prepare for technical screening rounds (TCS NQT, Infosys, Wipro, and product-tier startups), but previously had no common arena to test their speed against their actual classmates.
+During technical screening rounds (like TCS NQT, Infosys, Wipro, and product startups), you don't have unlimited time to ponder. You're up against the ticking clock, nerves, and your peers sitting right next to you.
 
-I built **CodeClash** to bridge that gap. Instead of passive problem-solving:
-- Two students enter a duel room simultaneously.
-- A 5-question contest or single problem duel begins with a synchronized countdown.
-- Each coder writes, debugs, and runs code against automated test cases in real time.
-- Opponent progress is broadcast live (test cases passed, submission status), creating healthy pressure.
-- Matches dynamically recalculate campus ELO ratings and update departmental standing.
+I wanted to recreate that exact adrenaline rush for myself and my batchmates at **Invertis University**. 
+
+Instead of passive coding, **CodeClash** turns DSA practice into a sport:
+- You hit **Find Match** or invite a friend via a unique **Room Code**.
+- Both coders enter the split-screen duel arena simultaneously.
+- A synchronized countdown begins, and you race to implement the optimal solution.
+- You see your opponent's live progress (e.g. `2/3 test cases passed`) as it happens.
+- Winning updates your campus **ELO rating**, boosts your win-streak, and climbs the department leaderboard.
 
 ---
 
 ## ⚔️ The 1v1 Battle Arena
 
 <div align="center">
-  <img src="public/codeclash-arena.png" alt="CodeClash 1v1 Coding Arena — Monaco Editor, Split-Screen Problem View, and Live Test Runner" width="100%" />
+  <a href="https://codeclash-in.vercel.app">
+    <img src="./public/codeclash-arena.png" alt="CodeClash Split-Screen 1v1 Duel Arena" width="100%" />
+  </a>
 </div>
 
-The battle arena is built from the ground up for focused, distraction-free competitive coding:
-- **Dual-Pane IDE Layout**: Left pane provides the full problem specification, examples, constraints, hints, and company tags. Right pane hosts a full-featured Monaco code editor.
-- **Polyglot Execution**: Instant language toggling between **Python 3**, **C++ 17**, **Java 21**, and **JavaScript (Node.js)** with pre-populated boilerplate signatures.
-- **Interactive Test Suite**: Run code against visible test cases (`Case 1`, `Case 2`, `Case 3`) with detailed stdout/stderr inspection, or hit **Submit** to evaluate against hidden edge cases.
-- **Live Match Synchronization**: Shows the opponent's live solve count (`0/5`), connection status, and remaining time without revealing their code until match completion.
+- **Dual-Pane IDE**: Left pane displays problem statement, constraints, input/output samples, and hints. Right pane is a customized Monaco editor.
+- **Multi-Language Support**: Write and test code in **Python 3**, **C++ 17**, **Java 21**, or **JavaScript (Node.js)** with automatic starter boilerplate.
+- **Instant Test Suite**: Run against sample test cases with full stdout / stderr inspection, then hit **Submit** for hidden test validation.
+- **Zero-Friction Multiplayer**: Create private lobbies with random 6-character room codes or hop into public matchmaking.
 
 ---
 
-## 🏛️ System Architecture
+## 🧠 How It Works Under the Hood
 
-```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                      Next.js 16 App Router (Client)                    │
-│      Monaco Editor · Tailwind CSS v4 · Framer Motion · Dark/Light      │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │ HTTPS / SSE Streams
-┌───────────────────────────────────▼────────────────────────────────────┐
-│                    Vercel Edge & Serverless Core                       │
-│    /api/matchmaking  ·  /api/rooms  ·  /api/run-code  ·  /api/presence │
-├───────────────────────────────────┬────────────────────────────────────┤
-│       Duel State Synchronizer     │      Sandboxed Code Executor       │
-│  - In-Memory LRU Cache            │  - Language Harness Injection      │
-│  - Conflict-Free Atomic Updates   │  - Subprocess Spawn Isolation      │
-│  - Presence & Disconnect Tracker  │  - 7s CPU Execution Timeout Gate   │
-└─────────────────┬─────────────────┴──────────────────┬─────────────────┘
-                  │                                    │
-┌─────────────────▼─────────────────┐   ┌──────────────▼─────────────────┐
-│     Neon Serverless PostgreSQL    │   │      Language Execution VM     │
-│   active_rooms · users · matches  │   │   Python · C++ · Java · Node   │
-└───────────────────────────────────┘   └────────────────────────────────┘
-```
-
----
-
-## ⚡ Engineering Deep-Dive
-
-### 1. Ephemeral Serverless State Synchronization
-Deploying real-time multiplayer features on serverless infrastructure (Vercel) presents a classic challenge: serverless functions are stateless and do not share in-memory heap across execution instances.
-- CodeClash implements a **hybrid state model**: an in-memory hot cache coupled with an atomic upsert layer backed by **Neon Serverless PostgreSQL**.
-- Room state changes (code submissions, test case passes, timer updates) execute atomic queries:
+### 1. Real-Time State Without Heavy Server Costs
+Running dedicated WebSocket servers on VPS instances can be costly and prone to dropping connections on free tiers. 
+CodeClash uses an efficient **hybrid state model**:
+- Ultra-low latency edge endpoints with smart polling intervals (800ms during active duels).
+- State transitions (submitting code, passing test cases, round completions) use atomic SQL upserts backed by **Neon Serverless PostgreSQL connection pooling**:
   ```sql
   INSERT INTO active_rooms (id, data, updated_at) 
   VALUES ($1, $2, NOW())
   ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW();
   ```
-- Lightweight heartbeat endpoints monitor client presence, cleanly handling sudden tab closes or network disconnects during an active duel.
+- Instant room cleanup and heartbeat monitoring ensure abandoned duels don't leave zombie state.
 
-### 2. Multi-Language Code Runner & Test Harness
-Code submitted by students runs through an automated evaluation pipeline (`/api/run-code`):
-- **Harness Generation**: User-written functions are wrapped inside an automated test harness (`wrapCodeWithTestRunner`) that injects structured test vectors, deserializes inputs, and captures standard output.
-- **Resource Limits & Timeouts**: Subprocesses are spawned with strict 5–7 second timeout limits to guard against infinite loops and excessive resource consumption.
-- **Input Sanitization**: Submissions pass through AST/pattern inspection to prevent access to unauthorized system binaries or unsafe process commands.
+### 2. Multi-Language Sandboxed Test Runner
+When a user hits "Run Code" or "Submit", the backend wraps their solution inside an automated evaluation harness:
+- Injects structured test vectors directly into memory.
+- Captures runtime errors, execution time, and stdout/stderr output.
+- Enforces strict process timeouts (5-7 seconds) to protect against infinite loops and resource starvation.
 
-### 3. ELO Rating & Gamification Engine
-Rating adjustments are calculated dynamically based on relative opponent skill:
+### 3. Dynamic ELO Rating Algorithm
+After every 1v1 match, ratings recalculate using a standard chess ELO model:
 
-$$\Delta R = K \times (S - E)$$
+$$R_{\text{new}} = R_{\text{old}} + K \times (S - E)$$
 
-Where $E$ represents the expected match outcome and $K$ is tuned based on student placement tier:
-- **Novice** ($< 1200$)
-- **Specialist** ($1200 - 1499$)
-- **Expert** ($1500 - 1799$)
-- **Master** ($1800 - 2099$)
-- **Grandmaster** ($2100+$)
-
-Includes streak tracking, departmental filters (CSE vs. BCA vs. MCA), and unlockable achievement badges.
-
-### 4. Curated Placement Curriculum
-Includes 150+ problems categorized by core recruitment topics:
-- Arrays & Hashing (Two Sum, Kadane's Algorithm, Trapping Rain Water)
-- Strings & Two Pointers (Valid Palindrome, Longest Substring Without Repeating Characters)
-- Trees & Graphs (Level Order Traversal, Number of Islands, Dijkstra)
-- Dynamic Programming (0/1 Knapsack, Coin Change, Longest Common Subsequence)
-
-Each problem features comprehensive test cases, time/space complexity notes, and company interview tags (TCS, Infosys, Amazon, Wipro).
+Where $S$ is the match score (1 for win, 0 for loss) and $E$ is the expected probability of victory. Players progress through tiers:
+- **Novice** (< 1200)
+- **Specialist** (1200 - 1499)
+- **Expert** (1500 - 1799)
+- **Master** (1800 - 2099)
+- **Grandmaster** (2100+)
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend Framework** | [Next.js 16.4.3](https://nextjs.org/) (App Router, Server & Client Components) |
-| **UI & Styling** | [React 19](https://react.dev/), [Tailwind CSS v4](https://tailwindcss.com/), [Framer Motion](https://www.framer.com/motion/) |
-| **Code Editor** | [Monaco Editor](https://microsoft.github.io/monaco-editor/) (`@monaco-editor/react`) |
-| **Database** | [Neon](https://neon.tech/) Serverless PostgreSQL (`@neondatabase/serverless`, `pg`) |
-| **Icons & Visuals** | [Lucide React](https://lucide.dev/), Canvas Confetti |
-| **Email & Transports** | [Nodemailer](https://nodemailer.com/) |
-| **Hosting & CI/CD** | [Vercel](https://vercel.com/) (Automated Git deployments) |
+- **Frontend**: Next.js 16 (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS v4, Lucide Icons
+- **Code Editor**: Monaco Editor (`@monaco-editor/react`)
+- **Database**: Neon Serverless PostgreSQL (`@neondatabase/serverless`)
+- **Hosting & CI/CD**: Vercel Serverless Edge
+- **Email & Notifications**: Nodemailer (welcome & verification alerts)
 
 ---
 
-## 🚀 Local Development Setup
+## 🚀 Quickstart (Run Locally)
 
 ### Prerequisites
-- **Node.js**: v18.18.0 or higher
-- **npm** or **pnpm**
-- (Optional) Local compilers: `python3`, `g++`, `javac` if running local multi-language test scripts
+- Node.js 18.18+ or 20+
+- npm or pnpm
+- (Optional) Local compilers (`python`, `g++`, `javac`) if testing code runner scripts locally
 
-### 1. Clone the Repository
+### 1. Clone the repo
 ```bash
 git clone https://github.com/abhisar-dev/Code-Clash.git
 cd Code-Clash
 ```
 
-### 2. Install Dependencies
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-### 3. Configure Environment Variables
-Create a `.env.local` file in the root directory:
+### 3. Setup environment variables
+Create a `.env.local` file in the root folder:
 ```env
-# Database (Neon Serverless PostgreSQL)
+# Neon Serverless PostgreSQL connection URL
 DATABASE_URL=postgresql://user:password@ep-sample-pooler.region.neon.tech/neondb?sslmode=require
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # (Optional) Admin Secret Key
-ADMIN_SECRET_KEY=your_secure_admin_key
+ADMIN_SECRET_KEY=your_admin_secret_key
 ```
 
-### 4. Run the Development Server
+### 4. Start the development server
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
-
-### 5. Database Diagnostics
-To test and inspect the Neon PostgreSQL connection directly:
-```bash
-npm run db:terminal
-```
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📁 Repository Structure
+## 📁 Project Structure
 
 ```text
 codeclash/
 ├── app/
-│   ├── admin/                # Admin monitoring & system telemetry dashboard
+│   ├── admin/                # Admin control center & live traffic metrics
 │   ├── api/
-│   │   ├── admin/            # Admin metrics & telemetry endpoints
-│   │   ├── auth/             # Authentication & session handlers
-│   │   ├── leaderboard/      # Campus ELO ranking queries
-│   │   ├── matchmaking/      # 1v1 queue matching & room allocation
-│   │   ├── presence/         # Live user activity & heartbeat tracker
-│   │   ├── rooms/            # Contest room state retrieval & sync
-│   │   └── run-code/         # Sandboxed code compilation & test evaluation
-│   ├── globals.css           # Tailwind CSS v4 styling & dark mode definitions
-│   ├── layout.tsx            # Root HTML metadata & analytics provider wrapper
-│   └── page.tsx              # Single-page client hub (Dashboard, Arena, Problems, Ranks)
+│   │   ├── admin/            # Telemetry & system administration endpoints
+│   │   ├── auth/             # Login, signup & student session handling
+│   │   ├── leaderboard/      # Campus ELO ranking and stats queries
+│   │   ├── matchmaking/      # 1v1 queue matching & room allocator
+│   │   ├── presence/         # Live heartbeat & active coders tracker
+│   │   ├── rooms/            # Duel lobby synchronization
+│   │   └── run-code/         # Sandboxed multi-language code evaluator
+│   ├── layout.tsx            # Metadata, SEO JSON-LD schema & root layout
+│   └── page.tsx              # Main single-page interactive hub
 ├── components/
 │   ├── ArenaHeader.tsx       # Live duel score header & countdown timer
-│   ├── CodeEditor.tsx        # Monaco editor integration with language picker
-│   ├── ContestBar.tsx        # 5-problem contest switcher tab bar
+│   ├── CodeEditor.tsx        # Monaco editor component with syntax themes
 │   ├── DashboardView.tsx     # Student home view, stats, and match launcher
 │   ├── LeaderboardView.tsx   # Campus ELO rankings & department filters
-│   ├── Navbar.tsx            # Institutional nav with theme and sound toggles
-│   ├── ProblemPanel.tsx      # Problem statement, constraints, hints & editorial
-│   └── TestResultPanel.tsx   # Multi-case test results & stdout inspector
+│   ├── Navbar.tsx            # Navigation bar with sound & theme toggles
+│   ├── ProblemPanel.tsx      # Problem statement, test samples & hints
+│   └── TestResultPanel.tsx   # Test case pass/fail summary & stdout log
 ├── lib/
-│   ├── auth.ts               # Student credentials & local session store
-│   ├── code-wrapper.ts       # Test runner harness injector for Py/C++/Java/JS
-│   ├── gamification.ts       # ELO calculator, badges, and streaks engine
+│   ├── auth.ts               # Local authentication & session helper
+│   ├── code-wrapper.ts       # Test runner harness injector (Python, C++, Java, JS)
+│   ├── gamification.ts       # ELO calculator, streak engine & badges
 │   ├── postgres.ts           # Neon serverless pool connection manager
 │   ├── problems.ts           # 150+ placement questions and test suites
 │   ├── room-store.ts         # Hybrid in-memory + PostgreSQL contest room manager
-│   └── security.ts           # Code sanitization, rate-limiter & audit logger
+│   └── security.ts           # Code sanitization & rate limiting
 └── public/
-    ├── codeclash-dashboard.png # Main platform dashboard screenshot
-    ├── codeclash-arena.png     # 1v1 split-screen duel arena screenshot
-    └── invertis-campus.jpg     # Campus portal background asset
+    ├── codeclash-dashboard.png # Platform dashboard preview
+    ├── codeclash-arena.png     # 1v1 duel arena preview
+    └── codeclash-logo.svg      # CodeClash brand mark
 ```
 
 ---
@@ -235,14 +203,13 @@ codeclash/
 ## 👨‍💻 Author
 
 **Abhisar Kumar**
-- Degree: Bachelor of Computer Applications — AI & ML (BCA AI & ML)
-- Institution: Invertis University, Bareilly
+- BCA (AI & ML) — Invertis University, Bareilly
 - GitHub: [@abhisar-dev](https://github.com/abhisar-dev)
-- Project Repository: [Code-Clash](https://github.com/abhisar-dev/Code-Clash)
-- Production Web App: [codeclash-in.vercel.app](https://codeclash-in.vercel.app)
+- Email: abhisarkumar70@gmail.com
+- Live Project: [https://codeclash-in.vercel.app](https://codeclash-in.vercel.app)
 
 ---
 
 ## 📄 License
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
